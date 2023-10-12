@@ -1,7 +1,8 @@
 import axios from "axios";
-import logo from "./logo.svg";
 import "./App.css";
 import { useEffect, useState } from "react";
+import routes from "./routes/routes"
+import { Routes } from "react-router-dom";
 
 function App() {
   const [message, setMessage] = useState("test");
@@ -15,9 +16,10 @@ function App() {
     })();
   }, []);
   return (
-    <h1 className="text-3xl font-bold underline">
-      Hello world!
-    </h1>
+    <div>
+    <Routes>{routes.map((value) => value)}</Routes>    
+    </div>
+
   );
 }
 
