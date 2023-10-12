@@ -4,7 +4,7 @@ import "./App.css";
 import { useEffect, useState } from "react";
 
 function App() {
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState("test");
 
   useEffect(() => {
     (async () => {
@@ -15,12 +15,9 @@ function App() {
     })();
   }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        {message}
-      </header>
-    </div>
+    <h1 className="text-3xl font-bold underline">
+      Hello world!
+    </h1>
   );
 }
 
