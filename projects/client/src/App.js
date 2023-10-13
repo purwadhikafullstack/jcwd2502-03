@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import routes from "./routes/routes"
 import { Routes } from "react-router-dom";
 import Nav from "./components/Navbar/Nav";
+import Footer from "./components/Footer/Footer";
 function App() {
   const [message, setMessage] = useState("test");
 
@@ -18,7 +19,8 @@ function App() {
   return (
     <div className="max-w-[1920px] container">
       <Nav/>
-    <Routes>{routes.map((value) => value)}</Routes>    
+    <Routes>{routes.map((value) => value)}</Routes>  
+    <Footer />  
     </div>
   );
 }
