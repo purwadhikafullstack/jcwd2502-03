@@ -16,10 +16,9 @@ function App() {
     })();
   }, []);
   return (
-    <div>
+    <div className="max-w-[1920px] container">
     <Routes>{routes.map((value) => value)}</Routes>    
     </div>
-
   );
 }
 
