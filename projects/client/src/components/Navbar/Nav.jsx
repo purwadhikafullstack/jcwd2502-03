@@ -7,7 +7,7 @@ import Logo from "../Logo/Logo";
 
 const Nav = () => {
   return (
-    <div className="w-full bg-primaryBlue h-[88px]">
+    <div className="w-full bg-primaryBlue h-[88px] fixed top-0">
       <div className="w-[1320px] h-full m-auto flex items-center align-middle justify-between">
         <Logo />
 

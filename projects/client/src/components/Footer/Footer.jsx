@@ -4,7 +4,7 @@ import { AiOutlineArrowRight } from "react-icons/ai";
 
 const Footer = () => {
   return (
-    <div className='w-full h-[404px] bg-gray-900 '>
+    <div className='w-full h-[404px] bg-[#191C1F] fixed bottom-0'>
       <div className='py-[72px] px-[300px] flex gap-10 '>
         <div className='grid gap-2'>
             <Logo logoCSS={""}/>
