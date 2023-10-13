@@ -20,7 +20,7 @@ function App() {
     <div className="max-w-[1920px] container">
       <Nav/>
     <Routes>{routes.map((value) => value)}</Routes>  
-    <Footer />  
+    {/* <Footer />   */}
     </div>
   );
 }
