@@ -6,7 +6,7 @@ import { TbMathGreater } from "react-icons/tb";
 
 const PageInfo = () => {
   return (
-    <div>
+    <div className='mb-[72px]'>
        <div className="px-[300px] mt-[16px] h-[72px]  w-full flex  items-center text-[14px] text-gray bg-[#F2F4F5]">
         <div className="flex items-center mr-[20px]">
           <AiOutlineHome className="text-[20px] mr-[8px]" />

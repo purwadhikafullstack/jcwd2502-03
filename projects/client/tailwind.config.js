@@ -8,7 +8,7 @@ module.exports = {
       colors: {
         primaryOrange: 'rgba(250, 130, 50, 1)',
         primaryBlue: 'rgba(27, 99, 146, 1)',
-        gray: '#5F6C72'
+        customGray: '#5F6C72'
       }
     },
   },
