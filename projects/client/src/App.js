@@ -1,10 +1,11 @@
 import axios from "axios";
-import logo from "./logo.svg";
 import "./App.css";
 import { useEffect, useState } from "react";
-
+import routes from "./routes/routes"
+import { Routes } from "react-router-dom";
+import Nav from "./components/Navbar/Nav";
 function App() {
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState("test");
 
   useEffect(() => {
     (async () => {
@@ -15,11 +16,9 @@ function App() {
     })();
   }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        {message}
-      </header>
+    <div className="max-w-[1920px] container">
+      <Nav/>
+    <Routes>{routes.map((value) => value)}</Routes>    
     </div>
   );
 }

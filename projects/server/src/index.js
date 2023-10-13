@@ -20,6 +20,24 @@ app.use(express.json());
 
 // ===========================
 // NOTE : Add your routes here
+// Import Router
+// const { authRouter } = require("./routers");
+// const { userRouter } = require("./routers");
+// const { productRouter } = require("./routers");
+// const { adminRouter } = require("./routers");
+// const { cartRouter } = require("./routers");
+// const { transactionRouter } = require("./routers");
+// const { reportRouter } = require("./routers");
+// app.use("/auth", authRouter);
+// app.use("/user", userRouter);
+// app.use("/product", productRouter);
+// app.use("/admin", adminRouter);
+// app.use("/cart", cartRouter);
+// app.use("/transaction", transactionRouter);
+// app.use("/report", reportRouter);
+
+// app.use("/profilepicture", express.static(`${__dirname}/public/profilePictures`));
+// app.use("/products", express.static(`${__dirname}/public/products`));
 
 app.get("/api", (req, res) => {
   res.send(`Hello, this is my API`);
@@ -62,6 +80,19 @@ app.use(express.static(join(__dirname, clientPath)));
 app.get("*", (req, res) => {
   res.sendFile(join(__dirname, clientPath, "index.html"));
 });
+
+// Centralized Error
+app.use((err, req, res, next) => {
+  const statusCode = err.status || 500;
+  const statusMessage = err.message || "Error";
+
+  return res.status(statusCode).send({
+      isError: true,
+      message: statusMessage,
+      data: null,
+  });
+});
+
 
 //#endregion
 
