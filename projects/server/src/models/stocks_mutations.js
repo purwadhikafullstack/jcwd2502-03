@@ -2,25 +2,17 @@
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
     class stocks_mutations extends Model {
-        static associate({
-            users,
-            products,
-            warehouses,
-            products_stocks_histories,
-        }) {
+        static associate({ users, products, warehouses }) {
             this.belongsTo(users, { foreignKey: "users_id" });
             this.belongsTo(products, { foreignKey: "products_id" });
-            this.belongsTo(warehouses, { foreignKey: "warehouses_id" });
-            this.hasMany(products_stocks_histories, {
-                foreignKey: "stocks_mutations_id",
-            });
+            this.belongsTo(warehouses, { foreignKey: "request_warehouses_id" });
+            this.belongsTo(warehouses, { foreignKey: "sender_warehouses_id" });
         }
     }
     stocks_mutations.init(
         {
-            total: DataTypes.INTEGER,
-            type: DataTypes.ENUM,
-            status: DataTypes.ENUM,
+            quantity: DataTypes.INTEGER,
+            status: DataTypes.ENUM("Approved", "Pending", "Declined"),
         },
         {
             sequelize,

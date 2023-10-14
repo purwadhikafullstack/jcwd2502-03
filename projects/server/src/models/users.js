@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     class users extends Model {
         static associate({
             users_addresses,
-            reset_password_token,
+            reset_password_tokens,
             carts,
             stocks_mutations,
             orders,
@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
             warehouses,
         }) {
             this.hasMany(users_addresses, { foreignKey: "users_id" });
-            this.hasMany(reset_password_token, { foreignKey: "users_id" });
+            this.hasMany(reset_password_tokens, { foreignKey: "users_id" });
             this.hasMany(carts, { foreignKey: "users_id" });
             this.hasMany(stocks_mutations, { foreignKey: "users_id" });
             this.hasMany(orders, { foreignKey: "users_id" });
@@ -26,8 +26,8 @@ module.exports = (sequelize, DataTypes) => {
             email: DataTypes.STRING,
             password: DataTypes.STRING,
             avatar: DataTypes.STRING,
-            status: DataTypes.ENUM,
-            role: DataTypes.ENUM,
+            status: DataTypes.ENUM("Active", "Inactive"),
+            role: DataTypes.ENUM("Owner", "Warehouse Admin", "Customer"),
             is_verified: DataTypes.BOOLEAN,
         },
         {

@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
             stocks_mutations,
             products_stocks,
             orders_details,
+            products_stocks_histories,
         }) {
             this.belongsTo(products_categories, {
                 foreignKey: "products_categories_id",
@@ -18,6 +19,9 @@ module.exports = (sequelize, DataTypes) => {
             this.hasMany(stocks_mutations, { foreignKey: "products_id" });
             this.hasMany(products_stocks, { foreignKey: "products_id" });
             this.hasMany(orders_details, { foreignKey: "products_id" });
+            this.hasMany(products_stocks_histories, {
+                foreignKey: "products_id",
+            });
         }
     }
     products.init(
@@ -26,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
             product_description: DataTypes.STRING,
             product_price: DataTypes.DECIMAL,
             product_weight: DataTypes.DECIMAL,
-            product_status: DataTypes.ENUM,
+            product_status: DataTypes.ENUM('Active','Inactive'),
         },
         {
             sequelize,
