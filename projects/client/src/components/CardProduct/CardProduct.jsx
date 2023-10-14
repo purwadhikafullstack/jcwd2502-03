@@ -12,10 +12,10 @@ const CardProduct = () => {
     <div className="max-w-[248px] min-w-[248px] max-h-[296px]  border cursor-pointer">
       <div className="p-[16px]">
         <div className="cardd">
-          <div className="static">
+          <div className="">
             <img src={product1} alt="" />
           </div>
-          <div className="overlay">
+          <div className="overla">
             <div className="flex gap-2">
               <span className="">
                 <AiOutlineHeart className="text-white bg-primaryOrange p-2 rounded-full h-[48px] w-[48px]" />
