@@ -6,12 +6,12 @@ export default function Banner() {
   return (
     <div className="grid grid-cols-6 w-[1320px] h-full m-auto gap-3">
     <div className="carousel w-full col-span-6 lg:col-span-4">
-      <div id="slide1" className="carousel-item relative  w-full">
+      <div id="slide1" className="carousel-item   w-full">
         <img
           src="https://img.freepik.com/free-photo/professional-esports-woman-gamer-playing-rgb-powerful-computer-video-game-celebrating-victory-pro-cyber-streaming-raising-hands-wining-tournament-esport-online-championship-from-gaming-studio_482257-12515.jpg?size=626&ext=jpg&ga=GA1.1.79229679.1697243929&semt=ais"
           className="w-full"
         />
-        <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+        <div className=" flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
           <a href="#slide4" className="btn btn-circle">
             ❮
           </a>

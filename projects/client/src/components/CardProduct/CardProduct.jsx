@@ -1,22 +1,27 @@
 import React from "react";
 import product1 from "../../assets/product1.png";
 import "./cardproduct.css";
-import { AiOutlineShoppingCart, AiOutlineHeart } from "react-icons/ai";
-import { CiUser } from "react-icons/ci";
+import {
+  AiOutlineShoppingCart,
+  AiOutlineHeart,
+  AiOutlineEye,
+} from "react-icons/ai";
 
 const CardProduct = () => {
   return (
-    <div className="max-w-[248px] max-h-[296px] mt-[88px]  border cursor-pointer">
+    <div className="max-w-[248px] min-w-[248px] max-h-[296px]  border cursor-pointer">
       <div className="p-[16px]">
-        <div className="card">
-          <img src={product1} alt="" />
+        <div className="cardd">
+          <div className="static">
+            <img src={product1} alt="" />
+          </div>
           <div className="overlay">
             <div className="flex gap-2">
-              <span className="relative">
+              <span className="">
                 <AiOutlineHeart className="text-white bg-primaryOrange p-2 rounded-full h-[48px] w-[48px]" />
               </span>
               <AiOutlineShoppingCart className="text-black bg-white p-2 rounded-full h-[48px] w-[48px]" />
-              <CiUser className="text-black font-bold bg-white p-2 rounded-full h-[48px] w-[48px]" />
+              <AiOutlineEye className="text-black font-bold bg-white p-2 rounded-full h-[50px] w-[50px]" />
             </div>
           </div>
         </div>

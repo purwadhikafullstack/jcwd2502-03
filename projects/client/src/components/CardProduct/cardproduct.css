@@ -1,6 +1,6 @@
-.card {
+.cardd {
     position: relative;
-    transition: transform 0.3s; 
+    transition: transform 0.5s; 
   }
   
   .overlay {
@@ -9,9 +9,9 @@
     left: 50%;
     transform: translate(-50%, -50%);
     opacity: 0;
-    transition: opacity 0.3s; 
+    transition: opacity 0.5s; 
   }
   
-  .card:hover .overlay {
+  .cardd:hover .overlay {
     opacity: 2; 
   }
