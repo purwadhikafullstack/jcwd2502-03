@@ -1,6 +1,6 @@
 import React from 'react'
 
-const index = () => {
+const BestDeals = () => {
   return (
     <div>
       
@@ -8,6 +8,4 @@ const index = () => {
   )
 }
 
-export default index
-
-// penanda jangan di edit
+export default BestDeals
