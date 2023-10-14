@@ -15,7 +15,7 @@ const CartPage = () => {
     <div className="">
       <TabBar />
       <PageInfo />
-      <div className="px-[300px] flex gap-5 ">
+      <div className="px-[300px] flex gap-5 mb-[72px]">
         <div className="cart-list w-[70%] h-auto border-[#E4E7E9] border-2  ">
           <h1 className="text-[18px] px-[24px] py-[20px]">Shopping Cart</h1>
           <div>
