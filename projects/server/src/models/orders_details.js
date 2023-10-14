@@ -13,7 +13,15 @@ module.exports = (sequelize, DataTypes) => {
             quantity: DataTypes.INTEGER,
             product_price: DataTypes.DECIMAL,
             transaction_uid: DataTypes.STRING,
-            status: DataTypes.ENUM,
+            status: DataTypes.ENUM(
+                "Payment Pending",
+                "Waiting for Payment Approval",
+                "Order Proccess",
+                "Package Sent",
+                "Package Arrived",
+                "Order Completed",
+                "Order Canceled"
+            ),
         },
         {
             sequelize,

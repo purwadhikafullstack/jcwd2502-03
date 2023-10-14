@@ -19,7 +19,15 @@ module.exports = {
                 type: Sequelize.STRING,
             },
             status: {
-                type: Sequelize.ENUM,
+                type: Sequelize.ENUM(
+                    "Payment Pending",
+                    "Waiting for Payment Approval",
+                    "Order Proccess",
+                    "Package Sent",
+                    "Package Arrived",
+                    "Order Completed",
+                    "Order Canceled"
+                ),
             },
             createdAt: {
                 allowNull: false,
