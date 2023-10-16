@@ -1,7 +1,7 @@
 import React from "react";
 import TabBar from "../../components/TabBar/TabBar";
 import PageInfo from "../../components/PageInfo/PageInfo";
-
+import { useNavigate } from "react-router-dom";
 //icon
 import { AiOutlineArrowLeft } from "react-icons/ai";
 import { AiOutlineArrowRight } from "react-icons/ai";
@@ -11,12 +11,13 @@ import Button from "../../components/Button/Button";
 import CartTableList from "../../components/CartTableList/CartTableList";
 
 const CartPage = () => {
+  const navigate = useNavigate()
   return (
     <div className="">
       <TabBar />
       <PageInfo />
-      <div className="px-[300px] flex gap-5 mb-[72px]">
-        <div className="cart-list w-[70%] h-auto border-[#E4E7E9] border-2  ">
+      <div className="px-[300px] flex gap-5 mb-[150px]">
+        <div className="left-side w-[70%] h-auto border-[#E4E7E9] border-2  ">
           <h1 className="text-[18px] px-[24px] py-[20px]">Shopping Cart</h1>
           <div>
             <CartTableList />
@@ -31,8 +32,10 @@ const CartPage = () => {
             </div>
           </div>
         </div>
-        <div className="cart-totals h-full w-[30%] border-[#E4E7E9] border-2 font-medium">
-          <h1 className="px-[24px] pt-[20px] text-[18px] font-semibold ">Cart Totals</h1>
+        <div className="right-side h-full w-[30%] border-[#E4E7E9] border-2 font-medium">
+          <h1 className="px-[24px] pt-[20px] text-[18px] font-semibold ">
+            Cart Totals
+          </h1>
           <div className="flex justify-between px-[24px] pt-[24px] text-[14px]">
             <h1 className="text-[#5F6C72]">Sub-total</h1>
             <h1 className="text-[#191C1F]">Rp. 2.000.000</h1>
@@ -49,11 +52,10 @@ const CartPage = () => {
             <h1 className="text-[#191C1F] text-[16px]">Total</h1>
             <h1 className="text-[#191C1F] text-[16px]">Rp. 2.205.000</h1>
           </div>
-          <div className="w-full h-[56px] px-[24px] mb-[24px]">
-            
-             <button className="w-full h-full rounded-none text-white font-bold bg-primaryOrange flex justify-center items-center gap-5">
-             PROCEED TO CHECKOUT <AiOutlineArrowRight className="text-[px]" /> 
-              </button>
+          <div onClick={() => {navigate("/checkout")}} className="w-full h-[56px] px-[24px] mb-[24px]">
+            <button className="w-full cursor-pointer h-full rounded-none text-white font-bold bg-primaryOrange flex justify-center items-center gap-5">
+              PROCEED TO CHECKOUT <AiOutlineArrowRight className="text-[px]" />
+            </button>
           </div>
         </div>
       </div>
