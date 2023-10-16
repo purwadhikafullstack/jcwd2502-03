@@ -12,7 +12,7 @@ const Nav = () => {
         <Logo />
 
         <div className="flex rounded-md items-center gap-4 bg-white w-[50%] relative">
-          <Input placeholder={"Search for anything..."} inputCSS={"w-full "} />
+          <Input placeholder={"Search for anything..."} inputCSS={""} />
           <BiSearch className="text-black right-2 cursor-pointer h-[32px] w-[32px] absolute" />
         </div>
         <div className="flex gap-5">
