@@ -148,7 +148,7 @@ class AuthService extends Service {
                 token: verifyAccountToken,
                 is_valid: true,
                 valid_until: moment().add(1, "hour"),
-                users_id: createUser.id,
+                users_id: findUser.id,
             });
 
             const verifyUserLink = `http://localhost:3000/verification/${verifyAccountToken}`;
@@ -158,13 +158,13 @@ class AuthService extends Service {
                 .toString();
 
             const renderedTemplate = mustache.render(emailTemplate, {
-                fullname,
+                name: findUser.fullname,
                 verify_url: verifyUserLink,
             });
 
             await transporter.sendMail({
                 from: "Tech Heaven",
-                to: email,
+                to: findUser.email,
                 subject: "Verify Your Account!",
                 html: renderedTemplate,
             });

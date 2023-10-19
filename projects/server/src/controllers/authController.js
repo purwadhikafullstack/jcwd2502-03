@@ -35,7 +35,11 @@ const authController = {
 
             if (!serviceResult.success) throw serviceResult;
 
-            return res.redirect(serviceResult.url);
+            return res.status(serviceResult.statusCode || 200).json({
+                message: serviceResult.message,
+                result: serviceResult.data,
+                isError: serviceResult.isError,
+            });
         } catch (error) {
             console.log(error);
             return res.status(error.statusCode || 500).json({
@@ -76,7 +80,11 @@ const authController = {
 
             if (!serviceResult.success) throw serviceResult;
 
-            return res.redirect(serviceResult.url);
+            return res.status(serviceResult.statusCode || 200).json({
+                message: serviceResult.message,
+                result: serviceResult.data,
+                isError: serviceResult.isError,
+            });
         } catch (error) {
             console.log(error);
             return res.status(error.statusCode || 500).json({
@@ -94,7 +102,11 @@ const authController = {
 
             if (!serviceResult.success) throw serviceResult;
 
-            return res.redirect(serviceResult.url);
+            return res.status(serviceResult.statusCode || 200).json({
+                message: serviceResult.message,
+                result: serviceResult.data,
+                isError: serviceResult.isError,
+            });
         } catch (error) {
             console.log(error);
             return res.status(error.statusCode || 500).json({
