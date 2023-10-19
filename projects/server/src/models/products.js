@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
     products.init(
         {
             product_name: DataTypes.STRING,
-            product_description: DataTypes.STRING,
+            product_description: DataTypes.TEXT('long'),
             product_price: DataTypes.DECIMAL,
             product_weight: DataTypes.DECIMAL,
             product_status: DataTypes.ENUM('Active','Inactive'),
