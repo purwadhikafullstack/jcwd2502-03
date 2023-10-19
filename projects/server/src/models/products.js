@@ -27,10 +27,18 @@ module.exports = (sequelize, DataTypes) => {
     products.init(
         {
             product_name: DataTypes.STRING,
-            product_description: DataTypes.STRING,
+            product_description: DataTypes.TEXT,
             product_price: DataTypes.DECIMAL,
             product_weight: DataTypes.DECIMAL,
             product_status: DataTypes.ENUM('Active','Inactive'),
+            createdAt : {
+                type: DataTypes.DATE,
+                defaultValue: new Date()
+              },
+              updatedAt : {
+                type: DataTypes.DATE,
+                defaultValue: new Date()
+              }
         },
         {
             sequelize,

@@ -20,7 +20,7 @@ const CartTableList = () => {
               <tbody className="border-b-2">
                 <tr className="text-[#191C1F]  text-[14px]">
                   <td className="flex items-center pl-[24px] gap-4 py-[20px]">
-                    <RiDeleteBin5Line className="text-red-600 text-[24px]" />
+                    <RiDeleteBin5Line className="text-red-600 text-[24px] cursor-pointer" />
                     <img
                       className="w-[72px] h-[72px]"
                       src="https://media.discordapp.net/attachments/922883965667393579/1162416550112927884/Image.png?ex=653bdbc6&is=652966c6&hm=96102a8c73caa2871b949198b8749ef98e5e26bc1afcb8f2f2493d65f7dab1f0&="

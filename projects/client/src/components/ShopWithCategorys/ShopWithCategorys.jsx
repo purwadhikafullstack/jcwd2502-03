@@ -1,5 +1,6 @@
 import React from 'react'
 import CardCategory from '../CardCategory/CardCategory'
+import { Link } from 'react-router-dom'
 
 const ShopWithCategorys = () => {
   return (
@@ -10,7 +11,7 @@ const ShopWithCategorys = () => {
         </div>
         <div className='flex wrapper justify-center gap-2 mt-3'>
             <CardCategory kategori={"Komputer & Laptop"}/>
-            <CardCategory kategori={"SmartPhone"}/>
+            <Link to={"/product?categori=SmartPhone"} ><CardCategory kategori={"SmartPhone"}/></Link>
             <CardCategory kategori={"Headphones"}/>
             <CardCategory kategori={"Accessories"}/>
             <CardCategory kategori={"Camera & Photo"}/>
