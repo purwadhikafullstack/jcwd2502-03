@@ -3,12 +3,12 @@ const jwt = require("jsonwebtoken");
 const KEY = process.env.JWT_SECRET_KEY;
 
 const generateToken = (payload) => {
-    const tokens = jwt.sign(payload, KEY, { expiresIn: "1h" });
-    return tokens;
+    const token = jwt.sign(payload, KEY, { expiresIn: "1h" });
+    return token;
 };
 
-const verifyToken = (tokens) => {
-    const isVerified = jwt.verify(tokens, KEY);
+const verifyToken = (token) => {
+    const isVerified = jwt.verify(token, KEY);
     return isVerified;
 };
 
