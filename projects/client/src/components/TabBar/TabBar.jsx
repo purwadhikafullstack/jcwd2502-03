@@ -7,8 +7,8 @@ import { BsInfoCircle } from "react-icons/bs";
 
 const TabBar = () => {
   return (
-    <div className="w-full h-[72px] mt-[88px]  px-[300px] ">
-      <div className="flex h-full items-center text-[#5F6C72]">
+    <div className="w-full h-auto mt-[104px]   px-[300px] ">
+      <div className="flex h-full items-center text-[#5F6C72] ">
         <div className="category flex items-center justify-center mr-[20px] w-[154px] h-[48px] bg-[#F2F4F5] ">
           <h1 className="text-[14px] text-[#191C1F]">All Category</h1>
           <RiArrowDropDownLine className="text-[32px]" />
