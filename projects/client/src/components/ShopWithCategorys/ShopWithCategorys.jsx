@@ -10,12 +10,10 @@ const ShopWithCategorys = () => {
             Shop With Categorys
         </div>
         <div className='flex wrapper justify-center gap-2 mt-3'>
-            <CardCategory kategori={"Komputer & Laptop"}/>
+            <CardCategory kategori={"Laptop"}/>
             <Link to={"/product?categori=SmartPhone"} ><CardCategory kategori={"SmartPhone"}/></Link>
             <CardCategory kategori={"Headphones"}/>
             <CardCategory kategori={"Accessories"}/>
-            <CardCategory kategori={"Camera & Photo"}/>
-            <CardCategory kategori={"TV & Homes"}/>
         </div>
       </div>
     </div>

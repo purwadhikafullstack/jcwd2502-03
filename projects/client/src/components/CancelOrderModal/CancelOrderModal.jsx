@@ -27,6 +27,7 @@ const CancelOrderModal = ({ cancelOrderIsOpen, cancel }) => {
       navigate("/");
     }, 3000);
   };
+
   return (
     <>
       <Modal
@@ -48,12 +49,10 @@ const CancelOrderModal = ({ cancelOrderIsOpen, cancel }) => {
               btnCSS=" px-[32px] rounded-xl bg-white border-[1px] border-black text-black"
               onClick={cancel}
             />
-
-            <Button
-              btnName="Yes"
-              btnCSS="px-[32px] text-white bg-black rounded-xl h-[42px]"
+            <button
               onClick={handleYesButton}
-            />
+              className="px-[32px] text-white bg-black rounded-xl h-[42px]"
+            >Yes</button>
           </div>
         </div>
       </Modal>

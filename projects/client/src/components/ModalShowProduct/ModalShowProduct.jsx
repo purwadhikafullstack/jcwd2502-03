@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import Button from "../Button/Button";
 import CancelOrderModal from "../CancelOrderModal/CancelOrderModal";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 
-const PlaceOrderModal = ({ isOpen }) => {
-  const [cancelOrderIsOpen, setCancelOrderIsOpen] = useState(false);
+const ModalShowProduct = ({ isOpen }) => {
+    console.log(isOpen);
+  const [isOpened, setIsOpened] = useState(isOpen);
   const navigate = useNavigate();
   const customStyle = {
     content: {
@@ -23,13 +24,20 @@ const PlaceOrderModal = ({ isOpen }) => {
       paddingRight: "24px",
     },
   };
+  const handleClose = () => {
+    isOpen = false
+    setIsOpened(false);
+  };
+  useEffect(() => {
+    setIsOpened(isOpen);
+  }, [isOpen]);
   return (
     <Modal
       style={customStyle}
       overlayClassName={
         "fixed w-full h-screen top-0 left-0 z-[1000] backdrop-blur-sm flex justify-center items-center"
       }
-      isOpen={isOpen}
+      isOpen={isOpened}
     >
       <div className=" relative h-full w-full">
         <div>
@@ -63,36 +71,10 @@ const PlaceOrderModal = ({ isOpen }) => {
           <h1>Screenshot Payment Approval :</h1>
           <input required type="file" className="" />
         </div>
-        <div className="flex w-full gap-5 absolute bottom-0">
-          <div className="w-[50%]">
-            <Button
-              btnName="Cancel"
-              btnCSS="w-full rounded-[16px] bg-white border-[1px] border-primaryOrange text-primaryOrange"
-              onClick={() => setCancelOrderIsOpen(true)}
-            />
-            <CancelOrderModal
-              cancelOrderIsOpen={cancelOrderIsOpen}
-              cancel={() => setCancelOrderIsOpen(false)}
-            />
-          </div>
-          <div className="w-[50%]">
-            <Button
-              btnName="Confirm"
-              btnCSS="w-full text-white rounded-[16px] h-[42px]"
-              onClick={() => {
-                const loading = toast.loading("Loading");
-                setTimeout(() => {
-                  toast.dismiss(loading);
-                  navigate("/success");
-                }, 2000);
-              }}
-            />
-          </div>
-        </div>
+        <Button onClick={handleClose} btnName={"Close"} />
       </div>
-      {cancelOrderIsOpen === true ? "" : <Toaster />}
     </Modal>
   );
 };
 
-export default PlaceOrderModal;
+export default ModalShowProduct;

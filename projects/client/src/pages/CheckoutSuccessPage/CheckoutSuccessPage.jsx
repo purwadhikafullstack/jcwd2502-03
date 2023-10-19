@@ -4,15 +4,21 @@ import PageInfo from "../../components/PageInfo/PageInfo";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import { GoStack } from "react-icons/go";
 import { AiOutlineArrowRight } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 
 import Button from "../../components/Button/Button";
 
-const CheckoutSuccessPage = () => {
+const CheckoutSuccessPage = ({ handleGoToDashboard }) => {
+  const navigate = useNavigate();
+
+  const handleGoDashboard = () => {
+    navigate("/dashboard");
+    handleGoToDashboard(2);
+  };
   return (
     <div className="">
       <TabBar />
       <PageInfo />
-
       <div className="flex items-center flex-col mb-[32px]">
         <AiOutlineCheckCircle className="w-[88px] h-[88px] text-[#2DB224] mb-[24px]" />
         <h1 className="text-[24px] font-semibold mb-[24px]">
@@ -25,7 +31,10 @@ const CheckoutSuccessPage = () => {
         </h1>
       </div>
       <div className="flex gap-5 justify-center">
-        <button className="border-[#FFE7D6] gap-2 w-[215px] h-[48px] border-2 flex justify-center items-center text-primaryOrange text-[14px] font-bold">
+        <button
+          onClick={handleGoDashboard}
+          className="border-[#FFE7D6] gap-2 w-[215px] h-[48px] border-2 flex justify-center items-center text-primaryOrange text-[14px] font-bold"
+        >
           <GoStack className="text-[20px] " /> GO TO DASHBOARD
         </button>
 

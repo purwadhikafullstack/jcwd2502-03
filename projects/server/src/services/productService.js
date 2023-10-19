@@ -9,10 +9,21 @@ module.exports = {
           sortOrder = "DESC";
         }
 
+        let id = null
+        if (categori == "SmartPhone") {
+            id = 1
+          } else if (categori == "Laptop") {
+            id = 2
+          } else if (categori == "HeadPhone") {
+            id = 3
+          } else if (categori == "Accessories") {
+            id = 4
+          }
+
         const where = { 
         }
 
-        if(categori) where.products_categories_id = categori
+        if(categori) where.products_categories_id = id
 
       const allProduct = await db.products.findAll({
         where,
