@@ -45,7 +45,7 @@ const Nav = () => {
             </span>
             <AiOutlineShoppingCart
               onClick={handleCartDropDown}
-              className="text-white h-[32px] w-[32px]"
+              className="text-white h-[32px] w-[32px] cursor-pointer"
             />
             {/* CART DROP */}
 
@@ -97,8 +97,10 @@ const Nav = () => {
             </div>
             {/* END CART DROP */}
           </span>
-          <AiOutlineHeart className="text-white h-[32px] w-[32px]" />
+          <AiOutlineHeart className="text-white h-[32px] w-[32px] cursor-pointer " />
+          <Link to={"/dashboard"}>
           <CiUser className="text-white h-[32px] w-[32px]" />
+          </Link>
         </div>
       </div>
     </div>

@@ -25,8 +25,8 @@ const CheckoutPage = () => {
     <div>
       <TabBar />
       <PageInfo />
-      <div className="px-[300px] flex gap-5 mb-[100px]">
-        <div className="left-side w-[70%]">
+      <div className="px-[300px] flex gap-5 h-full mb-[100px]">
+        <div className="left-side w-[70%] h-auto">
           <h1 className="mb-[24px] text-[18px] font-medium">
             Billing Information
           </h1>
@@ -57,8 +57,9 @@ const CheckoutPage = () => {
                 className="w-full h-[44px] "
               />
             </div>
-            <div className="w-[20%] flex items-center gap-2">
+            <div className="w-[20%] flex items-center  gap-2">
               <h1>or</h1>
+
               <Button
                 btnCSS="text-white h-[44px] w-full rounded-[4px]"
                 btnName="Choose Address"
@@ -94,9 +95,42 @@ const CheckoutPage = () => {
           <div className="payment-option mb-[42px]">
             <InputPaymentOption labelName="Payment Option" />
           </div>
+
+          <Button
+            btnName="Confirm"
+            btnCSS=" mb-[24px] text-white px-[72px] rounded-xl mr-[20px]"
+          />
+          <span className="text-[12px] text-[#5F6C72] ">
+            ( "Confirm" will reveal the shipping options. )
+          </span>
+          <div>
+            <h1 className="text-[24px] font-semibold mb-[24px]">
+              Shipping Options
+            </h1>
+            <div className="grid grid-cols-3 gap-5">
+              <div className="w-[300px] cursor-pointer border-primaryOrange text-primaryOrange flex flex-col items-center justify-center   h-[150px] border-2 rounded-xl shadow-md ">
+                <h1 className="text-center text-[18px] font-medium mb-[4px]">
+                  YES
+                </h1>
+                <h1 className="text-center text-[14px]">Yakin Esok Sampai</h1>
+                <h1 className="text-center text-[12px]">
+                  Estimated order arrival 2-3 days
+                </h1>
+              </div>
+              <div className="w-[300px] cursor-pointer flex flex-col items-center justify-center   h-[150px] border-2 rounded-xl shadow-md ">
+                <h1 className="text-center text-[18px] font-medium mb-[4px]">
+                  YES
+                </h1>
+                <h1 className="text-center text-[14px]">Yakin Esok Sampai</h1>
+                <h1 className="text-center text-[12px]">
+                  Estimated order arrival 2-3 days
+                </h1>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="right-side w-[30%]  px-[24px] rounded-[4px] border-[#E4E7E9] py-[20px] border-[1px]">
+        <div className=" right-side w-[30%] h-full  px-[24px] rounded-[4px] border-[#E4E7E9] py-[20px] border-[1px]">
           <h1 className="text-[18px] font-medium mb-[20px]">Order Summary</h1>
           <CardOrderSummary />
           <CardOrderSummary />
@@ -122,7 +156,10 @@ const CheckoutPage = () => {
               btnCSS="w-full h-full text-[16px] text-white rounded-[3px]"
               onClick={() => setPlaceOrderIsOpen(true)}
             />
-            <PlaceOrderModal isOpen={placeOrderIsOpen} closePlaceOrderModal={() =>  setPlaceOrderIsOpen(false)} />
+            <PlaceOrderModal
+              isOpen={placeOrderIsOpen}
+              closePlaceOrderModal={() => setPlaceOrderIsOpen(false)}
+            />
           </div>
         </div>
       </div>

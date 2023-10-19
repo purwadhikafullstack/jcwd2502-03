@@ -2,13 +2,16 @@ import React, { useState } from "react";
 import Modal from "react-modal";
 import Button from "../Button/Button";
 import CancelOrderModal from "../CancelOrderModal/CancelOrderModal";
+import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
+
 const PlaceOrderModal = ({ isOpen }) => {
   const [cancelOrderIsOpen, setCancelOrderIsOpen] = useState(false);
-
+  const navigate = useNavigate();
   const customStyle = {
     content: {
       width: "700px",
-      height: "500px",
+      height: "600px",
       top: "50%",
       left: "50%",
       right: "auto",
@@ -35,18 +38,27 @@ const PlaceOrderModal = ({ isOpen }) => {
           </h1>
         </div>
         <div className="flex justify-between text-[18px] italic">
-          <h1>NO TRANSACTION :</h1>
+          <h1>TRANSACTION ID :</h1>
           <h1>08390274098201</h1>
         </div>
         <div className="w-full h-[10px] bg-primaryBlue mb-[72px]"></div>
         <div className="flex justify-between mb-[24px] text-[18px]">
-          <h1>BCA Number Account</h1>
-          <h1 className="font-semibold">898147812732</h1>
+          <h1>Courier</h1>
+          <h1 className="">JNE</h1>
         </div>
         <div className="flex justify-between mb-[54px] text-[18px]">
           <h1>Total Price :</h1>
           <h1>Rp. 3.250.000</h1>
         </div>
+        <div className="flex justify-between mb-[24px] text-[18px]">
+          <h1>Payment Option</h1>
+          <h1 className="">BCA</h1>
+        </div>
+        <div className="flex justify-between mb-[24px] text-[18px]">
+          <h1>BCA Number Account</h1>
+          <h1 className="font-semibold">898147812732</h1>
+        </div>
+
         <div className="flex justify-normal gap-5 items-center">
           <h1>Screenshot Payment Approval :</h1>
           <input required type="file" className="" />
@@ -58,16 +70,27 @@ const PlaceOrderModal = ({ isOpen }) => {
               btnCSS="w-full rounded-[16px] bg-white border-[1px] border-primaryOrange text-primaryOrange"
               onClick={() => setCancelOrderIsOpen(true)}
             />
-            <CancelOrderModal cancelOrderIsOpen={cancelOrderIsOpen} cancel={() => setCancelOrderIsOpen(false)}/>
+            <CancelOrderModal
+              cancelOrderIsOpen={cancelOrderIsOpen}
+              cancel={() => setCancelOrderIsOpen(false)}
+            />
           </div>
           <div className="w-[50%]">
             <Button
               btnName="Confirm"
               btnCSS="w-full text-white rounded-[16px] h-[42px]"
+              onClick={() => {
+                const loading = toast.loading("Loading");
+                setTimeout(() => {
+                  toast.dismiss(loading);
+                  navigate("/success");
+                }, 2000);
+              }}
             />
           </div>
         </div>
       </div>
+      {cancelOrderIsOpen === true ? "" : <Toaster />}
     </Modal>
   );
 };
