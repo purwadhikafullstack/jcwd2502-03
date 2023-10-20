@@ -4,15 +4,16 @@ import Button from "../Button/Button";
 import CancelOrderModal from "../CancelOrderModal/CancelOrderModal";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
+import product1 from "../../assets/product1.png";
 
 const ModalShowProduct = ({ isOpen }) => {
-    console.log(isOpen);
+  console.log(isOpen);
   const [isOpened, setIsOpened] = useState(isOpen);
   const navigate = useNavigate();
   const customStyle = {
     content: {
-      width: "700px",
-      height: "600px",
+      width: "1400px",
+      height: "754px",
       top: "50%",
       left: "50%",
       right: "auto",
@@ -25,7 +26,7 @@ const ModalShowProduct = ({ isOpen }) => {
     },
   };
   const handleClose = () => {
-    isOpen = false
+    isOpen = false;
     setIsOpened(false);
   };
   useEffect(() => {
@@ -39,39 +40,54 @@ const ModalShowProduct = ({ isOpen }) => {
       }
       isOpen={isOpened}
     >
-      <div className=" relative h-full w-full">
-        <div>
-          <h1 className="text-center text-[24px] mb-[24px] font-bold ">
-            Payment Approval
-          </h1>
-        </div>
-        <div className="flex justify-between text-[18px] italic">
-          <h1>TRANSACTION ID :</h1>
-          <h1>08390274098201</h1>
-        </div>
-        <div className="w-full h-[10px] bg-primaryBlue mb-[72px]"></div>
-        <div className="flex justify-between mb-[24px] text-[18px]">
-          <h1>Courier</h1>
-          <h1 className="">JNE</h1>
-        </div>
-        <div className="flex justify-between mb-[54px] text-[18px]">
-          <h1>Total Price :</h1>
-          <h1>Rp. 3.250.000</h1>
-        </div>
-        <div className="flex justify-between mb-[24px] text-[18px]">
-          <h1>Payment Option</h1>
-          <h1 className="">BCA</h1>
-        </div>
-        <div className="flex justify-between mb-[24px] text-[18px]">
-          <h1>BCA Number Account</h1>
-          <h1 className="font-semibold">898147812732</h1>
-        </div>
+      <button
+        className="absolute cursor-pointer rounded-full text-lg font-bold top-2 right-2 px-2 text-gray-600 hover:text-black"
+        onClick={handleClose}
+      >
+        X
+      </button>
 
-        <div className="flex justify-normal gap-5 items-center">
-          <h1>Screenshot Payment Approval :</h1>
-          <input required type="file" className="" />
+      <div className="relative h-full w-full flex">
+        <div className="grid gap-[24px]">
+          <div className="border">
+            <img className="w-[616px] h-[464px]" src={product1} alt="" />
+          </div>
+          <div className="flex gap-3 cursor-pointer justify-between">
+            <img
+              className="cursor-pointer min-w-[96px] max-w-[200px] h-[96px] border"
+              src={product1}
+              alt=""
+            />
+            <img
+              className="cursor-pointer min-w-[96px] max-w-[100px] h-[96px] border"
+              src={product1}
+              alt=""
+            />
+            <img
+              className="cursor-pointer min-w-[96px] max-w-[100px] h-[96px] border"
+              src={product1}
+              alt=""
+            />
+            <img
+              className="cursor-pointer min-w-[96px] max-w-[100px] h-[96px] border"
+              src={product1}
+              alt=""
+            />
+          </div>
         </div>
-        <Button onClick={handleClose} btnName={"Close"} />
+        <div className="">
+          <div>Asus ROG Phone 5s 12/256</div>
+          <div>DESKRIPSI</div>
+          <div>
+            Asus Rog phone 3 8/128GB 12/128 12/256GB FULLSETT TAM : FULLSET
+            DENGAN ACC DAN BOX ORIGINAL UNIT ONLY : SECOND BATANGAN TIDAK
+            TERMASUK ACC DAN BOX Asus Rog Phone 2 8/128GB 12/256GB FULLSETT TAM
+            : FULLSET DENGAN ACC DAN BOX ORIGINAL ( 90% -95% unit second tidak
+            mulus 100% ) UNIT ONLY : SECOND BATANGAN TIDAK TERMASUK ACC DAN BOX
+            GARANSI TOKO 30 HARI UNTUK VARIAN SECOND FULLSET TAM , ( di luar
+            human eror
+          </div>
+        </div>
       </div>
     </Modal>
   );

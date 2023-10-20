@@ -5,6 +5,7 @@ module.exports = (sequelize, DataTypes) => {
         static associate({
             users_addresses,
             reset_password_tokens,
+            verification_tokens,
             carts,
             stocks_mutations,
             orders,
@@ -13,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
         }) {
             this.hasMany(users_addresses, { foreignKey: "users_id" });
             this.hasMany(reset_password_tokens, { foreignKey: "users_id" });
+            this.hasMany(verification_tokens, { foreignKey: "users_id" });
             this.hasMany(carts, { foreignKey: "users_id" });
             this.hasMany(stocks_mutations, { foreignKey: "users_id" });
             this.hasMany(orders, { foreignKey: "users_id" });

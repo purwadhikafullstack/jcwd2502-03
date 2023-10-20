@@ -45,7 +45,7 @@ const ShopePage = () => {
       console.log(error);
     }
   };
-  //   console.log(kategori);
+    console.log(kategori);
   const handleCategoryChange = (event) => {
     const selectedCategoryId = event.target.value;
     const selectedCategory = kategori.find((item) => {
