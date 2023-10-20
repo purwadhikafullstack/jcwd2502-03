@@ -31,6 +31,14 @@ module.exports = (sequelize, DataTypes) => {
             product_price: DataTypes.DECIMAL,
             product_weight: DataTypes.DECIMAL,
             product_status: DataTypes.ENUM('Active','Inactive'),
+            createdAt : {
+                type: DataTypes.DATE,
+                defaultValue: new Date()
+              },
+              updatedAt : {
+                type: DataTypes.DATE,
+                defaultValue: new Date()
+              }
         },
         {
             sequelize,

@@ -6,12 +6,14 @@ const bearerToken = require('express-bearer-token');
 const PORT = process.env.PORT || 8000;
 const app = express();
 app.use(
-    cors({
-        origin: [
-            process.env.WHITELISTED_DOMAIN &&
-                process.env.WHITELISTED_DOMAIN.split(","),
-        ],
-    })
+    cors(
+    //   {
+    //     origin: [
+    //         process.env.WHITELISTED_DOMAIN &&
+    //             process.env.WHITELISTED_DOMAIN.split(","),
+    //     ],
+    // }
+    )
 );
 
 app.use(express.json());
@@ -24,14 +26,14 @@ app.use(express.json());
 const { orderRouter, authRouter } = require("./routers");
 // const { authRouter } = require("./routers");
 // const { userRouter } = require("./routers");
-// const { productRouter } = require("./routers");
+const { productRouter } = require("./routers");
 // const { adminRouter } = require("./routers");
 // const { cartRouter } = require("./routers");
 // const { transactionRouter } = require("./routers");
 // const { reportRouter } = require("./routers");
 // app.use("/auth", authRouter);
 // app.use("/user", userRouter);
-// app.use("/product", productRouter);
+app.use("/product", productRouter);
 // app.use("/admin", adminRouter);
 // app.use("/cart", cartRouter);
 // app.use("/transaction", transactionRouter);
