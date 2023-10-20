@@ -34,4 +34,27 @@ module.exports = {
       return error;
     }
   },
+  getCartByUserId: async (data) => {
+    try {
+      const getCart = await db.carts.findAll({
+        include: [
+          {
+            model: db.products,
+            attributes: ["product_name", "product_price", "product_weight"],
+            where: { product_status: "Active" },
+            include: [
+              {
+                model: db.products_images,
+                attributes: ["image"],
+              },
+            ],
+          },
+        ],
+        where: { users_id: data },
+      });
+      return getCart;
+    } catch (error) {
+      return error;
+    }
+  },
 };

@@ -10,8 +10,12 @@ import { AiOutlineArrowRight } from "react-icons/ai";
 import Button from "../../components/Button/Button";
 import CartTableList from "../../components/CartTableList/CartTableList";
 
+import { useSelector, useDispatch } from "react-redux";
+
 const CartPage = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   return (
     <div className="">
       <TabBar />
@@ -52,7 +56,12 @@ const CartPage = () => {
             <h1 className="text-[#191C1F] text-[16px]">Total</h1>
             <h1 className="text-[#191C1F] text-[16px]">Rp. 2.205.000</h1>
           </div>
-          <div onClick={() => {navigate("/checkout")}} className="w-full h-[56px] px-[24px] mb-[24px]">
+          <div
+            onClick={() => {
+              navigate("/checkout");
+            }}
+            className="w-full h-[56px] px-[24px] mb-[24px]"
+          >
             <button className="w-full cursor-pointer h-full rounded-none text-white font-bold bg-primaryOrange flex justify-center items-center gap-5">
               PROCEED TO CHECKOUT <AiOutlineArrowRight className="text-[px]" />
             </button>

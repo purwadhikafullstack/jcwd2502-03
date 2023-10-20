@@ -2,6 +2,7 @@ const {
   addTocart,
   getCartByProductId,
   addQuantityIfIdExist,
+  getCartByUserId
 } = require("./../services/orderService");
 
 const orderController = {
@@ -36,6 +37,22 @@ const orderController = {
           message: "Add to cart success",
         });
       }
+    } catch (error) {
+      next(error);
+    }
+  },
+  getCartData: async (req, res, next) => {
+    try {
+      const {id} = req.tokens
+
+      const dataCart = await getCartByUserId(id)
+      console.log(dataCart);
+
+      res.status(200).send({
+        isError: false,
+        data: dataCart
+      })
+
     } catch (error) {
       next(error);
     }
