@@ -4,6 +4,7 @@ import TabBar from "../../components/TabBar/TabBar";
 import PageInfo from "../../components/PageInfo/PageInfo";
 import Input from "../../components/Input/Input";
 import { BiSearch } from "react-icons/bi";
+import toast, { Toaster } from "react-hot-toast";
 import {
   Link,
   useLocation,
@@ -17,13 +18,42 @@ const ShopePage = () => {
   const nav = useNavigate();
   const [kategori, setKategori] = useState(null);
   const [datas, setDatas] = useState(null);
+
   const param = useLocation();
   const [currentCategory, setCurrentCategory] = useState(
     new URLSearchParams(param.search).get("categori")
   );
 
   console.log(param.search);
-  //   console.log(currentCategory);
+
+  const cartData = async () => {
+    try {
+      const res = await axios.post("http://localhost:8000/order/dataCart", {
+        userId: 4,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const addToCart = async (id) => {
+    try {
+      const res = await axios.post("http://localhost:8000/order/cart", {
+        productId: id,
+        userId: 4,
+      });
+      cartData();
+      toast.success(res.data.message);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    addToCart();
+    cartData();
+  }, []);
+
   const getKategori = async () => {
     try {
       const res = await axios.get("http://localhost:8000/product/kategori");
@@ -45,7 +75,7 @@ const ShopePage = () => {
       console.log(error);
     }
   };
-    console.log(kategori);
+  console.log(kategori);
   const handleCategoryChange = (event) => {
     const selectedCategoryId = event.target.value;
     const selectedCategory = kategori.find((item) => {
@@ -105,9 +135,10 @@ const ShopePage = () => {
 
         {/* main shop start */}
         <div className="w-[1320px] m-auto">
-          <CardProduct data={datas} />
+          <CardProduct data={datas} addToCart={addToCart} />
         </div>
         {/* main shop end */}
+        <Toaster />
       </div>
     </div>
   );
