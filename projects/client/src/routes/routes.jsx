@@ -11,6 +11,7 @@ import UserDashboardPage from "../pages/UserDashboardPage/UserDashboardPage";
 import VerificationSuccessPage from "../pages/VerificationSuccessPage/VerificationSuccessPage";
 import LoginRegisterPage from "../pages/LoginRegisterPage/LoginRegisterPage";
 import UserVerificationPage from "../pages/UserVerificationPage/UserVerificationPage";
+import ShopePage from "../pages/ShopPage/ShopePage";
 
 const routes = [
     <Route path="/cart" element={<CartPage />} />,
@@ -26,6 +27,7 @@ const routes = [
         path="/verification-success"
         element={<VerificationSuccessPage />}
     />,
+    <Route path="/product" element={<ShopePage />} />,
 ];
 
 export default routes;
