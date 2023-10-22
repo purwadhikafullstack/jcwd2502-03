@@ -12,6 +12,9 @@ module.exports = {
       category: {
         type: Sequelize.STRING
       },
+      category_status: {
+        type: Sequelize.ENUM("Active", "Inactive")
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
@@ -19,7 +22,8 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
-      }
+      },
+      
     });
   },
   async down(queryInterface, Sequelize) {
