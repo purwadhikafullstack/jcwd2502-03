@@ -12,13 +12,13 @@ module.exports = {
     }
   },
 
-  allKategori : async (req, res, next) => {
+  productDetail : async (req, res, next) => {
     try {
-        const data = await db.products_categories.findAll()
-        res.send(data);
+        const data = await productService.getProductDetails(req.params)
+        res.status(200).send(data)
     } catch (error) {
         next(error)
     }
-  }
+  } 
 
 };

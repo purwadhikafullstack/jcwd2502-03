@@ -42,7 +42,7 @@ console.log(filter);
   const getProduct = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:8000/product${param.search}&search=${filter.searchProductName}&sortBy=${filter.sortBy}`
+        `http://localhost:8000/product${param.search}&search=${filter.searchProductName}&sortBy=${filter.sortBy}&product_status=Active`
       );
       setDatas(res.data);
       //   console.log(res.data);

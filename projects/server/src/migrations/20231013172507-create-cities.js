@@ -12,6 +12,12 @@ module.exports = {
       city_name: {
         type: Sequelize.STRING
       },
+      province: {
+        type: Sequelize.STRING
+      },
+      type: {
+        type: Sequelize.STRING
+      },
       postal_code: {
         type: Sequelize.STRING
       },

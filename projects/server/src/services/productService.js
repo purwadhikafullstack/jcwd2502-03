@@ -1,7 +1,7 @@
 const db = require("./../models");
 
 module.exports = {
-  getAllProduct: async ({ categori, sortBy, search }) => {
+  getAllProduct: async ({ categori, sortBy, search, product_status }) => {
     try {
       // console.log(search);
       // perkondisian untuk sorBy
@@ -26,7 +26,7 @@ module.exports = {
       }
 
       const where = {};
-
+      if(product_status) where.product_status = product_status
       if (categori) where.products_categories_id = id;
       if (search) {
         where.product_name = {
@@ -44,4 +44,15 @@ module.exports = {
       return error;
     }
   },
+
+  getProductDetails : async ({id}) => {
+    try {
+        const data = await db.products.findByPk(id)
+        return data
+    } catch (error) {
+        return error
+    }
+  },
+
+  
 };
