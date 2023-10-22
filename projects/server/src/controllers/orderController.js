@@ -13,12 +13,13 @@ const {
 const orderController = {
   addToCart: async (req, res, next) => {
     try {
-      const { productId, userId } = req.body;
-      // const { id } = req.tokens;
+      const { productId } = req.body;
+
+      const { id } = req.tokens;
 
       const dataCart = await getCartByProductId({
         productId: productId,
-        userId: userId,
+        userId: id,
       });
 
       // console.log(dataCart);
@@ -33,7 +34,7 @@ const orderController = {
       } else {
         const addCart = await addTocart({
           products_id: productId,
-          users_id: userId,
+          users_id: id,
         });
 
         res.status(200).send({
@@ -61,45 +62,6 @@ const orderController = {
       next(error);
     }
   },
-  addQuantity: async (req, res, next) => {
-    try {
-      const { productId, userId } = req.body;
-
-      const addQuantity = await increaseQty({
-        productId: productId,
-        userId: userId,
-      });
-      res.status(200).send({
-        isError: false,
-        message: "increase by 1 success",
-      });
-    } catch (error) {
-      next(error);
-    }
-  },
-  decreaseQuantity: async (req, res, next) => {
-    try {
-      const { productId, userId } = req.body;
-
-      const decreases = await decreaseQuantity({
-        productId: productId,
-        userId: userId,
-      });
-
-      const qty = await getProductCartQty({
-        productId: productId,
-        userId: userId,
-      });
-
-      res.status(200).send({
-        isError: false,
-        message: "decrease by 1 success",
-        quantity: qty.quantity,
-      });
-    } catch (error) {
-      next(error);
-    }
-  },
   deleteProductCart: async (req, res, next) => {
     const { productId, userId } = req.body;
 
@@ -114,15 +76,20 @@ const orderController = {
   },
   updateQuantityCart: async (req, res, next) => {
     try {
-      const { quantity, productId, userId } = req.body;
+      const { quantity, productId } = req.body;
+      const { id } = req.tokens;
 
       const updateQuantity = await updateQty({
         productId: productId,
-        userId: userId,
+        userId: id,
         quantity: quantity,
       });
 
-      res.send(updateQuantity);
+      res.status(200).send({
+        isError: false,
+        message: "quantity updated",
+        data: updateQuantity,
+      });
     } catch (error) {
       next(error);
     }

@@ -9,7 +9,7 @@ const CartTableList = ({
   cartDatas,
   handleIncreaseQuantity,
   handleDecreaseQuantity,
-  handleDeleteCart
+  handleDeleteCart,
 }) => {
   return (
     <table className="w-full   ">
@@ -40,16 +40,19 @@ const CartTableList = ({
               <td className="PRICE py-[20px]">{`Rp. ${value.product.product_price}`}</td>
               <td className="QUANTITY py-[20px] flex gap-4  items-center justify-center">
                 <HiMinus
-                  onClick={() => handleDecreaseQuantity(value.products_id)}
+                  onClick={() =>
+                    handleDecreaseQuantity(value.products_id, index)
+                  }
                   className="cursor-pointer border-[1px] border-gray-400 text-customPrimary bg-white rounded-full text-xl"
                 />
+
                 <h1 className="font-medium border-none    text-xl">
                   {value.quantity}
                 </h1>
                 <HiPlus
-                  onClick={() =>
-                    handleIncreaseQuantity(value.products_id, value.quantity)
-                  }
+                  onClick={() => {
+                    handleIncreaseQuantity(value.products_id, index);
+                  }}
                   className="cursor-pointer border-[1px] border-gray-400 text-customPrimary bg-white rounded-full text-xl"
                 />
               </td>

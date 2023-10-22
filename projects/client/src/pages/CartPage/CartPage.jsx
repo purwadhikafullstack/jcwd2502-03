@@ -3,7 +3,7 @@ import TabBar from "../../components/TabBar/TabBar";
 import PageInfo from "../../components/PageInfo/PageInfo";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import toast,  { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 //icon
 import { AiOutlineArrowLeft } from "react-icons/ai";
 import { AiOutlineArrowRight } from "react-icons/ai";
@@ -17,17 +17,19 @@ import { useSelector, useDispatch } from "react-redux";
 
 //hooks
 import { useDebouncedCallback } from "use-debounce";
-import useDebounce from "../../hooks/useDebounce";
+import Cookies from "js-cookie";
 
 const CartPage = () => {
+  const [userToken, setUserToken] = useState(Cookies.get("user_token"));
   const [cartDatas, setCartDatas] = useState([]);
   const [quantity, setQuantity] = useState();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  console.log(userToken);
   const dataCart = async () => {
     try {
       const res = await axios.post("http://localhost:8000/order/dataCart", {
-        userId: 4,
+        userId: userToken,
       });
       setCartDatas(res.data.data);
     } catch (error) {
@@ -35,28 +37,46 @@ const CartPage = () => {
     }
   };
 
-  const handleIncreaseQuantity = async (id, qty) => {
+  const debouncedUpdateQuantity = useDebouncedCallback(
+    async (id, newQuantity) => {
+      try {
+        const res = await axios.post(
+          "http://localhost:8000/order/update-quantity",
+          {
+            userId: 4,
+            productId: id,
+            quantity: newQuantity,
+          }
+        );
+        console.log(res);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    1000
+  );
+
+  const handleIncreaseQuantity = async (id, index, qty) => {
     try {
-      const res = await axios.put("http://localhost:8000/order/increase", {
-        userId: 4,
-        productId: id,
-        // quantity: qty,
-      });
-      console.log(res);
-      dataCart();
+      const updateQuantity = [...cartDatas];
+      updateQuantity[index].quantity++;
+      debouncedUpdateQuantity(id, updateQuantity[index].quantity);
+      setCartDatas(updateQuantity);
     } catch (error) {
       console.log(error);
+    } finally {
     }
   };
 
-  const handleDecreaseQuantity = async (id) => {
+  const handleDecreaseQuantity = async (id, index) => {
     try {
-      const res = await axios.put("http://localhost:8000/order/decreaseQty", {
-        userId: 4,
-        productId: id,
-      });
+      const updateQuantity = [...cartDatas];
+      updateQuantity[index].quantity--;
 
-      if (res.data.quantity <= 0) {
+      debouncedUpdateQuantity(id, updateQuantity[index].quantity);
+      console.log(updateQuantity[index].quantity);
+      if (updateQuantity[index].quantity <= 0) {
         const deleteCart = await axios.post(
           "http://localhost:8000/order/delete-cart",
           {
@@ -65,8 +85,7 @@ const CartPage = () => {
           }
         );
       }
-      console.log(res);
-      dataCart();
+      setCartDatas(updateQuantity);
     } catch (error) {
       console.log(error);
     }
@@ -80,8 +99,7 @@ const CartPage = () => {
         { productId: id, userId: 4 }
       );
       dataCart();
-      toast.success(deleteCart.data.message)
-
+      toast.success(deleteCart.data.message);
     } catch (error) {
       console.log(error);
     }
@@ -89,8 +107,6 @@ const CartPage = () => {
 
   useEffect(() => {
     dataCart();
-    handleIncreaseQuantity();
-    handleDecreaseQuantity();
   }, []);
 
   return (
@@ -152,7 +168,7 @@ const CartPage = () => {
           </div>
         </div>
       </div>
-      <Toaster/>
+      <Toaster />
     </div>
   );
 };

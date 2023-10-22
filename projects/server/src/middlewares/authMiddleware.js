@@ -5,6 +5,7 @@ const { verifyToken } = require("../lib/jwt");
 const authorizeLoggedInUser = (req, res, next) => {
   try {
     const tokens = req.token;
+
     const verifiedToken = verifyToken(tokens);
 
     req.tokens = verifiedToken;
