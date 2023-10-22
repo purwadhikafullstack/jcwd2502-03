@@ -37,6 +37,11 @@ module.exports = {
   getCartByUserId: async (data) => {
     try {
       const getCart = await db.carts.findAll({
+        attributes: [
+          "quantity",
+          "products_id",
+          [db.Sequelize.literal("quantity * product_price"), "total"],
+        ],
         include: [
           {
             model: db.products,

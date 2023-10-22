@@ -48,11 +48,9 @@ const orderController = {
   },
   getCartData: async (req, res, next) => {
     try {
-      // const { id } = req.tokens;
-      const { userId } = req.body;
+      const { id } = req.tokens;
 
-      const dataCart = await getCartByUserId(userId);
-      console.log(dataCart);
+      const dataCart = await getCartByUserId(id);
 
       res.status(200).send({
         isError: false,
@@ -63,11 +61,12 @@ const orderController = {
     }
   },
   deleteProductCart: async (req, res, next) => {
-    const { productId, userId } = req.body;
+    const { productId } = req.body;
+    const { id } = req.tokens;
 
     const destroy = await deleteCart({
       productId: productId,
-      userId: userId,
+      userId: id,
     });
     res.status(200).send({
       isError: false,

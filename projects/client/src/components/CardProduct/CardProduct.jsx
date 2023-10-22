@@ -6,11 +6,15 @@ import {
   AiOutlineHeart,
   AiOutlineEye,
 } from "react-icons/ai";
+import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
+
 import ModalShowProduct from "../ModalShowProduct/ModalShowProduct";
 
 const CardProduct = ({ data, addToCart }) => {
   const datas = data;
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 20;
 
   const handleModal = () => {
     if (modalIsOpen === false) {
@@ -20,15 +24,37 @@ const CardProduct = ({ data, addToCart }) => {
     }
   };
 
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = currentPage * itemsPerPage;
+  const currentData = datas?.slice(startIndex, endIndex);
+
+  const nextPage = () => {
+    if (endIndex < datas.length) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (startIndex > 0) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   return (
-    <div className="grid grid-cols-4 justify-around bg-slate-500">
+    <div
+      className={
+        datas && datas.length > 0
+          ? `flex flex-wrap justify-around gap-5`
+          : `grid justify-center items-center gap-5`
+      }
+    >
       <ModalShowProduct isOpen={modalIsOpen} />
-      {datas &&
-        datas.map((item, index) => {
+      {datas && datas.length > 0 ? (
+        currentData.map((item, index) => {
           return (
             <div
               key={index}
-              className="max-w-[248px] min-w-[248px] max-h-[296px] border cursor-pointer"
+              className="max-w-[248px] min-w-[248px] max-h-[296px] border-2 cursor-pointer"
             >
               <div className="p-[16px]">
                 <div className="cardd">
@@ -52,7 +78,7 @@ const CardProduct = ({ data, addToCart }) => {
                   </div>
                 </div>
                 <div className="">
-                  <div className="h-[40px] max-w-[216px] overflow-hidden text-ellipsis text-sm">
+                  <div className="h-[40px] max-w-[216px] font-semibold overflow-hidden text-ellipsis text-sm">
                     {item.product_name}
                   </div>
                   <div className="mt-[4px] text-[#2DA5F3] font-semibold">
@@ -66,7 +92,43 @@ const CardProduct = ({ data, addToCart }) => {
               </div>
             </div>
           );
-        })}
+        })
+      ) : (
+        <div className=" text-center m-auto ">
+          <h2 className="text-2xl font-bold mb-4">Produk Tidak Ditemukan</h2>
+          <p className="text-gray-600">
+            Maaf, produk yang Anda cari tidak tersedia dalam kategori ini.
+          </p>
+        </div>
+      )}
+      {datas && datas.length > itemsPerPage - 1 ? (
+        <div className="flex justify-center gap-3 mb-4 w-full">
+          <button className=" text-primaryOrange flex justify-center items-center p-2 w-[40px] h-[40px]  border-2 border-primaryOrange rounded-full " onClick={prevPage} disabled={currentPage === 1}>
+            <BsArrowLeft className="font-extrabold " />
+          </button>
+          <div className="flex gap-2">
+            {Array.from(
+              { length: Math.ceil(datas.length / itemsPerPage) },
+              (_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentPage(i + 1)}
+                  className={`w-[40px] h-[40px] flex items-center justify-center border-2 rounded ${
+                    currentPage === i + 1 ? "bg-primaryOrange text-white" : ""
+                  }`}
+                >
+                  {i + 1}
+                </button>
+              )
+            )}
+          </div>
+          <button className=" text-primaryOrange flex justify-center items-center p-2 w-[40px] h-[40px]  border-2 border-primaryOrange rounded-full " onClick={nextPage} disabled={endIndex >= datas.length}>
+            <BsArrowRight className="font-extrabold " />
+          </button>
+        </div>
+      ) : (
+        <></>
+      )}
     </div>
   );
 };

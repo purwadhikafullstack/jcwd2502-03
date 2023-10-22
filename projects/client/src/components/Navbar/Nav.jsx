@@ -12,12 +12,12 @@ import "./nav.css";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
-
+import axiosInstance from "../../config/api";
 const Nav = () => {
   const [cartDrop, setCartDrop] = useState(0);
   const [cartDatas, setCartDatas] = useState([]);
   const navigate = useNavigate();
-
+  console.log(cartDatas);
   const handleCartDropDown = () => {
     setCartDrop(!cartDrop);
   };
@@ -32,9 +32,7 @@ const Nav = () => {
 
   const dataCart = async () => {
     try {
-      const res = await axios.post("http://localhost:8000/order/dataCart", {
-        userId: 4,
-      });
+      const res = await axiosInstance.post("/order/dataCart", {});
 
       setCartDatas(res.data.data);
     } catch (error) {
@@ -45,10 +43,9 @@ const Nav = () => {
   const handleDeleteCart = async (id) => {
     console.log(id);
     try {
-      const deleteCart = await axios.post(
-        "http://localhost:8000/order/delete-cart",
-        { productId: id, userId: 4 }
-      );
+      const deleteCart = await axiosInstance.post("/order/delete-cart", {
+        productId: id,
+      });
       dataCart();
       toast.success(deleteCart.data.message);
     } catch (error) {
@@ -58,8 +55,11 @@ const Nav = () => {
 
   useEffect(() => {
     dataCart();
+  }, [cartDatas]);
 
-  }, []);
+  const subTotal = cartDatas.reduce((item, current) => {
+    return Number(item) + Number(current.total);
+  }, 0);
 
   return (
     <div className="w-full bg-primaryBlue h-[88px] fixed top-0 z-50">
@@ -75,7 +75,7 @@ const Nav = () => {
         <div className="flex gap-5">
           <span className="relative">
             <span className="absolute right-[-10px] px-[8px] py-[2px] top-[-5px] text-primaryBlue text-xs rounded-full bg-white ">
-              1
+              {cartDatas.length}
             </span>
             <AiOutlineShoppingCart
               onClick={handleCartDropDown}
@@ -120,7 +120,10 @@ const Nav = () => {
               </div>
               <div className="flex justify-between px-[24px] py-[20px]">
                 <h1>Sub-total :</h1>
-                <h1>Rp. 1.000.000</h1>
+                <h1>{`${Number(subTotal).toLocaleString("id-ID", {
+                  style: "currency",
+                  currency: "IDR",
+                })}`}</h1>
               </div>
               <div className="px-[24px]">
                 <button
