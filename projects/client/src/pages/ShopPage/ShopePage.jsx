@@ -30,7 +30,7 @@ console.log(filter);
   //   console.log(currentCategory);
   const getKategori = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/product/kategori");
+      const res = await axios.get("http://localhost:8000/category");
       setKategori(res.data);
       //   console.log(res.data);
     } catch (error) {
@@ -76,6 +76,7 @@ console.log(filter);
     getKategori();
     getProduct();
   }, [currentCategory, filter]);
+  // console.log(kategori);
 
   return (
     <div className="">
