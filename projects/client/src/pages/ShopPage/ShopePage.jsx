@@ -23,8 +23,12 @@ const ShopePage = () => {
   const [currentCategory, setCurrentCategory] = useState(
     new URLSearchParams(param.search).get("categori")
   );
-
-  console.log(param.search);
+  const [filter, setFilter] = useState({
+    searchProductName: "",
+    sortBy: "",
+  });
+  console.log(filter);
+  //   console.log(param.search);
 
   const cartData = async () => {
     try {
@@ -51,11 +55,6 @@ const ShopePage = () => {
     cartData();
   }, []);
 
-  const [filter, setFilter] = useState({
-    searchProductName: "",
-    sortBy: "",
-  });
-  console.log(filter);
   //   console.log(param.search);
   //   console.log(currentCategory);
   const getKategori = async () => {
@@ -102,10 +101,12 @@ const ShopePage = () => {
     newFilter[e.target.name] = e.target.value;
     setFilter(newFilter);
   };
+
   useEffect(() => {
     getKategori();
     getProduct();
-  }, [currentCategory, filter]);
+  }, [currentCategory, filter, filter]);
+  // console.log(kategori);
   // console.log(kategori);
 
   return (
