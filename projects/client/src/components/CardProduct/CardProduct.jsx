@@ -10,7 +10,7 @@ import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
 
 import ModalShowProduct from "../ModalShowProduct/ModalShowProduct";
 
-const CardProduct = ({ data }) => {
+const CardProduct = ({ data, addToCart }) => {
   const datas = data;
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -66,7 +66,10 @@ const CardProduct = ({ data }) => {
                       <span className="">
                         <AiOutlineHeart className="text-white bg-primaryOrange p-2 rounded-full h-[48px] w-[48px]" />
                       </span>
-                      <AiOutlineShoppingCart className="text-black bg-white p-2 rounded-full h-[48px] w-[48px]" />
+                      <AiOutlineShoppingCart
+                        onClick={() => addToCart(item.id)}
+                        className="text-black bg-white p-2 rounded-full h-[48px] w-[48px]"
+                      />
                       <AiOutlineEye
                         onClick={handleModal}
                         className="text-black font-bold bg-white p-2 rounded-full h-[50px] w-[50px]"

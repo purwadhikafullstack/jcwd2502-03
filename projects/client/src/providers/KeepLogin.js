@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import { login } from "../Redux/Reducer/auth";
+import { login } from "../redux/Reducer/auth";
 import { useEffect } from "react";
 
 const KeepLogin = ({ children }) => {

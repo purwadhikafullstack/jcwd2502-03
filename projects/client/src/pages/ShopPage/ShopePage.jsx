@@ -4,6 +4,7 @@ import TabBar from "../../components/TabBar/TabBar";
 import PageInfo from "../../components/PageInfo/PageInfo";
 import Input from "../../components/Input/Input";
 import { BiSearch } from "react-icons/bi";
+import toast, { Toaster } from "react-hot-toast";
 import {
   Link,
   useLocation,
@@ -12,11 +13,12 @@ import {
 } from "react-router-dom";
 import CardProduct from "../../components/CardProduct/CardProduct";
 import ModalShowProduct from "../../components/ModalShowProduct/ModalShowProduct";
-
+import axiosInstance from "../../config/api";
 const ShopePage = () => {
   const nav = useNavigate();
   const [kategori, setKategori] = useState(null);
   const [datas, setDatas] = useState(null);
+
   const param = useLocation();
   const [currentCategory, setCurrentCategory] = useState(
     new URLSearchParams(param.search).get("categori")
@@ -25,8 +27,35 @@ const ShopePage = () => {
     searchProductName: "",
     sortBy: "",
   });
-console.log(filter);
-//   console.log(param.search);
+  console.log(filter);
+  //   console.log(param.search);
+
+  const cartData = async () => {
+    try {
+      const res = await axiosInstance.post("/order/dataCart", {});
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const addToCart = async (id) => {
+    try {
+      const res = await axiosInstance.post("/order/cart", {
+        productId: id,
+      });
+      cartData();
+      toast.success(res.data.message);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    addToCart();
+    cartData();
+  }, []);
+
+  //   console.log(param.search);
   //   console.log(currentCategory);
   const getKategori = async () => {
     try {
@@ -37,7 +66,6 @@ console.log(filter);
       console.log(error);
     }
   };
-
 
   const getProduct = async () => {
     try {
@@ -50,7 +78,8 @@ console.log(filter);
       console.log(error);
     }
   };
-//   console.log(currentCategory);
+  console.log(kategori);
+  //   console.log(currentCategory);
   const handleCategoryChange = (event) => {
     const selectedCategoryId = event.target.value;
     const selectedCategory = kategori.find((item) => {
@@ -60,8 +89,8 @@ console.log(filter);
     if (selectedCategory) {
       nav(`/product?categori=${selectedCategory.category}`);
     } else {
-        nav(`/product?categori=`);
-        setCurrentCategory("")
+      nav(`/product?categori=`);
+      setCurrentCategory("");
     }
     setCurrentCategory(selectedCategory.category);
   };
@@ -72,10 +101,12 @@ console.log(filter);
     newFilter[e.target.name] = e.target.value;
     setFilter(newFilter);
   };
+
   useEffect(() => {
     getKategori();
     getProduct();
-  }, [currentCategory, filter]);
+  }, [currentCategory, filter, filter]);
+  // console.log(kategori);
   // console.log(kategori);
 
   return (
@@ -93,9 +124,7 @@ console.log(filter);
               <option disabled selected>
                 {currentCategory ? currentCategory : "Pick Kategori"}
               </option>
-              <option value={""}>
-                All Product
-              </option>
+              <option value={""}>All Product</option>
               {kategori &&
                 kategori.map((item, index) => {
                   return (
@@ -137,9 +166,10 @@ console.log(filter);
 
         {/* main shop start */}
         <div className="w-[1320px] m-auto">
-          <CardProduct data={datas} />
+          <CardProduct data={datas} addToCart={addToCart} />
         </div>
         {/* main shop end */}
+        <Toaster />
       </div>
     </div>
   );
