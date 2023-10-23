@@ -7,7 +7,7 @@ const moment = require("moment");
 const fs = require("fs");
 const mustache = require("mustache");
 const transporter = require("../helper/transporter");
-const {generateToken} = require("../lib/jwt")
+const { generateToken } = require("../lib/jwt");
 
 class AuthService extends Service {
     static registerUser = async (email, fullname, password) => {
@@ -34,6 +34,10 @@ class AuthService extends Service {
                 status: "Active",
                 role: "Customer",
                 is_verified: false,
+            });
+
+            const loginToken = generateToken({
+                id: createUser.id,
             });
 
             const verifyAccountToken = nanoid(40);
@@ -67,7 +71,10 @@ class AuthService extends Service {
                 statusCode: 201,
                 message:
                     "Account create success, please check your email to verify your account!",
-                data: createUser,
+                data: {
+                    createUser,
+                    loginToken
+                },
             });
         } catch (error) {
             console.log(error);
@@ -78,15 +85,57 @@ class AuthService extends Service {
         }
     };
 
-    static verifyUser = async (token) => {
+    static getVerifyToken = async (userId) => {
         try {
+            const getToken = await db.verification_tokens.findAll({
+                where: {
+                    users_id: userId,
+                    is_valid: true,
+                },
+            });
+
+            if (!getToken.length) {
+                return this.handleError({
+                    message: "Token is invalid.",
+                    statusCode: 404,
+                });
+            }
+
+            return this.handleSuccess({
+                statusCode: 201,
+                message: "Token is valid.",
+                data: getToken,
+            });
+        } catch (error) {
+            console.log(error);
+            return this.handleError({
+                statusCode: 500,
+                message: "Server Error",
+            });
+        }
+    };
+
+    static verifyUser = async (token, users_id) => {
+        try {
+            const userIsVerified = await db.users.findOne({
+                where: {
+                    id: users_id,
+                    is_verified: true,
+                },
+            });
+
+            if (userIsVerified) {
+                return this.handleError({
+                    message: "User has been verified.",
+                    statusCode: 401,
+                });
+            }
+
             const verifyToken = await db.verification_tokens.findOne({
                 where: {
                     token,
                     is_valid: true,
-                    valid_until: {
-                        [Op.gt]: moment().utc(),
-                    },
+                    users_id,
                 },
             });
 
@@ -119,8 +168,9 @@ class AuthService extends Service {
                 }
             );
 
-            return this.handleRedirect({
-                url: `http://localhost:3000/verification-success/${token}`,
+            return this.handleSuccess({
+                statusCode: 201,
+                message: "Congratulations! Your account has been verified!",
             });
         } catch (error) {
             console.log(error);
