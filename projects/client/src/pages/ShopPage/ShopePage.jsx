@@ -4,6 +4,7 @@ import TabBar from "../../components/TabBar/TabBar";
 import PageInfo from "../../components/PageInfo/PageInfo";
 import Input from "../../components/Input/Input";
 import { BiSearch } from "react-icons/bi";
+import toast, { Toaster } from "react-hot-toast";
 import {
   Link,
   useLocation,
@@ -12,21 +13,53 @@ import {
 } from "react-router-dom";
 import CardProduct from "../../components/CardProduct/CardProduct";
 import ModalShowProduct from "../../components/ModalShowProduct/ModalShowProduct";
-
+import axiosInstance from "../../config/api";
 const ShopePage = () => {
   const nav = useNavigate();
   const [kategori, setKategori] = useState(null);
   const [datas, setDatas] = useState(null);
+
   const param = useLocation();
   const [currentCategory, setCurrentCategory] = useState(
     new URLSearchParams(param.search).get("categori")
   );
+  const [filter, setFilter] = useState({
+    searchProductName: "",
+    sortBy: "",
+  });
+  console.log(filter);
+  //   console.log(param.search);
 
-  console.log(param.search);
+  const cartData = async () => {
+    try {
+      const res = await axiosInstance.post("/order/dataCart", {});
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const addToCart = async (id) => {
+    try {
+      const res = await axiosInstance.post("/order/cart", {
+        productId: id,
+      });
+      cartData();
+      toast.success(res.data.message);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    addToCart();
+    cartData();
+  }, []);
+
+  //   console.log(param.search);
   //   console.log(currentCategory);
   const getKategori = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/product/kategori");
+      const res = await axios.get("http://localhost:8000/category");
       setKategori(res.data);
       //   console.log(res.data);
     } catch (error) {
@@ -37,7 +70,7 @@ const ShopePage = () => {
   const getProduct = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:8000/product${param.search}`
+        `http://localhost:8000/product${param.search}&search=${filter.searchProductName}&sortBy=${filter.sortBy}&product_status=Active`
       );
       setDatas(res.data);
       //   console.log(res.data);
@@ -45,7 +78,8 @@ const ShopePage = () => {
       console.log(error);
     }
   };
-    console.log(kategori);
+  console.log(kategori);
+  //   console.log(currentCategory);
   const handleCategoryChange = (event) => {
     const selectedCategoryId = event.target.value;
     const selectedCategory = kategori.find((item) => {
@@ -54,13 +88,26 @@ const ShopePage = () => {
     // console.log(selectedCategory);
     if (selectedCategory) {
       nav(`/product?categori=${selectedCategory.category}`);
+    } else {
+      nav(`/product?categori=`);
+      setCurrentCategory("");
     }
     setCurrentCategory(selectedCategory.category);
   };
+
+  const handleChange = (e) => {
+    e.preventDefault();
+    const newFilter = { ...filter };
+    newFilter[e.target.name] = e.target.value;
+    setFilter(newFilter);
+  };
+
   useEffect(() => {
     getKategori();
     getProduct();
-  }, [currentCategory]);
+  }, [currentCategory, filter, filter]);
+  // console.log(kategori);
+  // console.log(kategori);
 
   return (
     <div className="">
@@ -77,6 +124,7 @@ const ShopePage = () => {
               <option disabled selected>
                 {currentCategory ? currentCategory : "Pick Kategori"}
               </option>
+              <option value={""}>All Product</option>
               {kategori &&
                 kategori.map((item, index) => {
                   return (
@@ -88,16 +136,29 @@ const ShopePage = () => {
             </select>
           </div>
           <div className="flex rounded-md items-center gap-4 bg-white w-[50%] relative">
-            <Input placeholder={"Search Product..."} inputCSS={""} />
-            <BiSearch className="text-black right-2 cursor-pointer h-[32px] w-[32px] absolute" />
+            <Input
+              name={"searchProductName"}
+              onChange={handleChange}
+              placeholder={"Search Product..."}
+              inputCSS={""}
+            />
+            <BiSearch
+              type="submit"
+              className="text-black right-2 cursor-pointer h-[32px] w-[32px] absolute"
+              onClick={getProduct}
+            />
           </div>
           <div className="">
-            <select className="select select-bordered w-full max-w-[312px]">
+            <select
+              onChange={handleChange}
+              name="sortBy"
+              className="select select-bordered w-full max-w-[312px]"
+            >
               <option disabled selected>
                 Sort Price By
               </option>
-              <option value="DESC">Tinggi Ke Rendah</option>
-              <option value="ASC">Rendah Ke Tinggi</option>
+              <option value="high_to_low">Tinggi Ke Rendah</option>
+              <option value="low_to_high">Rendah Ke Tinggi</option>
             </select>
           </div>
         </div>
@@ -105,9 +166,10 @@ const ShopePage = () => {
 
         {/* main shop start */}
         <div className="w-[1320px] m-auto">
-          <CardProduct data={datas} />
+          <CardProduct data={datas} addToCart={addToCart} />
         </div>
         {/* main shop end */}
+        <Toaster />
       </div>
     </div>
   );

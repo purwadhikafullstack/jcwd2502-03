@@ -94,6 +94,7 @@ const authController = {
     loginUser: async (req, res) => {
         try {
             const { email, password } = req.body;
+            
 
             const serviceResult = await AuthService.loginUser(email, password);
 

@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
   products_categories.init(
     {
       category: DataTypes.STRING,
+      category_status: DataTypes.ENUM('Active','Inactive'),
       createdAt: {
         type: DataTypes.DATE,
         defaultValue: new Date(),
