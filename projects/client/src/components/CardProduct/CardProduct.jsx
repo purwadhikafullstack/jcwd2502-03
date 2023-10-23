@@ -41,10 +41,11 @@ const CardProduct = ({ data }) => {
   };
 
   return (
+    <>
     <div
       className={
         datas && datas.length > 0
-          ? `flex flex-wrap justify-around gap-5`
+          ? `grid grid-cols-5  gap-5`
           : `grid justify-center items-center gap-5`
       }
     >
@@ -98,8 +99,10 @@ const CardProduct = ({ data }) => {
           </p>
         </div>
       )}
-      {datas && datas.length > itemsPerPage - 1 ? (
-        <div className="flex justify-center gap-3 mb-4 w-full">
+
+    </div>
+    {datas && datas.length > itemsPerPage - 1 ? (
+        <div className="mt-7 flex justify-center gap-3 mb-4 w-full">
           <button className=" text-primaryOrange flex justify-center items-center p-2 w-[40px] h-[40px]  border-2 border-primaryOrange rounded-full " onClick={prevPage} disabled={currentPage === 1}>
             <BsArrowLeft className="font-extrabold " />
           </button>
@@ -126,7 +129,7 @@ const CardProduct = ({ data }) => {
       ) : (
         <></>
       )}
-    </div>
+    </>
   );
 };
 
