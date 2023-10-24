@@ -3,11 +3,10 @@ const {
   getCartByProductId,
   addQuantityIfIdExist,
   getCartByUserId,
-  increaseQty,
   deleteCart,
-  decreaseQuantity,
   getProductCartQty,
   updateQty,
+  placementOrder,
 } = require("./../services/orderService");
 
 const orderController = {
@@ -89,6 +88,28 @@ const orderController = {
         message: "quantity updated",
         data: updateQuantity,
       });
+    } catch (error) {
+      next(error);
+    }
+  },
+  placementOrder: async (req, res, next) => {
+    try {
+      const { quantity, product_price, warehouses_id, products_id } = req.body;
+
+      const { id } = req.tokens;
+      console.log(id);
+      const data = {
+        quantity: quantity,
+        product_price: product_price,
+        transaction_uid: null,
+        users_id: id,
+        warehouses_id: warehouses_id,
+        products_id: products_id,
+      };
+
+      const placeOrder = await placementOrder(data);
+
+      res.send(placeOrder)
     } catch (error) {
       next(error);
     }

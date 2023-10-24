@@ -1,4 +1,3 @@
-import axios from "axios";
 import "./App.css";
 import { useEffect, useState } from "react";
 import routes from "./routes/routes";
@@ -9,25 +8,15 @@ import { Provider } from "react-redux";
 import { store } from "./redux/store";
 
 function App() {
-    const [message, setMessage] = useState("test");
-
-    useEffect(() => {
-        (async () => {
-            const { data } = await axios.get(
-                `${process.env.REACT_APP_API_BASE_URL}/greetings`
-            );
-            setMessage(data?.message || "");
-        })();
-    }, []);
-    return (
-        <div className="max-w-[1920px] container">
-            <Provider store={store}>
-                <Nav />
-                <Routes>{routes.map((value) => value)}</Routes>
-                <Footer />
-            </Provider>
-        </div>
-    );
+  return (
+    <div className="max-w-[1920px] container">
+      <Provider store={store}>
+        <Nav />
+        <Routes>{routes.map((value) => value)}</Routes>
+        <Footer />
+      </Provider>
+    </div>
+  );
 }
 
 export default App;

@@ -55,8 +55,6 @@ const ShopePage = () => {
     cartData();
   }, []);
 
-  //   console.log(param.search);
-  //   console.log(currentCategory);
   const getKategori = async () => {
     try {
       const res = await axios.get("http://localhost:8000/category");

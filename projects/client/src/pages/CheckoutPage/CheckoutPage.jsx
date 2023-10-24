@@ -12,10 +12,13 @@ import AddressModal from "../../components/AddressModal/AddressModal";
 import InputPaymentOption from "../../components/InputPaymentOption/InputPaymentOption";
 import CardOrderSummary from "../../components/CardOrderSummary/CardOrderSummary";
 import PlaceOrderModal from "../../components/PlaceOrderModal/PlaceOrderModal";
+import Cookies from "js-cookie";
 
 const CheckoutPage = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [placeOrderIsOpen, setPlaceOrderIsOpen] = useState(false);
+  const [userData, setUserData] = useState(JSON.parse(Cookies.get("user_data")));
+  console.log(userData.id);
 
   const handleConfirmChangeAddress = () => {
     setModalIsOpen(false);
@@ -43,7 +46,7 @@ const CheckoutPage = () => {
               <Input2
                 labelCSS="text-[14px]"
                 type="text"
-                labelName="Phone Number"
+                labelName="Gmail"
                 className="w-full h-[44px]"
               />
             </div>

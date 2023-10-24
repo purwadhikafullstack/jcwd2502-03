@@ -87,7 +87,6 @@ const CartPage = () => {
   };
 
   const handleDeleteCart = async (id) => {
-    console.log(id);
     try {
       const deleteCart = await axiosInstance.post("/order/delete-cart", {
         productId: id,

@@ -62,36 +62,12 @@ module.exports = {
       return error;
     }
   },
-  increaseQty: async (data) => {
-    console.log(data);
-    try {
-      const getCartById = await db.carts.update(
-        { quantity: sequelize.literal("quantity + 1") },
-        { where: { products_id: data.productId, users_id: data.userId } }
-      );
-
-      return getCartById;
-    } catch (error) {
-      return error;
-    }
-  },
   deleteCart: async (data) => {
     try {
       const deleted = await db.carts.destroy({
         where: { products_id: data.productId, users_id: data.userId },
       });
       return deleted;
-    } catch (error) {
-      return error;
-    }
-  },
-  decreaseQuantity: async (data) => {
-    try {
-      const decrease = await db.carts.update(
-        { quantity: sequelize.literal("quantity - 1") },
-        { where: { products_id: data.productId, users_id: data.userId } }
-      );
-      return decrease;
     } catch (error) {
       return error;
     }
@@ -118,4 +94,12 @@ module.exports = {
       return error;
     }
   },
+  placementOrder: async(data) => {
+    try {
+      const placeOrder = await db.order_details.bulkCreate(data)
+      return placeOrder
+    } catch (error) {
+      return error
+    }
+  }
 };

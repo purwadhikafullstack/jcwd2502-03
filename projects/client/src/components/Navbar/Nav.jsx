@@ -17,7 +17,7 @@ const Nav = () => {
   const [cartDrop, setCartDrop] = useState(0);
   const [cartDatas, setCartDatas] = useState([]);
   const navigate = useNavigate();
-  console.log(cartDatas);
+
   const handleCartDropDown = () => {
     setCartDrop(!cartDrop);
   };
@@ -32,7 +32,7 @@ const Nav = () => {
 
   const dataCart = async () => {
     try {
-      const res = await axiosInstance.post("/order/cartdata", {});
+      const res = await axiosInstance.post("/order/cartdata", );
 
       setCartDatas(res.data.data);
     } catch (error) {
@@ -53,9 +53,14 @@ const Nav = () => {
     }
   };
 
+
+
   useEffect(() => {
     dataCart();
-  }, [cartDatas]);
+  }, []);
+
+
+  useEffect(() => {}, [cartDatas]);
 
   const subTotal = cartDatas.reduce((item, current) => {
     return Number(item) + Number(current.total);
