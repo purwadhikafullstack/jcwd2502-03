@@ -26,7 +26,7 @@ app.use(express.json());
 const { orderRouter, authRouter } = require("./routers");
 // const { authRouter } = require("./routers");
 // const { userRouter } = require("./routers");
-const { productRouter, categoryRouter } = require("./routers");
+const { productRouter } = require("./routers");
 // const { adminRouter } = require("./routers");
 // const { cartRouter } = require("./routers");
 // const { transactionRouter } = require("./routers");
@@ -40,12 +40,10 @@ app.use("/product", productRouter);
 // app.use("/report", reportRouter);
 app.use(bearerToken());
 
-app.use("/order", orderRouter);
+app.use("/api/order", orderRouter);
 app.use("/auth", authRouter)
 // app.use("/profilepicture", express.static(`${__dirname}/public/profilePictures`));
 // app.use("/products", express.static(`${__dirname}/public/products`));
-app.use("/category", categoryRouter);
-// app.use("/warehouse", warehouseRouter);
 
 app.get("/api", (req, res) => {
     res.send(`Hello, this is my API`);

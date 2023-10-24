@@ -26,7 +26,7 @@ const CartPage = () => {
 
   const dataCart = async () => {
     try {
-      const res = await axiosInstance.post("/order/dataCart");
+      const res = await axiosInstance.post("/order/cartdata");
       setCartDatas(res.data.data);
       console.log(res);
     } catch (error) {
