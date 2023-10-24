@@ -8,9 +8,8 @@ const axiosInstance = axios.create({ baseURL: API_URL });
 axiosInstance.interceptors.request.use((config) => {
     const userToken = Cookies.get("user_token");
     if (userToken) {
-        config.headers.authorization = userToken || "";
+        config.headers.authorization = `Bearer ${userToken}` || "";
     }
-
     return config;
 });
 

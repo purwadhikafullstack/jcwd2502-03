@@ -31,10 +31,21 @@ module.exports = (sequelize, DataTypes) => {
         {
             name: DataTypes.STRING,
             status: DataTypes.ENUM("Active", "Inactive"),
+            createdAt : {
+                type: DataTypes.DATE,
+                defaultValue: new Date()
+              },
+              updatedAt : {
+                type: DataTypes.DATE,
+                defaultValue: new Date()
+              }
         },
         {
             sequelize,
             modelName: "warehouses",
+        },
+        {
+            paranoid : true
         }
     );
     return warehouses;

@@ -6,10 +6,11 @@ import { TbMathGreater } from "react-icons/tb";
 import { Link } from 'react-router-dom';
 
 const PageInfo = () => {
+  
   return (
-    <div className='mb-[72px]'>
-       <div className="px-[300px] mt-[16px] h-[72px]  w-full flex  items-center text-[14px] text-gray bg-[#F2F4F5]">
-        <div className="flex items-center mr-[20px]">
+    <>
+       <div className=" mt-[16px] h-[72px] flex w-full items-center text-[14px] text-gray bg-[#F2F4F5]">
+        <div className="flex px-5 items-center mr-[20px]">
           <AiOutlineHome className="text-[20px] mr-[8px]" />
           <Link to={"/"}><h1 className="text-[#5F6C72]">Home</h1></Link>
         </div>
@@ -18,7 +19,7 @@ const PageInfo = () => {
           <h1 className="text-[#5F6C72]">Shop</h1>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 

@@ -17,7 +17,7 @@ const Logo = ({logoCSS}) => {
         />
       </svg>
     </span>
-    <span className="text-white font-bold text-3xl">TechHeaven</span>
+    <span className="text-white font-bold text-xl hidden sm:block sm:text-3xl">TechHeaven</span>
   </div>
   )
 }

@@ -12,6 +12,7 @@ import VerificationSuccessPage from "../pages/VerificationSuccessPage/Verificati
 import LoginRegisterPage from "../pages/LoginRegisterPage/LoginRegisterPage";
 import UserVerificationPage from "../pages/UserVerificationPage/UserVerificationPage";
 import ShopePage from "../pages/ShopPage/ShopePage";
+import DetailProduct from "../pages/DetailProduct/DetailProduct";
 
 const routes = [
     <Route path="/cart" element={<CartPage />} />,
@@ -28,6 +29,7 @@ const routes = [
         element={<VerificationSuccessPage />}
     />,
     <Route path="/product" element={<ShopePage />} />,
+    <Route path="/product/:idProduct" element={<DetailProduct />} />,
 ];
 
 export default routes;

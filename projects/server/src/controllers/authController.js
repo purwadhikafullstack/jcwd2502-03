@@ -27,11 +27,33 @@ const authController = {
         }
     },
 
+    getVerifyToken: async (req, res) => {
+        try {
+            const { userId } = req.params;
+
+            const serviceResult = await AuthService.getVerifyToken(userId);
+
+            if (!serviceResult.success) throw serviceResult;
+
+            return res.status(serviceResult.statusCode || 200).json({
+                message: serviceResult.message,
+                result: serviceResult.data,
+                isError: serviceResult.isError,
+            });
+        } catch (error) {
+            console.log(error);
+            return res.status(error.statusCode || 500).json({
+                message: error.message,
+                isError: error.isError,
+            });
+        }
+    },
+
     verifyUser: async (req, res) => {
         try {
-            const { token } = req.params;
+            const { token, users_id } = req.body;
 
-            const serviceResult = await AuthService.verifyUser(token);
+            const serviceResult = await AuthService.verifyUser(token, users_id);
 
             if (!serviceResult.success) throw serviceResult;
 
@@ -72,11 +94,9 @@ const authController = {
     loginUser: async (req, res) => {
         try {
             const { email, password } = req.body;
+            
 
-            const serviceResult = await AuthService.loginUser(
-                email,
-                password
-            );
+            const serviceResult = await AuthService.loginUser(email, password);
 
             if (!serviceResult.success) throw serviceResult;
 
