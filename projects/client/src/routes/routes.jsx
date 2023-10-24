@@ -30,6 +30,7 @@ const routes = [
     />,
     <Route path="/product" element={<ShopePage />} />,
     <Route path="/product/:idProduct" element={<DetailProduct />} />,
+    
 ];
 
 export default routes;
