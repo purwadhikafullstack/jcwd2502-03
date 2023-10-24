@@ -20,13 +20,13 @@ function App() {
         })();
     }, []);
     return (
-        <div className="max-w-[1920px] container">
+        <>
             <Provider store={store}>
                 <Nav />
                 <Routes>{routes.map((value) => value)}</Routes>
                 <Footer />
             </Provider>
-        </div>
+        </>
     );
 }
 

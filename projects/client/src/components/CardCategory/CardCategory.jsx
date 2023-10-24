@@ -4,7 +4,7 @@ import kategori1 from "../../assets/kategori1.png";
 const CardCategory = ({kategori}) => {
 
   return (
-    <div className="max-w-[205px] min-w-[205px] max-h-[236px] border cursor-pointer">
+    <div className="max-w-[205px] hover:border-primaryOrange rounded-md min-w-[205px] max-h-[236px] border cursor-pointer">
       <div className="p-[18px]">
         <div className="flex justify-center text-gray-950">
             <img src={kategori1} alt="" />

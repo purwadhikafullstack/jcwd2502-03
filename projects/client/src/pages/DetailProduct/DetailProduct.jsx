@@ -1,56 +1,21 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
-import Button from "../Button/Button";
-import CancelOrderModal from "../CancelOrderModal/CancelOrderModal";
+import Button from "../../components/Button/Button";
+import CancelOrderModal from "../../components/CancelOrderModal/CancelOrderModal";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import product1 from "../../assets/product1.png";
 import { AiOutlineShoppingCart } from "react-icons/ai";
+import PageInfo from "../../components/PageInfo/PageInfo";
+import TabBar from "../../components/TabBar/TabBar";
 
-const ModalShowProduct = ({ isOpen, product }) => {
-  // console.log(isOpen);
-  const datas = product
-  console.log(datas);
-  const [isOpened, setIsOpened] = useState(isOpen);
-  const navigate = useNavigate();
-  const customStyle = {
-    content: {
-      width: "40%",
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-50%",
-      transform: "translate(-50%, -50%)",
-      borderRadius: "8px",
-      z: "50",
-      paddingRight: "24px",
-    },
-  };
-  const handleClose = () => {
-    isOpen = false;
-    setIsOpened(false);
-  };
-  useEffect(() => {
-    setIsOpened(isOpen);
-  }, [isOpen]);
+const DetailProduct = () => {
   return (
-    <Modal
-      style={customStyle}
-      overlayClassName={
-        "fixed w-full h-full top-0 left-0 z-[1000] backdrop-blur-sm bg-black bg-opacity-5 flex justify-center items-center"
-      }
-      isOpen={isOpened}
-    >
-      <button
-        className="absolute cursor-pointer rounded-full text-lg font-bold top-2 right-2 px-2 text-gray-600 hover:text-black"
-        onClick={handleClose}
-      >
-        X
-      </button>
-
-      <div className="relative h-full w-full flex-wrap flex">
-        <div className="grid gap-[10px] mb-5">
+    <>
+    <TabBar />
+    <PageInfo />
+      <div className="h-full w-[1000px] flex-wrap flex">
+        <div className="grid items-center justify-center bg-slate-400 gap-[10px] mb-5">
           <div className="border">
             <img
               className="w-full object-contain h-[200px]"
@@ -83,11 +48,11 @@ const ModalShowProduct = ({ isOpen, product }) => {
         </div>
         <div className="flex px-5 flex-col justify-between">
           <div className="flex flex-col">
-            <div className="text-2xl font-bold border-b-2 mb-5">
+            <div className="text-3xl font-bold border-b-2 mb-5">
               Asus ROG Phone 5s 12/256
             </div>
             <div className=" text-2xl mb-2 font-bold">DESKRIPSI</div>
-            <div className="max-h-[90px] overflow-auto">
+            <div className="">
               Asus Rog phone 3 8/128GB 12/128 12/256GB FULLSETT TAM : FULLSET
               DENGAN ACC DAN BOX ORIGINAL UNIT ONLY : SECOND BATANGAN TIDAK
               TERMASUK ACC DAN BOX Asus Rog Phone 2 8/128GB 12/256GB FULLSETT
@@ -131,8 +96,8 @@ const ModalShowProduct = ({ isOpen, product }) => {
           </div>
         </div>
       </div>
-    </Modal>
+    </>
   );
 };
 
-export default ModalShowProduct;
+export default DetailProduct;

@@ -15,6 +15,9 @@ module.exports = {
       province: {
         type: Sequelize.STRING
       },
+      isWarehouse : {
+        type: Sequelize.ENUM("true, false"),
+    },
       type: {
         type: Sequelize.STRING
       },

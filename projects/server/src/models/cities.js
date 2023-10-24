@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
             postal_code: DataTypes.STRING,
             province : DataTypes.STRING,
             type : DataTypes.STRING,
+            isWarehouse : DataTypes.ENUM("true, false"),
             createdAt: {
                 type: DataTypes.DATE,
                 defaultValue: new Date(),
