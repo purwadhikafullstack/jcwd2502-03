@@ -3,7 +3,8 @@ const authController = require("../controllers/authController");
 const authorizeLoggedInUser = require("../middlewares/authMiddleware");
 
 router.post("/register", authController.registerUser);
-router.get("/verify/:token", authController.verifyUser);
+router.get("/verify/user-:userId", authController.getVerifyToken);
+router.post("/verify", authController.verifyUser);
 router.post(
     "/resend-verification-email/:userId",
     authorizeLoggedInUser,

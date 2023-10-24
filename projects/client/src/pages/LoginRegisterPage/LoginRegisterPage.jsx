@@ -4,9 +4,12 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../config/api";
 import Cookies from "js-cookie";
 import toast, { Toaster } from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { login } from "../../redux/Reducer/auth";
 
 const LoginRegisterPage = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [isSignIn, setIsSignIn] = useState("hidden");
     const [isSignUp, setIsSignUp] = useState("block");
     const [state, setState] = useState({
@@ -42,6 +45,7 @@ const LoginRegisterPage = () => {
             toast.success(res.data.message);
             Cookies.set("user_token", res.data.result.token);
             Cookies.set("user_data", JSON.stringify(res.data.result.user));
+            dispatch(login(res.data.result.user));
 
             setTimeout(() => {
                 if (res.data.result.user.role === "Owner") {
@@ -68,8 +72,8 @@ const LoginRegisterPage = () => {
                 password,
             });
             toast.success(res.data.message);
-            Cookies.set("user_token", res.data.result.token);
-            Cookies.set("user_data", JSON.stringify(res.data.result.user));
+            Cookies.set("user_token", res.data.result.loginToken);
+            Cookies.set("user_data", JSON.stringify(res.data.result.createUser));
             setTimeout(() => {
                 navigate("/");
             }, 3000);
@@ -95,6 +99,7 @@ const LoginRegisterPage = () => {
 
     return (
         <div>
+            <Toaster />
             <TabBar />
             <div className="border flex flex-col bg-white w-full h-screen place-items-center pt-4">
                 <div className="flex flex-col pb-2 mt-8 w-[424px] h-[504px] border-2 rounded">
@@ -121,7 +126,6 @@ const LoginRegisterPage = () => {
                         </div>
                     </div>
                     <div className={`${isSignIn}`}>
-                        <Toaster />
                         <div className="pl-7 pt-7">
                             <div className="pb-3 text-sm">Email Address</div>
                             <input
@@ -175,7 +179,6 @@ const LoginRegisterPage = () => {
                         </div>
                     </div>
                     <div className={`${isSignUp}`}>
-                        <Toaster />
                         <div className="pl-7 pt-7">
                             <div className="pb-3 text-sm">Full Name</div>
                             <input
@@ -213,7 +216,10 @@ const LoginRegisterPage = () => {
                             ></input>
                         </div>
                         <div className="pl-7 pt-10 pb-5">
-                            <button className="border w-[365px] h-[50px] bg-orange-400 rounded-sm" onClick={registerUser}>
+                            <button
+                                className="border w-[365px] h-[50px] bg-orange-400 rounded-sm"
+                                onClick={registerUser}
+                            >
                                 Sign Up
                             </button>
                         </div>
