@@ -12,6 +12,12 @@ module.exports = {
             name: {
                 type: Sequelize.STRING,
             },
+            lng: {
+                type: Sequelize.STRING,
+            },
+            lat: {
+                type: Sequelize.STRING,
+            },
             status: {
                 type: Sequelize.ENUM("Active", "Inactive"),
             },
