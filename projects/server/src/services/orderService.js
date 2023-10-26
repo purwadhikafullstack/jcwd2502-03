@@ -231,4 +231,12 @@ module.exports = {
       return error;
     }
   },
+  addAddressById: async (data) => {
+    try {
+      const addAddress = await db.users_addresses.create(data)
+      return addAddress
+    } catch (error) {
+      return error 
+    }
+  }
 };

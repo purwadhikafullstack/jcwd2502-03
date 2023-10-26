@@ -17,12 +17,11 @@ const BillingInformation = ({
   addresses,
   setAddress,
   setOnClick,
-  onClick
+  onClick,
+  rajaOngkir,
+  setRajaOngkir,
+  getAddress,
 }) => {
-
-    console.log(address);
-    console.log(addresses);
-    
   return (
     <div className="left-side  xl:w-[70%] h-auto md:w-[100%] ">
       <div className="flex items-center justify-between w-full mb-[24px] ">
@@ -41,12 +40,16 @@ const BillingInformation = ({
           setAddress={setAddress}
           setOnClick={setOnClick}
           onClick={onClick}
+          userData={userData}
+          rajaOngkir={rajaOngkir}
+          setRajaOngkir={setRajaOngkir}
+          getAddress={getAddress}
         />
       </div>
       <div className="inputs flex lg:flex-row  gap-5 w-full mb-[16px]">
         <div className="input-width1 w-[50%]">
           <Input2
-            value={address.name}
+            value={userData.fullname}
             type="text"
             labelName="Name"
             labelCSS="text-[14px]"
@@ -90,10 +93,10 @@ const BillingInformation = ({
       </div>
       <div className="wrap-payment mb-[42px] flex gap-5 justify-between">
         <div className="payment-option ">
-          <InputPaymentOption labelName="Payment Option" payments={payments}/>
+          <InputPaymentOption labelName="Payment Option" payments={payments} />
         </div>
         <div className="payment-option w-[25%]">
-          <OptionCourier couriers={couriers}/>
+          <OptionCourier couriers={couriers} />
         </div>
         <div className="payment-option w-[25%]">
           <Input2

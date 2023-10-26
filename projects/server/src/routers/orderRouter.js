@@ -13,6 +13,7 @@ router.post("/primary-address", authorizeLoggedInUser, orderController.primaryAd
 router.get("/raja-ongkir-cities", orderController.getCityRajaOngkir);
 router.get("/payments", orderController.paymentMethod);
 router.get("/couriers", orderController.getCouriers);
+router.post("/add-address",authorizeLoggedInUser, orderController.addAddress);
 
 
 module.exports = router;

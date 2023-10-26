@@ -34,7 +34,7 @@ const Nav = () => {
 
   const dataCart = async () => {
     try {
-      const res = await axiosInstance.post("/order/cartdata", );
+      const res = await axiosInstance.post("/order/cartdata");
 
       setCartDatas(res.data.data);
     } catch (error) {
@@ -55,12 +55,9 @@ const Nav = () => {
     }
   };
 
-
-
   useEffect(() => {
     dataCart();
   }, []);
-
 
   useEffect(() => {}, [cartDatas]);
 
@@ -68,10 +65,9 @@ const Nav = () => {
     return Number(item) + Number(current.total);
   }, 0);
 
-  
   const handleChange = (e) => {
     console.log(e.target.value);
-  }
+  };
 
   return (
     <div className="wrap-nav w-full  bg-primaryBlue  fixed top-0 z-50">
@@ -81,7 +77,11 @@ const Nav = () => {
         </Link>
 
         <div className="flex rounded-md items-center  gap-4 bg-white w-[100%] relative">
-          <Input onChange={handleChange} placeholder={"Search for anything..."} inputCSS={""} />
+          <Input
+            onChange={handleChange}
+            placeholder={"Search for anything..."}
+            inputCSS={""}
+          />
           <BiSearch className="text-black right-2 cursor-pointer h-[32px] w-[32px] absolute" />
         </div>
 
@@ -173,7 +173,10 @@ const Nav = () => {
             >
               <div className="grid gap-3 p-5 mr-8">
                 <div className="flex gap-2 justify-start items-center">
-                  <Dropdown.Item><GoStack className="text-black h-[32px] w-[32px] cursor-pointer" /></Dropdown.Item>Dashboard
+                  <Dropdown.Item>
+                    <GoStack className="text-black h-[32px] w-[32px] cursor-pointer" />
+                  </Dropdown.Item>
+                  Dashboard
                 </div>
                 <div className="flex gap-2 justify-start items-center">
                   <Dropdown.Item>
@@ -191,15 +194,17 @@ const Nav = () => {
                   Wishlist
                 </div>
                 <div className="flex gap-2 justify-start items-center">
-                  <Dropdown.Item><GoSignOut className="text-black h-[32px] w-[32px] cursor-pointer " /></Dropdown.Item>Sign Out
+                  <Dropdown.Item>
+                    <GoSignOut className="text-black h-[32px] w-[32px] cursor-pointer " />
+                  </Dropdown.Item>
+                  Sign Out
                 </div>
               </div>
             </Dropdown>
           </div>
         </div>
-
       </div>
-      <Toaster />
+      {cartDrop === 1 ? <Toaster /> : <div></div>}
     </div>
   );
 };

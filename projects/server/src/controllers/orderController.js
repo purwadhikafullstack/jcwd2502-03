@@ -14,6 +14,7 @@ const {
   getRajaOngkir,
   paymentMethod,
   couriers,
+  addAddressById,
 } = require("./../services/orderService");
 
 const moment = require("moment");
@@ -215,6 +216,33 @@ const orderController = {
       res.status(200).send({
         isError: false,
         data: getCouriers,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  addAddress: async (req, res, next) => {
+    try {
+      const { id } = req.tokens;
+      const { address, province, city } = req.body;
+
+      if (!address) throw { message: "Fill Out The Address" };
+      if (!province) throw { message: "Select The Province" };
+      if (!city) throw { message: "Select The City" };
+
+      const data = {
+        address: address,
+        tb_ro_cities_id: city,
+        tb_ro_provinces_id: province,
+        users_id: id,
+      };
+
+      const addAddress = await addAddressById(data);
+
+      res.status(200).send({
+        isError: false,
+        data: addAddress,
+        message: "Address Added",
       });
     } catch (error) {
       next(error);

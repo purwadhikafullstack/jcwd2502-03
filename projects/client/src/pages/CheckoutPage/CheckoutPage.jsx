@@ -18,6 +18,7 @@ const CheckoutPage = () => {
   const [addresses, setAddresses] = useState();
   const [couriers, setCouriers] = useState([]);
   const [payments, setPayments] = useState([]);
+  const [rajaOngkir, setRajaOngkir] = useState([]);
   const [userData, setUserData] = useState(
     JSON.parse(Cookies.get("user_data"))
   );
@@ -28,19 +29,30 @@ const CheckoutPage = () => {
     setAddress(value);
   };
 
+  const getAddress = async () => {
+    try {
+      const getAddress = await axiosInstance.post("/order/address");
+      setAddresses(getAddress.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const getData = async () => {
     try {
       const primaryAddress = await axiosInstance.post(
         "/order/primary-address",
         { primary: 1 }
       );
-      const getAddress = await axiosInstance.post("/order/address");
       const getCouriers = await axiosInstance.get("/order/couriers");
       const getPaymentMethods = await axiosInstance.get("/order/payments");
+      const getROProvinces = await axiosInstance.get(
+        "/order/raja-ongkir-cities"
+      );
+      setRajaOngkir(getROProvinces.data.data);
       setPayments(getPaymentMethods.data.data);
       setCouriers(getCouriers.data.data);
       setAddress(primaryAddress.data.data);
-      setAddresses(getAddress.data.data);
     } catch (error) {
       console.log(error);
     }
@@ -48,6 +60,7 @@ const CheckoutPage = () => {
 
   useEffect(() => {
     getData();
+    getAddress();
   }, []);
 
   if (!address) return <div>Loading</div>;
@@ -71,6 +84,9 @@ const CheckoutPage = () => {
           setAddress={setAddress}
           setOnClick={setOnClick}
           onClick={onClick}
+          rajaOngkir={rajaOngkir}
+          setRajaOngkir={setRajaOngkir}
+          getAddress={getAddress}
         />
 
         <div className=" right-side xl:w-[30%] md:w-[50%] h-full  px-[24px] rounded-[4px] border-[#E4E7E9] py-[20px] border-[1px] ">
