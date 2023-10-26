@@ -106,7 +106,7 @@ const ShopePage = () => {
   return (
     <div className="max-w-[1280px] px-5 m-auto">
       <TabBar />
-      <PageInfo />
+
       <div className="flex  flex-col flex-wrap gap-[24px] my-[40px] ">
         {/* sidebar filter start */}
         <div className="flex flex-col justify-center md:flex-row flex-wrap gap-5 m-auto md:justify-around w-full">

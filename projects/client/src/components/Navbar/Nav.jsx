@@ -74,13 +74,13 @@ const Nav = () => {
   }
 
   return (
-    <div className="w-full bg-primaryBlue fixed top-0 z-50">
-      <div className=" my-7 mx-[20px] h-full m-auto gap-2 sm:gap-10 flex items-center align-middle justify-between">
+    <div className="wrap-nav w-full  bg-primaryBlue  fixed top-0 z-50">
+      <div className=" my-7  h-full m-auto gap-2 sm:gap-10 flex items-center align-middle justify-between">
         <Link to={"/"}>
           <Logo />
         </Link>
 
-        <div className="flex rounded-md items-center gap-4 bg-white w-[100%] relative">
+        <div className="flex rounded-md items-center  gap-4 bg-white w-[100%] relative">
           <Input onChange={handleChange} placeholder={"Search for anything..."} inputCSS={""} />
           <BiSearch className="text-black right-2 cursor-pointer h-[32px] w-[32px] absolute" />
         </div>
@@ -99,7 +99,7 @@ const Nav = () => {
             <div
               className={`${
                 cartDrop ? "cart-slide-in" : "cart-slide-out"
-              } w-[376px] h-[480px] bg-white absolute rounded-xl shadow-xl`}
+              } w-[376px] h-[480px] bg-white  absolute right-0 rounded-xl shadow-xl`}
             >
               <h1 className="py-[16px] px-[24px]  ">Shopping Cart</h1>
               <div className="px-[24px] h-[220px] overflow-auto py-[20px] border-y-[2px] ">

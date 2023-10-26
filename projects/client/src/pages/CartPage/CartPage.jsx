@@ -103,10 +103,10 @@ const CartPage = () => {
   }, []);
 
   return (
-    <div className="">
+    <div className="max-w-[1280px] m-auto ">
       <TabBar />
-      <PageInfo />
-      <div className="px-[300px] flex gap-5 mb-[150px]">
+
+      <div className=" flex gap-5 mb-[150px]">
         <div className="left-side relative w-[70%] h-auto border-[#E4E7E9] border-2  ">
           <h1 className="text-[18px] px-[24px] py-[20px]">Shopping Cart</h1>
           <div className="mb-[100px]">
