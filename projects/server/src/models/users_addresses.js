@@ -11,6 +11,8 @@ module.exports = (sequelize, DataTypes) => {
         {
             name: DataTypes.STRING,
             address: DataTypes.STRING,
+            lng: DataTypes.STRING,
+            lat: DataTypes.STRING,
             is_primary: DataTypes.BOOLEAN,
         },
         {

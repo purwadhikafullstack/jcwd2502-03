@@ -30,6 +30,8 @@ module.exports = (sequelize, DataTypes) => {
     warehouses.init(
         {
             name: DataTypes.STRING,
+            lng: DataTypes.STRING,
+            lat: DataTypes.STRING,
             status: DataTypes.ENUM("Active", "Inactive"),
             createdAt : {
                 type: DataTypes.DATE,
@@ -43,10 +45,8 @@ module.exports = (sequelize, DataTypes) => {
         {
             sequelize,
             modelName: "warehouses",
-        },
-        {
             paranoid : true
-        }
+        },
     );
     return warehouses;
 };
