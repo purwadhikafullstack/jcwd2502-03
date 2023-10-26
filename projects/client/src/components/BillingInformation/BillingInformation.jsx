@@ -19,11 +19,10 @@ const BillingInformation = ({
   setOnClick,
   onClick
 }) => {
+
+    console.log(address);
+    console.log(addresses);
     
-
-    
-
-
   return (
     <div className="left-side  xl:w-[70%] h-auto md:w-[100%] ">
       <div className="flex items-center justify-between w-full mb-[24px] ">

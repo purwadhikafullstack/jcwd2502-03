@@ -51,6 +51,8 @@ const CheckoutPage = () => {
   }, []);
 
   if (!address) return <div>Loading</div>;
+  if (couriers.length === 0) return <div>Loading</div>;
+  if (payments.length === 0) return <div>Loading</div>;
 
   return (
     <div className="checkout max-w-[1280px] m-auto lg:px-[100px] md:px-[50px] ">
