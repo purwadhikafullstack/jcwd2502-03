@@ -13,7 +13,7 @@ const DetailProduct = () => {
   return (
     <>
     <TabBar />
-    <PageInfo />
+
       <div className="h-full w-[1000px] flex-wrap flex">
         <div className="grid items-center justify-center bg-slate-400 gap-[10px] mb-5">
           <div className="border">

@@ -16,9 +16,9 @@ const CheckoutSuccessPage = ({ handleGoToDashboard }) => {
     handleGoToDashboard(2);
   };
   return (
-    <div className="">
+    <div className="max-w-[1280px] m-auto">
       <TabBar />
-      <PageInfo />
+
       <div className="flex items-center flex-col mb-[32px]">
         <AiOutlineCheckCircle className="w-[88px] h-[88px] text-[#2DB224] mb-[24px]" />
         <h1 className="text-[24px] font-semibold mb-[24px]">

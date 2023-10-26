@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 
 const TabBar = () => {
   return (
-    <div className=" m-auto h-auto mt-[124px] mb-[24px] ">
+    <div className=" m-auto h-auto mt-[124px] mb-[24px]">
       <div className="flex h-full items-center text-[#5F6C72] ">
         <div className="track-order flex items-center mr-[20px]">
           <TiLocationOutline className="text-[20px] mr-[6px]" />

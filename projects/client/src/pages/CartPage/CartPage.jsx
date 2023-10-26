@@ -26,7 +26,7 @@ const CartPage = () => {
 
   const dataCart = async () => {
     try {
-      const res = await axiosInstance.post("/order/dataCart");
+      const res = await axiosInstance.post("/order/cartdata");
       setCartDatas(res.data.data);
       console.log(res);
     } catch (error) {
@@ -87,7 +87,6 @@ const CartPage = () => {
   };
 
   const handleDeleteCart = async (id) => {
-    console.log(id);
     try {
       const deleteCart = await axiosInstance.post("/order/delete-cart", {
         productId: id,
@@ -104,10 +103,10 @@ const CartPage = () => {
   }, []);
 
   return (
-    <div className="">
+    <div className="max-w-[1280px] m-auto ">
       <TabBar />
-      <PageInfo />
-      <div className="px-[300px] flex gap-5 mb-[150px]">
+
+      <div className=" flex gap-5 mb-[150px]">
         <div className="left-side relative w-[70%] h-auto border-[#E4E7E9] border-2  ">
           <h1 className="text-[18px] px-[24px] py-[20px]">Shopping Cart</h1>
           <div className="mb-[100px]">

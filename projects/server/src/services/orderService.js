@@ -1,5 +1,6 @@
 const db = require("./../models");
 const { Op, sequelize } = require("./../models");
+const moment = require("moment");
 module.exports = {
   addTocart: async (data) => {
     try {
@@ -16,6 +17,23 @@ module.exports = {
       });
 
       return getCart;
+    } catch (error) {
+      return error;
+      s;
+    }
+  },
+  getProductById: async (productId) => {
+    try {
+      const getProduct = await db.products.findOne({
+        where: { id: productId },
+        include: [
+          {
+            model: db.products_stocks,
+            attributes: ["stock"],
+          },
+        ],
+      });
+      return getProduct;
     } catch (error) {
       return error;
     }
@@ -41,16 +59,27 @@ module.exports = {
           "quantity",
           "products_id",
           [db.Sequelize.literal("quantity * product_price"), "total"],
+          [db.Sequelize.literal("quantity * product_weight"), "total-weight"],
         ],
         include: [
           {
             model: db.products,
-            attributes: ["product_name", "product_price", "product_weight"],
+            attributes: ["product_name", "product_price"],
             where: { product_status: "Active" },
             include: [
               {
                 model: db.products_images,
                 attributes: ["image"],
+              },
+              {
+                model: db.products_stocks,
+                attributes: ["stock"],
+                include: [
+                  {
+                    model: db.warehouses,
+                    attributes: ["name", "id"],
+                  },
+                ],
               },
             ],
           },
@@ -62,36 +91,13 @@ module.exports = {
       return error;
     }
   },
-  increaseQty: async (data) => {
-    console.log(data);
-    try {
-      const getCartById = await db.carts.update(
-        { quantity: sequelize.literal("quantity + 1") },
-        { where: { products_id: data.productId, users_id: data.userId } }
-      );
 
-      return getCartById;
-    } catch (error) {
-      return error;
-    }
-  },
   deleteCart: async (data) => {
     try {
       const deleted = await db.carts.destroy({
         where: { products_id: data.productId, users_id: data.userId },
       });
       return deleted;
-    } catch (error) {
-      return error;
-    }
-  },
-  decreaseQuantity: async (data) => {
-    try {
-      const decrease = await db.carts.update(
-        { quantity: sequelize.literal("quantity - 1") },
-        { where: { products_id: data.productId, users_id: data.userId } }
-      );
-      return decrease;
     } catch (error) {
       return error;
     }
@@ -114,6 +120,113 @@ module.exports = {
           where: { products_id: data.productId, users_id: data.userId },
         }
       );
+    } catch (error) {
+      return error;
+    }
+  },
+  placementOrder: async (data) => {
+    try {
+      const placeOrder = await db.orders_details.bulkCreate(data);
+
+      return placeOrder;
+    } catch (error) {
+      return error;
+    }
+  },
+  updateUid: async (createdAt, formattedCreatedAt) => {
+    try {
+      const updateUid = await db.orders_details.update(
+        {
+          transaction_uid: formattedCreatedAt,
+        },
+        { where: { createdAt: createdAt } }
+      );
+
+      return updateUid;
+    } catch (error) {
+      return error;
+    }
+  },
+  getAddessByUserId: async (data) => {
+    try {
+      const getAddress = await db.users_addresses.findAll(
+        {
+          include: [
+            {
+              model: db.tb_ro_cities,
+              attributes: ["city_name", "postal_code", "provinces_id"],
+              include: [
+                {
+                  model: db.tb_ro_provinces,
+                  attributes: ["province_name"],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          where: { users_id: data },
+        }
+      );
+      return getAddress;
+    } catch (error) {
+      return error;
+    }
+  },
+  getAddressByPrimaryKey: async (data) => {
+    try {
+      const getAddressByPrimaryKey = await db.users_addresses.findOne(
+        {
+          include: [
+            {
+              model: db.tb_ro_cities,
+              attributes: ["city_name", "postal_code", "provinces_id"],
+              include: [
+                {
+                  model: db.tb_ro_provinces,
+                  attributes: ["province_name"],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          where: { users_id: data.id, is_primary: data.primary },
+        }
+      );
+      return getAddressByPrimaryKey;
+    } catch (error) {
+      return error;
+    }
+  },
+  getRajaOngkir: async (data) => {
+    try {
+      const getRajaOngkir = await db.tb_ro_provinces.findAll({
+        include: [
+          {
+            model: db.tb_ro_cities,
+            attributes: ["city_id", "city_name"],
+          },
+        ],
+      });
+      return getRajaOngkir;
+    } catch (error) {
+      return error;
+    }
+  },
+  paymentMethod: async () => {
+    try {
+      const getPaymentMethod = await db.payment_methods.findAll();
+
+      return getPaymentMethod;
+    } catch (error) {
+      return error;
+    }
+  },
+  couriers: async () => {
+    try {
+      const getCouriers = await db.couriers.findAll();
+      return getCouriers;
     } catch (error) {
       return error;
     }

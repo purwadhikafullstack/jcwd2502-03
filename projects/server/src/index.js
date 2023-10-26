@@ -40,7 +40,7 @@ app.use("/product", productRouter);
 // app.use("/report", reportRouter);
 app.use(bearerToken());
 
-app.use("/order", orderRouter);
+app.use("/api/order", orderRouter);
 app.use("/auth", authRouter)
 // app.use("/profilepicture", express.static(`${__dirname}/public/profilePictures`));
 // app.use("/products", express.static(`${__dirname}/public/products`));
@@ -69,6 +69,14 @@ app.get("/api/greetings", (req, res, next) => {
 // });
 
 // error
+// app.use((err, req, res, next) => {
+//     if (req.path.includes("/api/")) {
+//         console.error("Error : ", err.stack);
+//         res.status(500).send("Error !");
+//     } else {
+//         next();
+//     }
+// });
 // app.use((err, req, res, next) => {
 //     if (req.path.includes("/api/")) {
 //         console.error("Error : ", err.stack);
