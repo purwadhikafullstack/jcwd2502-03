@@ -26,7 +26,7 @@ app.use(express.json());
 const { orderRouter, authRouter } = require("./routers");
 // const { authRouter } = require("./routers");
 // const { userRouter } = require("./routers");
-const { productRouter, categoryRouter } = require("./routers");
+const { productRouter, categoryRouter, warehouseRouter } = require("./routers");
 // const { adminRouter } = require("./routers");
 // const { cartRouter } = require("./routers");
 // const { transactionRouter } = require("./routers");
@@ -45,7 +45,7 @@ app.use("/auth", authRouter)
 // app.use("/profilepicture", express.static(`${__dirname}/public/profilePictures`));
 // app.use("/products", express.static(`${__dirname}/public/products`));
 app.use("/category", categoryRouter);
-// app.use("/warehouse", warehouseRouter);
+app.use("/api/warehouse", warehouseRouter);
 
 app.get("/api", (req, res) => {
     res.send(`Hello, this is my API`);
@@ -60,23 +60,23 @@ app.get("/api/greetings", (req, res, next) => {
 // ===========================
 
 // not found
-app.use((req, res, next) => {
-    if (req.path.includes("/api/")) {
-        res.status(404).send("Not found !");
-    } else {
-        next();
-    }
-});
+// app.use((req, res, next) => {
+//     if (req.path.includes("/api/")) {
+//         res.status(404).send("Not found !");
+//     } else {
+//         next();
+//     }
+// });
 
 // error
-app.use((err, req, res, next) => {
-    if (req.path.includes("/api/")) {
-        console.error("Error : ", err.stack);
-        res.status(500).send("Error !");
-    } else {
-        next();
-    }
-});
+// app.use((err, req, res, next) => {
+//     if (req.path.includes("/api/")) {
+//         console.error("Error : ", err.stack);
+//         res.status(500).send("Error !");
+//     } else {
+//         next();
+//     }
+// });
 
 //#endregion
 
