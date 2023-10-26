@@ -1,11 +1,12 @@
-const { where } = require("sequelize");
+// const { where } = require("sequelize");
 const db = require("../models");
 
 module.exports = {
-    addWarehouse: async ({name, status, cities_id, lng, lat}) => {
+    addWarehouse: async ({name, cities_id, lat, lng}) => {
     try {
-      const res = await db.warehouses.create({name,status : "Active",cities_id,lng,lat});
-      return res;
+      const hasil = await db.warehouses.create({name,status : "Active",cities_id,lng,lat});
+      console.log(hasil);
+      return hasil;
     } catch (error) {
       return error;
     }

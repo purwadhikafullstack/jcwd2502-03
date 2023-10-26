@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
             orders_details,
             products_stocks,
             stocks_mutations,
-            cities,
+            tb_ro_cities,
             products_stocks_histories,
         }) {
             this.hasMany(users, { foreignKey: "warehouses_id" });
@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
             this.hasMany(products_stocks_histories, {
                 foreignKey: "warehouses_id",
             });
-            this.belongsTo(cities, { foreignKey: "cities_id" });
+            this.belongsTo(tb_ro_cities, { foreignKey: "cities_id" });
         }
     }
     warehouses.init(
