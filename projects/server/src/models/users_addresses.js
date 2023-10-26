@@ -2,10 +2,9 @@
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
     class users_addresses extends Model {
-        static associate({ users, cities, tb_ro_cities }) {
+        static associate({ users, tb_ro_cities }) {
             this.belongsTo(users, { foreignKey: "users_id" });
-            this.belongsTo(cities, { foreignKey: "cities_id" });
-            this.belongsTo(tb_ro_cities, { foreignKey: "tb_ro_cities_id" });
+            this.belongsTo(tb_ro_cities, { foreignKey: "cities_id" });
         }
     }
     users_addresses.init(

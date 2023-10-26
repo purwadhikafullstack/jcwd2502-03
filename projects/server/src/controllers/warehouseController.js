@@ -6,7 +6,9 @@ module.exports = {
     addWarehouse : async (req, res, next) => {
         try {
             const loc = await opencageService.getLatLong(req.body)
+            console.log({...req.body, ...loc});
             const add = await warehouseService.addWarehouse({...req.body, ...loc})
+            console.log(add);
             res.status(200).send({
                 isError : "false",
                 message : "Success Add Warehouse"
@@ -56,6 +58,19 @@ module.exports = {
                 isError : "false",
                 message : "Success Update Warehouse"
             })
+        } catch (error) {
+            next(error)
+        }
+    },
+    getWarehouseTerdekat : async (req, res, next) => {
+        try {
+            const {address_id} = req.body
+            const city = await db.users_addresses.findByPk(address_id)
+            console.log(city?.dataValues.cities_id);
+            const loc = await opencageService.getLatLong(city?.dataValues.tb_ro_cities_id) //get lng lat berdasarkan cities_id
+            // console.log({...loc, address_id});
+            const data = await opencageService.getWarehouseTerdekat({...loc,address_id})
+            // console.log(loc);
         } catch (error) {
             next(error)
         }
