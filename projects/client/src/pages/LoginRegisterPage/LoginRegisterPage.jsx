@@ -63,7 +63,7 @@ const LoginRegisterPage = () => {
     };
 
     const registerUser = async (e) => {
-        e.preventDefault();
+        // e.preventDefault();
         try {
             const { fullname, email, password } = input;
             const res = await axiosInstance.post(`/auth/register`, {

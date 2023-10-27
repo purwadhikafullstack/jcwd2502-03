@@ -5,9 +5,16 @@ const db = require("../models")
 module.exports = {
     addWarehouse : async (req, res, next) => {
         try {
-            const loc = await opencageService.getLatLong(req.body)
-            console.log({...req.body, ...loc});
-            const add = await warehouseService.addWarehouse({...req.body, ...loc})
+            const {name, cities_id} = req.body
+            const loc = await opencageService.getLatLong(cities_id)
+            // console.log({...req.body, ...loc});
+            const data = {
+                name : req.body.name,
+                cities_id : req.body.cities_id,
+                lng : loc.lng,
+                lat : loc.lat,
+            }
+            const add = await warehouseService.addWarehouse(data)
             console.log(add);
             res.status(200).send({
                 isError : "false",
@@ -66,11 +73,16 @@ module.exports = {
         try {
             const {address_id} = req.body
             const city = await db.users_addresses.findByPk(address_id)
-            console.log(city?.dataValues.cities_id);
-            const loc = await opencageService.getLatLong(city?.dataValues.tb_ro_cities_id) //get lng lat berdasarkan cities_id
-            // console.log({...loc, address_id});
-            const data = await opencageService.getWarehouseTerdekat({...loc,address_id})
+            // console.log(city?.dataValues.cities_id);
+            const loc = await opencageService.getLatLong(city?.dataValues.cities_id) //get lng lat berdasarkan cities_id
             // console.log(loc);
+            const datas = {
+                address_id : address_id,
+                lat : loc.lat,
+                lng : loc.lng
+            }
+            const data = await opencageService.getWarehouseTerdekat(datas)
+            res.send(data)
         } catch (error) {
             next(error)
         }
