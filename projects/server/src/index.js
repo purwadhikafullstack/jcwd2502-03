@@ -33,7 +33,7 @@ const { productRouter, categoryRouter, warehouseRouter } = require("./routers");
 // const { reportRouter } = require("./routers");
 // app.use("/auth", authRouter);
 // app.use("/user", userRouter);
-app.use("/product", productRouter);
+app.use("/api/product", productRouter);
 // app.use("/admin", adminRouter);
 // app.use("/cart", cartRouter);
 // app.use("/transaction", transactionRouter);
@@ -41,10 +41,10 @@ app.use("/product", productRouter);
 app.use(bearerToken());
 
 app.use("/api/order", orderRouter);
-app.use("/auth", authRouter)
+app.use("/api/auth", authRouter)
 // app.use("/profilepicture", express.static(`${__dirname}/public/profilePictures`));
 // app.use("/products", express.static(`${__dirname}/public/products`));
-app.use("/category", categoryRouter);
+app.use("/api/category", categoryRouter);
 app.use("/api/warehouse", warehouseRouter);
 
 app.get("/api", (req, res) => {

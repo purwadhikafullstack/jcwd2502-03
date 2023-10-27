@@ -102,7 +102,7 @@ const ShopePage = () => {
   useEffect(() => {
     getKategori();
     getProduct();
-  }, [currentCategory, filter, filter]);
+  }, [currentCategory]);
   return (
     <div className="max-w-[1280px] px-5 m-auto">
       <TabBar />
