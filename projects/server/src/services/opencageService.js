@@ -3,7 +3,7 @@ const axios = require("axios");
 const apiKey = "ae3e97cbd5794c5a9110d1c04da85bda";
 
 module.exports = {
-  getLatLong: async ({cities_id}) => {
+  getLatLong: async (cities_id) => {
     try {
       const city = await db.tb_ro_cities.findByPk(cities_id)
       const province = await db.tb_ro_provinces.findByPk(city?.dataValues.provinces_id)
@@ -14,10 +14,9 @@ module.exports = {
       return error;
     }
   },
-  getWarehouseTerdekat: async ({lat, lng, address_id }) => {
+  getWarehouseTerdekat: async (datas) => {
     try {
-      // const data = await db.warehouse.findAll()
-      console.log(lat);
+      const data = await db.warehouses.findAll()
       let nearestWarehouse = null;
       let nearestDistance = Infinity;
       function degToRad(deg) {
@@ -40,18 +39,19 @@ module.exports = {
         return Math.ceil(distance);
       }
 
-      warehouses.forEach((warehouse) => {
+      data.forEach((warehouse) => {
         const distance = calculateDistance(
-          userLatitude,
-          userLongitude,
-          warehouse.latitude,
-          warehouse.longitude
+          datas.lat,
+          datas.lng,
+          warehouse.lat,
+          warehouse.lng
         );
         if (distance < nearestDistance) {
           nearestDistance = distance;
           nearestWarehouse = warehouse;
         }
       });
+      console.log(nearestWarehouse);
       return nearestWarehouse
     } catch (error) {
       return error;

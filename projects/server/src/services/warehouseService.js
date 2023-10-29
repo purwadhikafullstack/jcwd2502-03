@@ -2,9 +2,10 @@
 const db = require("../models");
 
 module.exports = {
-    addWarehouse: async ({name, cities_id, lat, lng}) => {
+    addWarehouse: async (data) => {
     try {
-      const hasil = await db.warehouses.create({name,status : "Active",cities_id,lng,lat});
+      console.log(data);
+      const hasil = await db.warehouses.create(data);
       console.log(hasil);
       return hasil;
     } catch (error) {
