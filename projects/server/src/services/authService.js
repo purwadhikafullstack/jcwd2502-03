@@ -73,7 +73,7 @@ class AuthService extends Service {
                     "Account create success, please check your email to verify your account!",
                 data: {
                     createUser,
-                    loginToken
+                    loginToken,
                 },
             });
         } catch (error) {
@@ -183,7 +183,11 @@ class AuthService extends Service {
 
     static resendVerificationEmail = async (userId) => {
         try {
-            const findUser = await db.users.findByPk(userId);
+            const findUser = await db.users.findOne({
+                where: {
+                    id: userId,
+                },
+            });
 
             if (findUser.is_verified) {
                 return this.handleError({
@@ -192,6 +196,25 @@ class AuthService extends Service {
                 });
             }
 
+            const findValidToken = await db.verification_tokens.findAll({
+                where: {
+                    users_id: findUser.id,
+                    is_valid: true,
+                },
+            });
+
+            if (findValidToken) {
+                await db.verification_tokens.update(
+                    {
+                        is_valid: false,
+                    },
+                    {
+                        where: {
+                            users_id: findValidToken.users_id,
+                        },
+                    }
+                );
+            }
             const verifyAccountToken = nanoid(40);
 
             await db.verification_tokens.create({
@@ -217,6 +240,11 @@ class AuthService extends Service {
                 to: findUser.email,
                 subject: "Verify Your Account!",
                 html: renderedTemplate,
+            });
+
+            return this.handleSuccess({
+                message: "Verification email sent.",
+                statusCode: 201,
             });
         } catch (error) {
             console.log(error);

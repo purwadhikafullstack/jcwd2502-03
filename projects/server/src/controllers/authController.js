@@ -73,7 +73,7 @@ const authController = {
 
     resendVerificationEmail: async (req, res) => {
         try {
-            const userId = req.users.id;
+            const { userId } = req.params;
 
             const serviceResult = await AuthService.resendVerificationEmail(
                 userId
@@ -94,7 +94,6 @@ const authController = {
     loginUser: async (req, res) => {
         try {
             const { email, password } = req.body;
-            
 
             const serviceResult = await AuthService.loginUser(email, password);
 

@@ -7,7 +7,6 @@ router.get("/verify/user-:userId", authController.getVerifyToken);
 router.post("/verify", authController.verifyUser);
 router.post(
     "/resend-verification-email/:userId",
-    authorizeLoggedInUser,
     authController.resendVerificationEmail
 );
 router.post("/login", authController.loginUser);

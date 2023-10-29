@@ -50,7 +50,7 @@ const UserVerificationPage = () => {
             <div className="border flex flex-col bg-white w-full h-screen place-items-center pt-4">
                 <div className="flex flex-col pb-2 mt-32 w-[724px] h-[250px] border-2 rounded">
                     <div className="flex flex-col items-center p-5">
-                        <div className="font-bold">Token</div>
+                        <div className="font-bold">Click "Verify" Button to verify your account!</div>
                         {token.map((row) => (
                             <div
                                 className="flex border-2 border-gray-300 w-[600px] h-[50px] mt-5 rounded-lg p-3 justify-center bg-gray-300 cursor-default"
@@ -62,7 +62,7 @@ const UserVerificationPage = () => {
                     </div>
                     <div className="flex justify-center mt-6">
                         <button
-                            className="w-[200px] h-[50px] rounded-lg bg-orange-400 border border-black"
+                            className="w-[200px] h-[50px] rounded-lg bg-orange-400 border border-black font-bold"
                             onClick={verifyButtonHandler}
                         >
                             Verify

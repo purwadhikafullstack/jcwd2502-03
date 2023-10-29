@@ -6,12 +6,13 @@ import Cookies from "js-cookie";
 import toast, { Toaster } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { login } from "../../redux/Reducer/auth";
+import VerificationTab from "../../components/VerificationTab/VerificationTab";
 
 const LoginRegisterPage = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const [isSignIn, setIsSignIn] = useState("hidden");
-    const [isSignUp, setIsSignUp] = useState("block");
+    const [isSignIn, setIsSignIn] = useState("block");
+    const [isSignUp, setIsSignUp] = useState("hidden");
     const [state, setState] = useState({
         email: "",
         password: "",
@@ -101,6 +102,7 @@ const LoginRegisterPage = () => {
         <div>
             <Toaster />
             <TabBar />
+            <VerificationTab />
             <div className="border flex flex-col bg-white w-full h-screen place-items-center pt-4">
                 <div className="flex flex-col pb-2 mt-8 w-[424px] h-[504px] border-2 rounded">
                     <div className="flex flex-row justify-between border-b">
