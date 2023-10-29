@@ -14,6 +14,7 @@ router.get("/raja-ongkir-cities", orderController.getCityRajaOngkir);
 router.get("/payments", orderController.paymentMethod);
 router.get("/couriers", orderController.getCouriers);
 router.post("/add-address",authorizeLoggedInUser, orderController.addAddress);
+router.post("/edit-address",authorizeLoggedInUser, orderController.editAddress);
 
 
 module.exports = router;

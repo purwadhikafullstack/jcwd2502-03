@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate({ tb_ro_cities, users_addresses }) {
       // define association here
       this.hasMany(tb_ro_cities, { foreignKey: "provinces_id" });
-      this.hasMany(users_addresses, { foreignKey: "tb_ro_provinces_id" });
+      // this.hasMany(users_addresses, { foreignKey: "provinces_id" });
     }
   }
   tb_ro_provinces.init(

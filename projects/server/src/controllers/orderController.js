@@ -15,8 +15,10 @@ const {
   paymentMethod,
   couriers,
   addAddressById,
+  editAddress,
 } = require("./../services/orderService");
 
+const { getLatLong } = require("./../services/opencageService");
 const moment = require("moment");
 
 const orderController = {
@@ -224,16 +226,14 @@ const orderController = {
   addAddress: async (req, res, next) => {
     try {
       const { id } = req.tokens;
-      const { address, province, city } = req.body;
+      const { address, city } = req.body;
 
       if (!address) throw { message: "Fill Out The Address" };
-      if (!province) throw { message: "Select The Province" };
       if (!city) throw { message: "Select The City" };
 
       const data = {
         address: address,
-        tb_ro_cities_id: city,
-        tb_ro_provinces_id: province,
+        cities_id: city,
         users_id: id,
       };
 
@@ -243,6 +243,28 @@ const orderController = {
         isError: false,
         data: addAddress,
         message: "Address Added",
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  editAddress: async (req, res, next) => {
+    try {
+      const { id } = req.tokens;
+      const { address, city, idAddress } = req.body;
+      const dataToEdit = {
+        address: address,
+        cities_id: city,
+      };
+
+      if (!address) throw { message: "Fill Out The Address" };
+      if (!city) throw { message: "Select The City" };
+
+      const resultEdit = await editAddress(dataToEdit, idAddress, id);
+
+      res.status(200).send({
+        isError: false,
+        message: "Edit Successfull",
       });
     } catch (error) {
       next(error);

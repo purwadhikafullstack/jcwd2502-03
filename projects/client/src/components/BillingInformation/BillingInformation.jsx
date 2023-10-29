@@ -22,6 +22,7 @@ const BillingInformation = ({
   setRajaOngkir,
   getAddress,
 }) => {
+  
   return (
     <div className="left-side  xl:w-[70%] h-auto md:w-[100%] ">
       <div className="flex items-center justify-between w-full mb-[24px] ">
@@ -54,6 +55,7 @@ const BillingInformation = ({
             labelName="Name"
             labelCSS="text-[14px]"
             className="w-full h-[44px]"
+            disabled="disabled"
           />
         </div>
         <div className="input-width1 w-[50%]">
@@ -63,6 +65,7 @@ const BillingInformation = ({
             type="text"
             labelName="Gmail"
             className="w-full h-[44px]"
+            disabled="disabled"
           />
         </div>
       </div>
@@ -74,6 +77,7 @@ const BillingInformation = ({
             labelName="Address"
             type="text"
             className="w-full h-[44px] "
+            disabled="disabled"
           />
         </div>
       </div>

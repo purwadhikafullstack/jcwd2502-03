@@ -5,8 +5,8 @@ module.exports = (sequelize, DataTypes) => {
     static associate({ users, cities, tb_ro_cities, tb_ro_provinces }) {
       this.belongsTo(users, { foreignKey: "users_id" });
 
-      this.belongsTo(tb_ro_cities, { foreignKey: "tb_ro_cities_id" });
-      this.belongsTo(tb_ro_provinces, { foreignKey: "tb_ro_provinces_id" });
+      this.belongsTo(tb_ro_cities, { foreignKey: "cities_id" });
+      // this.belongsTo(tb_ro_provinces, { foreignKey: "provinces_id" });
     }
   }
   users_addresses.init(

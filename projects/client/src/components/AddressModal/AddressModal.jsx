@@ -9,6 +9,7 @@ import { FaPlus } from "react-icons/fa";
 import AddShippingModal from "../AddShippingModal/AddShippingModal";
 import axiosInstance from "../../config/api";
 import toast, { Toaster } from "react-hot-toast";
+import EditShippingModal from "../EditShippingModal/EditShippingModal";
 
 const AddressModal = ({
   isOpen,
@@ -22,15 +23,11 @@ const AddressModal = ({
   userData,
   rajaOngkir,
   setRajaOngkir,
-  getAddress
+  getAddress,
 }) => {
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [value, setValue] = useState();
   const [isAddOpen, setIsAddOpen] = useState(false);
-  const handleEditConfirm = () => {
-    setEditModalIsOpen(false);
-  };
-
   const customStyle = {
     content: {
       width: "500px",
@@ -57,10 +54,25 @@ const AddressModal = ({
         province: province,
         city: city,
       });
-
       toast.success(addAddress.data.message);
       setIsAddOpen(false);
-      getAddress()
+      getAddress();
+    } catch (error) {
+      toast.error(error.response.data.message);
+    } finally {
+    }
+  };
+  const confirmEditAddress = async (id, address, city) => {
+    try {
+      const editAddress = await axiosInstance.post("/order/edit-address", {
+        idAddress: id,
+        address: address,
+        city: city,
+      });
+
+      toast.success(editAddress.data.message);
+      setEditModalIsOpen(false);
+      getAddress();
     } catch (error) {
       toast.error(error.response.data.message);
     }
@@ -102,7 +114,7 @@ const AddressModal = ({
             confirmAddAddress={confirmAddAddress}
           />
         </div>
-        <div className=" h-[430px] overflow-auto">
+        <div className=" h-[380px] overflow-auto ">
           {addresses.map((value) => {
             return (
               <div
@@ -118,7 +130,7 @@ const AddressModal = ({
                 ) : (
                   <div></div>
                 )}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 ">
                   <h1 className="text-[16px] font-semibold">Address :</h1>
                   <h1 className="text-[14px]">{value.address}</h1>
                 </div>
@@ -141,12 +153,17 @@ const AddressModal = ({
             <Button
               btnName="Edit"
               btnCSS="w-full rounded-[16px] bg-white border-[1px] border-primaryOrange text-primaryOrange"
-              onClick={() => setEditModalIsOpen(true)}
+              onClick={() => {
+                if(!value) return toast.error("Choose an Address")
+                setEditModalIsOpen(true);
+              }}
             />
-            <EditAddressModal
-              isOpen={editModalIsOpen}
-              handleEditConfirm={handleEditConfirm}
-              cancelEdit={() => setEditModalIsOpen(false)}
+            <EditShippingModal
+              editModalIsOpen={editModalIsOpen}
+              rajaOngkir={rajaOngkir}
+              setEditModalIsOpen={setEditModalIsOpen}
+              value={value}
+              confirmEditAddress={confirmEditAddress}
             />
           </div>
           <div className="w-[50%]">
@@ -157,7 +174,7 @@ const AddressModal = ({
             />
           </div>
         </div>
-        {isAddOpen === true ? <div></div> : <Toaster />}
+        <Toaster />
       </div>
     </Modal>
   );
