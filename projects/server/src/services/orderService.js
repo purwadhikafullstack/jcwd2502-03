@@ -23,6 +23,7 @@ module.exports = {
     }
   },
   getProductById: async (productId) => {
+    console.log(productId);
     try {
       const getProduct = await db.products.findOne({
         where: { id: productId },
@@ -227,6 +228,24 @@ module.exports = {
     try {
       const getCouriers = await db.couriers.findAll();
       return getCouriers;
+    } catch (error) {
+      return error;
+    }
+  },
+  addAddressById: async (data) => {
+    try {
+      const addAddress = await db.users_addresses.create(data);
+      return addAddress;
+    } catch (error) {
+      return error;
+    }
+  },
+  editAddress: async (data, idAddress, id) => {
+    try {
+      const editAddress = await db.users_addresses.update(data, {
+        where: { id: idAddress, users_id: id },
+      });
+      return editAddress;
     } catch (error) {
       return error;
     }
