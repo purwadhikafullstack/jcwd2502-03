@@ -1,10 +1,11 @@
+const {nextui} = require("@nextui-org/react");
 /** @type {import('tailwindcss').Config} */
-// const {nextui} = require("@nextui-org/react");
+
 module.exports = {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
     'node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}',
-    // "../node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}"
+    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}"
   ],
   theme: {
     // screens:{
@@ -21,6 +22,6 @@ module.exports = {
       }
     },
   },
-  // darkMode: "class",
-  plugins: [ require("daisyui"), require('flowbite/plugin')],
+  darkMode: "class",
+  plugins: [ require("daisyui"), require('flowbite/plugin'), nextui()],
 }

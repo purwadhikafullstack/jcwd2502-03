@@ -16,6 +16,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^0.27.2",
     "flowbite-react": "^0.6.4",
+    "font-awesome": "^4.7.0",
     "framer-motion": "^10.16.4",
     "js-cookie": "^3.0.5",
     "query-string": "^8.1.0",
