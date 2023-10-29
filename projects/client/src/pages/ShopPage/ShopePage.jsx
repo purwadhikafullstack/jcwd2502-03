@@ -55,11 +55,9 @@ const ShopePage = () => {
     cartData();
   }, []);
 
-  //   console.log(param.search);
-  //   console.log(currentCategory);
   const getKategori = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/category");
+      const res = await axiosInstance.get("/category");
       setKategori(res.data);
       //   console.log(res.data);
     } catch (error) {
@@ -69,8 +67,7 @@ const ShopePage = () => {
 
   const getProduct = async () => {
     try {
-      const res = await axios.get(
-        `http://localhost:8000/product${param.search}&search=${filter.searchProductName}&sortBy=${filter.sortBy}&product_status=Active`
+      const res = await axiosInstance.get(`/product${param.search}&search=${filter.searchProductName}&sortBy=${filter.sortBy}&product_status=Active`
       );
       setDatas(res.data);
       //   console.log(res.data);
@@ -105,20 +102,17 @@ const ShopePage = () => {
   useEffect(() => {
     getKategori();
     getProduct();
-  }, [currentCategory, filter, filter]);
-  // console.log(kategori);
-  // console.log(kategori);
-
+  }, [currentCategory]);
   return (
-    <div className="">
+    <div className="max-w-[1280px] px-5 m-auto">
       <TabBar />
-      <PageInfo />
-      <div className="grid gap-[24px] my-[40px] ">
+
+      <div className="flex  flex-col flex-wrap gap-[24px] my-[40px] ">
         {/* sidebar filter start */}
-        <div className="flex gap-5 m-auto justify-between w-[1320px]">
+        <div className="flex flex-col justify-center md:flex-row flex-wrap gap-5 m-auto md:justify-around w-full">
           <div className="">
             <select
-              className="select select-bordered w-full max-w-[312px]"
+              className="select select-bordered w-full md:max-w-[312px]"
               onChange={handleCategoryChange}
             >
               <option disabled selected>
@@ -135,7 +129,7 @@ const ShopePage = () => {
                 })}
             </select>
           </div>
-          <div className="flex rounded-md items-center gap-4 bg-white w-[50%] relative">
+          <div className="flex rounded-md items-center gap-4 bg-white md:w-[50%] relative">
             <Input
               name={"searchProductName"}
               onChange={handleChange}
@@ -152,7 +146,7 @@ const ShopePage = () => {
             <select
               onChange={handleChange}
               name="sortBy"
-              className="select select-bordered w-full max-w-[312px]"
+              className="select select-bordered w-full md:max-w-[312px]"
             >
               <option disabled selected>
                 Sort Price By
@@ -165,7 +159,7 @@ const ShopePage = () => {
         {/* sidebar filter end */}
 
         {/* main shop start */}
-        <div className="w-[1320px] m-auto">
+        <div className="w-full m-auto">
           <CardProduct data={datas} addToCart={addToCart} />
         </div>
         {/* main shop end */}

@@ -1,4 +1,3 @@
-import axios from "axios";
 import "./App.css";
 import { useEffect, useState } from "react";
 import routes from "./routes/routes";
@@ -7,27 +6,18 @@ import Nav from "./components/Navbar/Nav";
 import Footer from "./components/Footer/Footer";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
-
+import { Toaster } from "react-hot-toast";
 function App() {
-    const [message, setMessage] = useState("test");
-
-    useEffect(() => {
-        (async () => {
-            const { data } = await axios.get(
-                `${process.env.REACT_APP_API_BASE_URL}/greetings`
-            );
-            setMessage(data?.message || "");
-        })();
-    }, []);
-    return (
-        <div className="max-w-[1920px] container">
-            <Provider store={store}>
-                <Nav />
-                <Routes>{routes.map((value) => value)}</Routes>
-                <Footer />
-            </Provider>
-        </div>
-    );
+  return (
+    <>
+      <Provider store={store}>
+        <Nav />
+        <Routes>{routes.map((value) => value)}</Routes>
+        <Footer />
+        <Toaster position="top-center" />
+      </Provider>
+    </>
+  );
 }
 
 export default App;

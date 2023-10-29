@@ -13,9 +13,9 @@ const NotFoundPage = () => {
         navigate(-1)
     }
   return (
-    <div>
+    <div className="max-w-[1280px] m-auto">
       <TabBar />
-      <PageInfo />
+
       <div className="flex flex-col items-center mt-[-100px]  w-full">
         <div className="w-full flex justify-center">
           <img className="w-[500px] h-[500px]" src={notFound} alt="" />

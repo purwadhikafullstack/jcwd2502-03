@@ -14,10 +14,10 @@ const UserDashboardPage = () => {
   };
 
   return (
-    <div>
+    <div className="max-w-[1280px] m-auto">
       <TabBar />
-      <PageInfo />
-      <div className="px-[300px] flex gap-[72px] h-full mb-[32px]">
+
+      <div className=" flex gap-[72px] h-full mb-[32px]">
         <SideBarDashboard tabValue={tabValue} setTabValue={setTabValue} />
         <div className={`${tabValue === 7 ? "h-auto" : "h-[718px]" } right w-full  rounded-[4px] border-[1px] shadow-xl `}>
           {tabValue === 1 ? (

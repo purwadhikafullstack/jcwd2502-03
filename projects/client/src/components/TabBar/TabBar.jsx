@@ -8,22 +8,8 @@ import { Link } from "react-router-dom";
 
 const TabBar = () => {
   return (
-    <div className="w-full h-auto mt-[104px] mb-[24px]  px-[300px] ">
+    <div className=" m-auto h-auto mt-[124px] mb-[24px]">
       <div className="flex h-full items-center text-[#5F6C72] ">
-        {/* <div className="">
-          <select
-            className="select select-bordered w-full max-w-[312px]"
-          >
-            <option disabled selected>
-              Pick Kategori
-            </option>
-            <option value={""}>All Product</option>
-            <option><Link to={"/product?categori=Laptop"}>"Laptop"</Link></option>
-            <option><Link to={"/product?categori=SmartPhone"} >"SmartPhone"</Link></option>
-            <option></option><Link to={"/product?categori=Headphones"}>"Headphones"</Link>
-            <option></option><Link to={"/product?categori=Accessories"}>"Accessories"</Link>
-          </select>
-        </div> */}
         <div className="track-order flex items-center mr-[20px]">
           <TiLocationOutline className="text-[20px] mr-[6px]" />
           <h1 className="text-[14px]">Track Order</h1>

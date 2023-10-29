@@ -7,7 +7,7 @@ import { BsApple } from "react-icons/bs";
 const Footer = () => {
   return (
     <div className='w-full bg-[#191C1F] mt-5'>
-      <div className='lg:py-[72px] lg:px-[300px] py-[50px] px-[50px] grid grid-cols-2 lg:flex gap-10 justify-center align-middle '>
+      <div className='lg:py-[72px] lg:px-[80px] py-[50px] px-[50px] flex flex-wrap lg:flex gap-10 justify-start md:justify-center align-middle '>
         <div className='grid gap-2'>
             <Logo logoCSS={""}/>
             <div className='grid mt-2'>

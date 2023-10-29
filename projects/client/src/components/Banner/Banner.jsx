@@ -4,8 +4,8 @@ import features from "../../assets/features.png"
 
 export default function Banner() {
   return (
-    <div className="grid grid-cols-6 w-[1320px] h-full m-auto gap-3">
-    <div className="carousel w-full col-span-6 lg:col-span-4">
+    <div className="bject-cover w-full h-full m-auto gap-3">
+    <div className="carousel w-full">
       <div id="slide1" className="carousel-item   w-full">
         <img
           src="https://img.freepik.com/free-photo/professional-esports-woman-gamer-playing-rgb-powerful-computer-video-game-celebrating-victory-pro-cyber-streaming-raising-hands-wining-tournament-esport-online-championship-from-gaming-studio_482257-12515.jpg?size=626&ext=jpg&ga=GA1.1.79229679.1697243929&semt=ais"
@@ -64,13 +64,10 @@ export default function Banner() {
       </div>
     </div>
 
-    <div className="lg:col-span-2 col-span-6 m-auto flex lg:grid gap-10 lg:gap-3">
+    {/* <div className="lg:col-span-2 col-span-6 m-auto flex lg:grid gap-10 lg:gap-3">
         <img src={widget1} alt="widget1" />
         <img src={widget2} alt="widget2" />
-    </div>
-    <div className="w-[1320px]">
-        <img className="w-full" src={features} alt="" />
-    </div>
+    </div> */}
     </div>
   );
 }
