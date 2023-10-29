@@ -21,6 +21,6 @@ module.exports = {
       }
     },
   },
-  darkMode: "class",
+  // darkMode: "class",
   plugins: [ require("daisyui"), require('flowbite/plugin')],
 }
