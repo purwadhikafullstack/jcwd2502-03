@@ -13,6 +13,7 @@ import LoginRegisterPage from "../pages/LoginRegisterPage/LoginRegisterPage";
 import UserVerificationPage from "../pages/UserVerificationPage/UserVerificationPage";
 import ShopePage from "../pages/ShopPage/ShopePage";
 import DetailProduct from "../pages/DetailProduct/DetailProduct";
+import OwnerDashboard from "../pages/OwnerDashboard/OwnerDashboard";
 
 const routes = [
     <Route path="/cart" element={<CartPage />} />,
@@ -30,6 +31,7 @@ const routes = [
     />,
     <Route path="/product" element={<ShopePage />} />,
     <Route path="/product/:idProduct" element={<DetailProduct />} />,
+    <Route path="/owner/dashboard" element={<OwnerDashboard />} />,
     
 ];
 
