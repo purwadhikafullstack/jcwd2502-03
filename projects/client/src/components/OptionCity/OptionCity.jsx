@@ -13,7 +13,7 @@ const OptionCity = (props) => {
         id="countries"
         className="border-[#E4E7E9] w-[100%] text-gray-500 rounded-[4px] h-[44px]"
       >
-        <option value={props.valueId} selected>{props.valueName}</option>
+        <option disabled value={props.valueId} selected>{props.valueName}</option>
       </select>
     </>
   );

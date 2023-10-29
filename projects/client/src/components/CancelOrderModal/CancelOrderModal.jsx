@@ -37,7 +37,7 @@ const CancelOrderModal = ({ cancelOrderIsOpen, cancel }) => {
         }
         isOpen={cancelOrderIsOpen}
       >
-        <Toaster />
+        {cancelOrderIsOpen === true ? <Toaster /> : <div></div>}
         <div className="h-full relative">
           <h1 className="text-[32px] font-bold">Are you sure ?</h1>
           <h1 className="text-[18px]">
@@ -52,7 +52,9 @@ const CancelOrderModal = ({ cancelOrderIsOpen, cancel }) => {
             <button
               onClick={handleYesButton}
               className="px-[32px] text-white bg-black rounded-xl h-[42px]"
-            >Yes</button>
+            >
+              Yes
+            </button>
           </div>
         </div>
       </Modal>

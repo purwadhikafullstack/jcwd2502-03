@@ -1,19 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import Button from "../Button/Button";
 import toast, { Toaster } from "react-hot-toast";
 import { PiNumberCircleOneLight } from "react-icons/pi";
 import { PiNumberCircleTwo } from "react-icons/pi";
-const AddShippingModal = ({
-  isOpen,
-  setIsAddOpen,
+const EditShippingModal = ({
+  editModalIsOpen,
   rajaOngkir,
-  setRajaOngkir,
-  confirmAddAddress,
+  setEditModalIsOpen,
+  value,
+  confirmEditAddress,
 }) => {
   const [province, setProvince] = useState("");
   const [city, setCity] = useState("");
   const [address, setAddress] = useState("");
+
+  useEffect(() => {
+    setProvince(Number(value?.tb_ro_city?.provinces_id - 1));
+    setCity(value?.cities_id);
+    setAddress(value?.address);
+  }, [value?.cities_id, value?.tb_ro_city?.provinces_id, value?.address]);
 
   const customStyle = {
     content: {
@@ -32,20 +38,20 @@ const AddShippingModal = ({
 
   return (
     <Modal
+      isOpen={editModalIsOpen}
       style={customStyle}
       overlayClassName={
         "fixed w-full h-screen top-0 left-0 z-[900] backdrop-blur-sm flex justify-center items-center"
       }
-      isOpen={isOpen}
     >
       <div className="relative h-full">
         <h1 className="text-center font-bold text-[24px] mb-[16px]">
-          ADD SHIPPING ADDRESS
+          EDIT SHIPPING ADDRESS
         </h1>
         <div className="flex gap-5 mb-[24px]">
           <form className="flex flex-col w-full">
             <label className="mb-[8px] " htmlFor="address">
-              Address :
+              Address:
             </label>
             <input
               onChange={(e) => setAddress(e.target.value)}
@@ -54,6 +60,7 @@ const AddShippingModal = ({
               placeholder="Type Your Address Details"
               className="border-[#E4E7E9] px-[12px] border-[1px] w-full h-[44px] rounded-[4px]"
               required
+              value={address}
             />
           </form>
         </div>
@@ -62,9 +69,9 @@ const AddShippingModal = ({
           <div className="w-[50%]">
             <label
               htmlFor="province"
-              className=" mb-[8px] text-sm font-medium text-gray-900 dark:text-white flex items-center gap-3 "
+              className=" mb-[8px] text-sm font-medium text-gray-900 dark:text-white flex items-center gap-3"
             >
-              Province : <PiNumberCircleOneLight className="text-[24px] " />
+              Province: <PiNumberCircleOneLight className="text-[24px]" />
             </label>
             <select
               id="province"
@@ -91,7 +98,7 @@ const AddShippingModal = ({
               htmlFor="city"
               className=" mb-[8px] text-sm font-medium text-gray-900 dark:text-white flex items-center gap-3"
             >
-              City : <PiNumberCircleTwo className="text-[24px]" />
+              City: <PiNumberCircleTwo className="text-[24px]" />
             </label>
             <select
               id="city"
@@ -99,7 +106,9 @@ const AddShippingModal = ({
               value={city}
               onChange={(e) => setCity(e.target.value)}
             >
-              <option selected>Select your city</option>
+              <option selected value="">
+                Select your city
+              </option>
               {rajaOngkir[province]?.tb_ro_cities.map((value, index) => {
                 return (
                   <option key={index} value={value.city_id}>
@@ -116,7 +125,7 @@ const AddShippingModal = ({
               btnName="Cancel"
               btnCSS="w-full rounded-[16px] bg-white border-[1px] border-primaryOrange text-primaryOrange"
               onClick={() => {
-                setIsAddOpen(false);
+                setEditModalIsOpen(false);
               }}
             />
           </div>
@@ -124,14 +133,14 @@ const AddShippingModal = ({
             <Button
               btnName="Confirm"
               btnCSS="w-full text-white rounded-[16px] h-[42px]"
-              onClick={() => confirmAddAddress(province, address, city)}
+              onClick={() => confirmEditAddress(value.id, address, city)}
             />
           </div>
         </div>
-        {/* <Toaster /> */}
+        <Toaster />
       </div>
     </Modal>
   );
 };
 
-export default AddShippingModal;
+export default EditShippingModal;

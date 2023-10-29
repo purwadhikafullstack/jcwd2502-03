@@ -14,8 +14,15 @@ const {
   getRajaOngkir,
   paymentMethod,
   couriers,
+  addAddressById,
+  editAddress,
 } = require("./../services/orderService");
 
+const {
+  getLatLong,
+  getWarehouseTerdekat,
+} = require("./../services/opencageService");
+const { getShippingMethod } = require("./../services/rajaOngkirService");
 const moment = require("moment");
 
 const orderController = {
@@ -65,9 +72,14 @@ const orderController = {
 
       const dataCart = await getCartByUserId(id);
 
+      const totalWeightForCart = dataCart.reduce((total, item) => {
+        return Number(total) + Number(item.dataValues["total-weight"]);
+      }, 0);
+
       res.status(200).send({
         isError: false,
         data: dataCart,
+        totalWeight: totalWeightForCart,
       });
     } catch (error) {
       next(error);
@@ -215,6 +227,82 @@ const orderController = {
       res.status(200).send({
         isError: false,
         data: getCouriers,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  addAddress: async (req, res, next) => {
+    try {
+      const { id } = req.tokens;
+      const { address, city } = req.body;
+
+      if (!address) throw { message: "Fill Out The Address" };
+      if (!city) throw { message: "Select The City" };
+
+      const data = {
+        address: address,
+        cities_id: city,
+        users_id: id,
+      };
+
+      const addAddress = await addAddressById(data);
+
+      res.status(200).send({
+        isError: false,
+        data: addAddress,
+        message: "Address Added",
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  editAddress: async (req, res, next) => {
+    try {
+      const { id } = req.tokens;
+      const { address, city, idAddress } = req.body;
+      const dataToEdit = {
+        address: address,
+        cities_id: city,
+      };
+
+      if (!address) throw { message: "Fill Out The Address" };
+      if (!city) throw { message: "Select The City" };
+
+      const resultEdit = await editAddress(dataToEdit, idAddress, id);
+
+      res.status(200).send({
+        isError: false,
+        message: "Edit Successfull",
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  getShippingMethod: async (req, res, next) => {
+    try {
+      const { cities_id, weight, courier } = req.body;
+      console.log(courier);
+
+      if (!courier) throw { message: "Select a Courier" };
+      if (courier === "select a courier") throw { message: "Select a Courier" };
+
+      const userAddressLatLong = await getLatLong(cities_id);
+
+      const nearestWarehouse = await getWarehouseTerdekat(userAddressLatLong);
+
+      const data = {
+        userCity: cities_id.toString(),
+        nearestWarehouse: nearestWarehouse.cities_id.toString(),
+        weight: weight,
+        courier: courier.toString(),
+      };
+
+      const getShipping = await getShippingMethod(data);
+
+      res.status(200).send({
+        isError: false,
+        data: getShipping.rajaongkir.results,
       });
     } catch (error) {
       next(error);

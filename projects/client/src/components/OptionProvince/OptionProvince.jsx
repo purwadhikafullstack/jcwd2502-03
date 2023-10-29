@@ -13,7 +13,7 @@ const OptionProvince = (props ) => {
         id="provinces"
         className="border-[#E4E7E9] w-full text-gray-500 rounded-[4px] h-[44px]"
       >
-        <option selected value={props.valueId}>
+        <option selected disabled value={props.valueId}>
           {props.valueName || "Select"}
         </option>
       </select>
