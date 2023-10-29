@@ -22,9 +22,9 @@ const ShippingOptions = ({ shippingOptions }) => {
                       key={index}
                       className={`w-[300px] ${
                         changeColor === item.service
-                          ? "border-primaryOrange"
+                          ? "border-primaryOrange text-primaryOrange"
                           : ""
-                      } cursor-pointer hover:border-primaryOrange text-primaryOrange flex flex-col items-center justify-center   h-[150px] border-2 rounded-xl shadow-md`}
+                      } cursor-pointer hover:border-primaryOrange   flex flex-col items-center justify-center   h-[150px] border-2 rounded-xl shadow-md`}
                     >
                       <h1 className="text-center text-[18px] font-medium mb-[4px]">
                         {item.service}
@@ -36,6 +36,12 @@ const ShippingOptions = ({ shippingOptions }) => {
                         {`Estimated order arrival ${item.cost[0].etd
                           .split("HARI")
                           .join("")} days `}
+                      </h1>
+                      <h1 className="text-green-400">
+                        {`${Number(item.cost[0].value).toLocaleString("id-ID", {
+                          style: "currency",
+                          currency: "IDR",
+                        })}`}
                       </h1>
                     </div>
                   );
