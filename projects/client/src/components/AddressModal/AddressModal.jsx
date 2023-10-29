@@ -24,6 +24,7 @@ const AddressModal = ({
   rajaOngkir,
   setRajaOngkir,
   getAddress,
+  setModalIsOpen,
 }) => {
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [value, setValue] = useState();
@@ -154,7 +155,7 @@ const AddressModal = ({
               btnName="Edit"
               btnCSS="w-full rounded-[16px] bg-white border-[1px] border-primaryOrange text-primaryOrange"
               onClick={() => {
-                if(!value) return toast.error("Choose an Address")
+                if (!value) return toast.error("Choose an Address");
                 setEditModalIsOpen(true);
               }}
             />
@@ -174,7 +175,6 @@ const AddressModal = ({
             />
           </div>
         </div>
-        <Toaster />
       </div>
     </Modal>
   );

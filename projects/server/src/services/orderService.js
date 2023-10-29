@@ -23,6 +23,7 @@ module.exports = {
     }
   },
   getProductById: async (productId) => {
+    console.log(productId);
     try {
       const getProduct = await db.products.findOne({
         where: { id: productId },

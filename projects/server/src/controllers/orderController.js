@@ -18,7 +18,11 @@ const {
   editAddress,
 } = require("./../services/orderService");
 
-const { getLatLong } = require("./../services/opencageService");
+const {
+  getLatLong,
+  getWarehouseTerdekat,
+} = require("./../services/opencageService");
+const { getShippingMethod } = require("./../services/rajaOngkirService");
 const moment = require("moment");
 
 const orderController = {
@@ -68,9 +72,14 @@ const orderController = {
 
       const dataCart = await getCartByUserId(id);
 
+      const totalWeightForCart = dataCart.reduce((total, item) => {
+        return Number(total) + Number(item.dataValues["total-weight"]);
+      }, 0);
+
       res.status(200).send({
         isError: false,
         data: dataCart,
+        totalWeight: totalWeightForCart,
       });
     } catch (error) {
       next(error);
@@ -265,6 +274,35 @@ const orderController = {
       res.status(200).send({
         isError: false,
         message: "Edit Successfull",
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  getShippingMethod: async (req, res, next) => {
+    try {
+      const { cities_id, weight, courier } = req.body;
+      console.log(courier);
+
+      if (!courier) throw { message: "Select a Courier" };
+      if (courier === "select a courier") throw { message: "Select a Courier" };
+
+      const userAddressLatLong = await getLatLong(cities_id);
+
+      const nearestWarehouse = await getWarehouseTerdekat(userAddressLatLong);
+
+      const data = {
+        userCity: cities_id.toString(),
+        nearestWarehouse: nearestWarehouse.cities_id.toString(),
+        weight: weight,
+        courier: courier.toString(),
+      };
+
+      const getShipping = await getShippingMethod(data);
+
+      res.status(200).send({
+        isError: false,
+        data: getShipping.rajaongkir.results,
       });
     } catch (error) {
       next(error);

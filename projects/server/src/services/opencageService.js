@@ -51,7 +51,7 @@ module.exports = {
           nearestWarehouse = warehouse;
         }
       });
-      console.log(nearestWarehouse);
+
       return nearestWarehouse
     } catch (error) {
       return error;
