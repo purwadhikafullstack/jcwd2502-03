@@ -6,14 +6,17 @@ import Nav from "./components/Navbar/Nav";
 import Footer from "./components/Footer/Footer";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
+import {NextUIProvider} from "@nextui-org/react";
 
 function App() {
   return (
     <>
       <Provider store={store}>
-        <Nav />
-        <Routes>{routes.map((value) => value)}</Routes>
-        <Footer />
+        <NextUIProvider>
+          <Nav />
+          <Routes>{routes.map((value) => value)}</Routes>
+          <Footer />
+        </NextUIProvider>
       </Provider>
     </>
   );

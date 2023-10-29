@@ -24,11 +24,9 @@ const ShopePage = () => {
     new URLSearchParams(param.search).get("categori")
   );
   const [filter, setFilter] = useState({
-    searchProductName: "",
     sortBy: "",
   });
-  console.log(filter);
-  //   console.log(param.search);
+  const [searchProductName, setSearchProductName] = useState("")
 
   const cartData = async () => {
     try {
@@ -59,7 +57,6 @@ const ShopePage = () => {
     try {
       const res = await axiosInstance.get("/category");
       setKategori(res.data);
-      //   console.log(res.data);
     } catch (error) {
       console.log(error);
     }
@@ -67,7 +64,7 @@ const ShopePage = () => {
 
   const getProduct = async () => {
     try {
-      const res = await axiosInstance.get(`/product${param.search}&search=${filter.searchProductName}&sortBy=${filter.sortBy}&product_status=Active`
+      const res = await axiosInstance.get(`/product${param.search}&search=${searchProductName}&sortBy=${filter.sortBy}&product_status=Active`
       );
       setDatas(res.data);
       //   console.log(res.data);
@@ -102,7 +99,7 @@ const ShopePage = () => {
   useEffect(() => {
     getKategori();
     getProduct();
-  }, [currentCategory]);
+  }, [currentCategory, filter, filter]);
   return (
     <div className="max-w-[1280px] px-5 m-auto">
       <TabBar />
@@ -132,7 +129,7 @@ const ShopePage = () => {
           <div className="flex rounded-md items-center gap-4 bg-white md:w-[50%] relative">
             <Input
               name={"searchProductName"}
-              onChange={handleChange}
+              onChange={(e) => setSearchProductName(e.target.value)}
               placeholder={"Search Product..."}
               inputCSS={""}
             />
