@@ -6,7 +6,6 @@ module.exports = {
     await queryInterface.bulkInsert(
       "provinces",
       [
-        [
           {
             id: 1,
             province: "Bali",
@@ -143,7 +142,6 @@ module.exports = {
             id: 34,
             province: "Sumatera Utara",
           },
-        ],
       ],
       {}
     );

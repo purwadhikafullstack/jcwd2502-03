@@ -7,8 +7,12 @@ import {
   AiOutlineEye,
 } from "react-icons/ai";
 import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
-
+import { AxiosInstance } from "../../config/api";
+import { Card, CardBody, CardFooter, Image } from "@nextui-org/react";
 import ModalShowProduct from "../ModalShowProduct/ModalShowProduct";
+// import { Button } from "flowbite-react";
+import Button from "../Button/Button";
+import { Link } from "react-router-dom";
 
 const CardProduct = ({ data, addToCart }) => {
   const datas = data;
@@ -39,74 +43,76 @@ const CardProduct = ({ data, addToCart }) => {
       setCurrentPage(currentPage - 1);
     }
   };
-
   return (
-    <div
-      className={
-        datas && datas.length > 0
-          ? `flex flex-wrap justify-around gap-5`
-          : `grid justify-center items-center gap-5`
-      }
-    >
-      <ModalShowProduct isOpen={modalIsOpen} />
-      {datas && datas.length > 0 ? (
-        currentData.map((item, index) => {
-          return (
-            <div
-              key={index}
-              className="max-w-[248px] min-w-[248px] max-h-[296px] border-2 cursor-pointer"
-            >
-              <div className="p-[16px]">
-                <div className="cardd">
-                  <div className="">
-                    <img src={product1} alt="" />
-                  </div>
-                  <div className="overla">
-                    <div className="flex gap-2">
-                      <span className="">
-                        <AiOutlineHeart className="text-white bg-primaryOrange p-2 rounded-full h-[48px] w-[48px]" />
-                      </span>
-                      <AiOutlineShoppingCart
-                        onClick={() => addToCart(item.id)}
-                        className="text-black bg-white p-2 rounded-full h-[48px] w-[48px]"
-                      />
-                      <AiOutlineEye
-                        onClick={handleModal}
-                        className="text-black font-bold bg-white p-2 rounded-full h-[50px] w-[50px]"
+    <>
+      <div
+        className={
+          datas && datas.length > 0
+            ? `flex flex-wrap gap-2 sm:gap-5  md:justify-center`
+            : `flex justify-center align-middle items-center gap-5`
+        }
+      >
+        {datas && datas.length > 0 ? (
+          currentData.map((item, index) => {
+            return (
+              <div
+                key={index}
+                className="w-[200px] md:w-[248px] min-w-[150px] rounded hover:border-orange-300 border-2 cursor-pointer"
+              >
+                <Link to={`/product/${item.id}`}>
+                  <div className="p-[16px]">
+                    <div className="cardd">
+                      <div className="relative">
+                        <AiOutlineHeart
+                          className="text-black absolute bg-slate-500 top-0 right-0 h-[32px] w-[32px] cursor-pointer "
+                          style={{ backgroundClip: "text" }}
+                        />
+                        <img src={product1} alt="" />
+                      </div>
+                    </div>
+                    <div className="">
+                      <div className="h-[40px] font-semibold overflow-hidden text-ellipsis text-sm">
+                        {item.product_name}
+                      </div>
+                      <div className="mt-[4px] text-[#2DA5F3] font-semibold">
+                        {new Intl.NumberFormat("id-ID", {
+                          style: "currency",
+                          currency: "IDR",
+                          // minimumFractionDigits: 2
+                        }).format(item.product_price)}
+                      </div>
+                    </div>
+                    {/* add to cart */}
+                    <div className="">
+                      <Button
+                        btnName={"Add To Cart"}
+                        btnCSS={" w-full rounded-md mt-2"}
                       />
                     </div>
                   </div>
-                </div>
-                <div className="">
-                  <div className="h-[40px] max-w-[216px] font-semibold overflow-hidden text-ellipsis text-sm">
-                    {item.product_name}
-                  </div>
-                  <div className="mt-[4px] text-[#2DA5F3] font-semibold">
-                    {new Intl.NumberFormat("id-ID", {
-                      style: "currency",
-                      currency: "IDR",
-                      // minimumFractionDigits: 2
-                    }).format(item.product_price)}
-                  </div>
-                </div>
+                </Link>
               </div>
-            </div>
-          );
-        })
-      ) : (
-        <div className=" text-center m-auto ">
-          <h2 className="text-2xl font-bold mb-4">Produk Tidak Ditemukan</h2>
-          <p className="text-gray-600">
-            Maaf, produk yang Anda cari tidak tersedia dalam kategori ini.
-          </p>
-        </div>
-      )}
+            );
+          })
+        ) : (
+          <div className=" text-center m-auto ">
+            <h2 className="text-2xl font-bold mb-4">Produk Tidak Ditemukan</h2>
+            <p className="text-gray-600">
+              Maaf, produk yang Anda cari tidak tersedia dalam kategori ini.
+            </p>
+          </div>
+        )}
+      </div>
       {datas && datas.length > itemsPerPage - 1 ? (
-        <div className="flex justify-center gap-3 mb-4 w-full">
-          <button className=" text-primaryOrange flex justify-center items-center p-2 w-[40px] h-[40px]  border-2 border-primaryOrange rounded-full " onClick={prevPage} disabled={currentPage === 1}>
+        <div className="mt-7 flex flex-wrap justify-center gap-3 mb-4 w-full">
+          <button
+            className=" text-primaryOrange flex justify-center items-center p-2 w-[40px] h-[40px]  border-2 border-primaryOrange rounded-full "
+            onClick={prevPage}
+            disabled={currentPage === 1}
+          >
             <BsArrowLeft className="font-extrabold " />
           </button>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {Array.from(
               { length: Math.ceil(datas.length / itemsPerPage) },
               (_, i) => (
@@ -122,14 +128,18 @@ const CardProduct = ({ data, addToCart }) => {
               )
             )}
           </div>
-          <button className=" text-primaryOrange flex justify-center items-center p-2 w-[40px] h-[40px]  border-2 border-primaryOrange rounded-full " onClick={nextPage} disabled={endIndex >= datas.length}>
+          <button
+            className=" text-primaryOrange flex justify-center items-center p-2 w-[40px] h-[40px]  border-2 border-primaryOrange rounded-full "
+            onClick={nextPage}
+            disabled={endIndex >= datas.length}
+          >
             <BsArrowRight className="font-extrabold " />
           </button>
         </div>
       ) : (
         <></>
       )}
-    </div>
+    </>
   );
 };
 

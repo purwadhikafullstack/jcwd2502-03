@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
             orders_details,
             products_stocks,
             stocks_mutations,
-            cities,
+            tb_ro_cities,
             products_stocks_histories,
         }) {
             this.hasMany(users, { foreignKey: "warehouses_id" });
@@ -24,18 +24,29 @@ module.exports = (sequelize, DataTypes) => {
             this.hasMany(products_stocks_histories, {
                 foreignKey: "warehouses_id",
             });
-            this.belongsTo(cities, { foreignKey: "cities_id" });
+            this.belongsTo(tb_ro_cities, { foreignKey: "cities_id" });
         }
     }
     warehouses.init(
         {
             name: DataTypes.STRING,
+            lng: DataTypes.STRING,
+            lat: DataTypes.STRING,
             status: DataTypes.ENUM("Active", "Inactive"),
+            createdAt : {
+                type: DataTypes.DATE,
+                defaultValue: new Date()
+              },
+              updatedAt : {
+                type: DataTypes.DATE,
+                defaultValue: new Date()
+              }
         },
         {
             sequelize,
             modelName: "warehouses",
-        }
+            paranoid : true
+        },
     );
     return warehouses;
 };

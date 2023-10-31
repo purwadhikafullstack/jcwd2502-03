@@ -1,6 +1,6 @@
 import React from "react";
 
-const OptionCourier = () => {
+const OptionCourier = ({ couriers, setCourierValue }) => {
   return (
     <>
       <label
@@ -11,10 +11,13 @@ const OptionCourier = () => {
       </label>
       <select
         id="courier"
-        className="border-[#E4E7E9] w-[200px] text-gray-500 rounded-[4px] h-[44px]"
+        className="border-[#E4E7E9] w-full text-gray-500 rounded-[4px] h-[44px]"
+        onChange={(e) => setCourierValue(e.target.value)}
       >
         <option selected>Select a Courier</option>
-        <option value="US">JNE</option>
+        {couriers.map((value) => {
+          return <option value={value.courier}>{value.courier}</option>;
+        })}
       </select>
     </>
   );

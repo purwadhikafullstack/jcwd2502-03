@@ -1,6 +1,6 @@
 import React from "react";
 
-const InputPaymentOption = () => {
+const InputPaymentOption = ({ payments, setPaymentsOption }) => {
   return (
     <>
       <label
@@ -11,10 +11,19 @@ const InputPaymentOption = () => {
       </label>
       <select
         id="countries"
-        className="border-[#E4E7E9] w-[200px] text-gray-500 rounded-[4px] h-[44px]"
+        className="border-[#E4E7E9] w-full text-gray-500 rounded-[4px] h-[44px]"
+        onChange={(e) => setPaymentsOption(e.target.value)}
       >
-        <option selected>Select a Payment</option>
-        <option value="US">United States</option>
+        <option onChange={() => setPaymentsOption("")} selected>
+          Select a Payment
+        </option>
+        {payments.map((value) => {
+          return (
+            <>
+              <option value={value.id}>{value.method}</option>
+            </>
+          );
+        })}
       </select>
     </>
   );

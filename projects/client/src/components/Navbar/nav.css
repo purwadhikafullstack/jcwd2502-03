@@ -9,3 +9,24 @@
   opacity: 0;
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
+
+@media (min-width: 768px) {
+  .wrap-nav {
+    padding: 0  20px;
+  }
+}
+@media (min-width: 1024px) {
+  .wrap-nav {
+    padding: 0 20px;
+  }
+}
+@media (min-width: 1440px) {
+  .wrap-nav {
+    padding: 0 100px;
+  }
+}
+@media (min-width: 1500px) {
+  .wrap-nav {
+    padding: 0 300px;
+  }
+}
