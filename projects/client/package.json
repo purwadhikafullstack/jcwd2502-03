@@ -19,7 +19,6 @@
     "font-awesome": "^4.7.0",
     "framer-motion": "^10.16.4",
     "js-cookie": "^3.0.5",
-    "next-ui": "^0.9.0",
     "query-string": "^8.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
