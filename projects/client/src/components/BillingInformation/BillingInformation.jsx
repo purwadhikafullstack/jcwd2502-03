@@ -38,7 +38,7 @@ const BillingInformation = ({
       if (!paymentsOption || paymentsOption === "Select a Payment") {
         return toast.error("Select a Payment");
       }
-      if (!courierValue) return toast.error("Select a Courier");
+      if (!courierValue || courierValue === "Select a Courier") return toast.error("Select a Courier");
 
       const loading = toast.loading("loading");
 
