@@ -8,7 +8,7 @@ import ShopWithCategorys from "../../components/ShopWithCategorys/ShopWithCatego
 const Homepage = () => {
   return (
     <>
-      <div className="max-w-[1280px] m-auto">
+      <div className="max-w-[1280px] m-auto ">
         {/* <TabBar /> */}
         {/* <Banner /> */}
         <BestDeals />
