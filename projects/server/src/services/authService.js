@@ -8,6 +8,7 @@ const fs = require("fs");
 const mustache = require("mustache");
 const transporter = require("../helper/transporter");
 const { generateToken } = require("../lib/jwt");
+const jwt = require("jsonwebtoken");
 
 class AuthService extends Service {
     static registerUser = async (email, fullname, password) => {
@@ -210,7 +211,7 @@ class AuthService extends Service {
                     },
                     {
                         where: {
-                            users_id: findValidToken.users_id,
+                            users_id: findUser.id,
                         },
                     }
                 );
@@ -241,7 +242,6 @@ class AuthService extends Service {
                 subject: "Verify Your Account!",
                 html: renderedTemplate,
             });
-
             return this.handleSuccess({
                 message: "Verification email sent.",
                 statusCode: 201,
@@ -324,6 +324,219 @@ class AuthService extends Service {
                     tokens: renewedToken,
                     user: findUser,
                 },
+            });
+        } catch (error) {
+            console.log(error);
+            return this.handleError({
+                statusCode: 500,
+                message: "Server Error",
+            });
+        }
+    };
+
+    static getUserData = async (token) => {
+        try {
+            const decodeToken = jwt.decode(token);
+
+            const findUser = await db.users.findOne({
+                where: {
+                    id: decodeToken.id,
+                },
+            });
+
+            return this.handleSuccess({
+                statusCode: 200,
+                message: "Success Get User's Data.",
+                data: findUser,
+            });
+        } catch (error) {
+            console.log(error);
+            return this.handleError({
+                statusCode: 500,
+                message: "Server Error",
+            });
+        }
+    };
+
+    static changePassword = async (userId, oldPassword, newPassword) => {
+        try {
+            const findUser = await db.users.findByPk(userId);
+
+            if (!findUser)
+                return this.handleError({
+                    message: `User with ID: ${userId} not Found!`,
+                    statusCode: 400,
+                });
+
+            const comparePassword = bcrypt.compareSync(
+                oldPassword,
+                findUser.password
+            );
+
+            if (!comparePassword)
+                return this.handleError({
+                    message: `Your current password is wrong!`,
+                    statusCode: 400,
+                });
+
+            const newHashedPassword = bcrypt.hashSync(newPassword, 5);
+
+            await db.users.update(
+                {
+                    password: newHashedPassword,
+                },
+                {
+                    where: {
+                        id: userId,
+                    },
+                }
+            );
+            return this.handleSuccess({
+                message: "Your password has been changed!",
+                statusCode: 200,
+            });
+        } catch (error) {
+            console.log(error);
+            return this.handleError({
+                statusCode: 500,
+                message: "Server Error",
+            });
+        }
+    };
+
+    static resetPassword = async (userId, resetPasswordToken, password) => {
+        try {
+            const validateToken = await db.reset_password_tokens.findOne({
+                where: {
+                    tokens: resetPasswordToken,
+                    is_valid: true,
+                    valid_until: {
+                        [Op.gt]: moment().utc(),
+                    },
+                    users_id: userId
+                },
+            });
+
+            if (!validateToken) {
+                return this.handleError({
+                    message: "Reset Password Token is invalid",
+                    statusCode: 400,
+                });
+            }
+
+            const newHashedPassword = bcrypt.hashSync(password, 5);
+
+            await db.users.update(
+                {
+                    password: newHashedPassword,
+                },
+                {
+                    where: {
+                        id: userId,
+                    },
+                }
+            );
+
+            return this.handleSuccess({
+                message: "Password has been changed!",
+                statusCode: 200,
+            });
+        } catch (error) {
+            console.log(error);
+            return this.handleError({
+                statusCode: 500,
+                message: "Server Error",
+            });
+        }
+    };
+
+    static sendResetPasswordEmail = async (userEmail) => {
+        try {
+            const findUser = await db.users.findOne({
+                where: {
+                    email: userEmail,
+                },
+            });
+
+            const findValidToken = await db.reset_password_tokens.findAll({
+                where: {
+                    users_id: findUser.id,
+                    is_valid: true,
+                },
+            });
+
+            if (findValidToken) {
+                await db.reset_password_tokens.update(
+                    {
+                        is_valid: false,
+                    },
+                    {
+                        where: {
+                            users_id: findUser.id,
+                        },
+                    }
+                );
+            }
+
+            const resetPasswordToken = nanoid(40);
+
+            await db.reset_password_tokens.create({
+                token: resetPasswordToken,
+                is_valid: true,
+                valid_until: moment().add(1, "hour"),
+                users_id: findUser.id,
+            });
+
+            const verifyUserLink = `http://localhost:3000/reset-password/${resetPasswordToken}`;
+
+            const emailTemplate = fs
+                .readFileSync(__dirname + "/../templates/resetPassword.html")
+                .toString();
+
+            const renderedTemplate = mustache.render(emailTemplate, {
+                name: findUser.fullname,
+                verify_url: verifyUserLink,
+            });
+
+            await transporter.sendMail({
+                from: "Tech Heaven",
+                to: findUser.email,
+                subject: "Reset your password!",
+                html: renderedTemplate,
+            });
+            return this.handleSuccess({
+                message: "Reset password email sent.",
+                statusCode: 201,
+            });
+        } catch (error) {
+            console.log(error);
+            return this.handleError({
+                statusCode: 500,
+                message: "Server Error",
+            });
+        }
+    };
+
+    static getResetToken = async (userId) => {
+        try {
+            const getToken = await db.reset_password_tokens.findAll({
+                where: {
+                    users_id: userId,
+                    is_valid: true,
+                },
+            });
+
+            if (!getToken.length) {
+                return this.handleError({
+                    message: "Token is invalid.",
+                    statusCode: 404,
+                });
+            }
+
+            return this.handleSuccess({
+                statusCode: 201,
+                message: "Token is valid.",
+                data: getToken,
             });
         } catch (error) {
             console.log(error);

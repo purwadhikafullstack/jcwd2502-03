@@ -6,7 +6,6 @@ import Cookies from "js-cookie";
 import toast, { Toaster } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { login } from "../../redux/Reducer/auth";
-import VerificationTab from "../../components/VerificationTab/VerificationTab";
 
 const LoginRegisterPage = () => {
     const navigate = useNavigate();
@@ -36,7 +35,6 @@ const LoginRegisterPage = () => {
     };
 
     const loginMasuk = async (e) => {
-        e.preventDefault();
         try {
             const { email, password } = state;
             const res = await axiosInstance.post("/auth/login", {
@@ -45,7 +43,6 @@ const LoginRegisterPage = () => {
             });
             toast.success(res.data.message);
             Cookies.set("user_token", res.data.result.token);
-            Cookies.set("user_data", JSON.stringify(res.data.result.user));
             dispatch(login(res.data.result.user));
 
             setTimeout(() => {
@@ -64,7 +61,6 @@ const LoginRegisterPage = () => {
     };
 
     const registerUser = async (e) => {
-        // e.preventDefault();
         try {
             const { fullname, email, password } = input;
             const res = await axiosInstance.post(`/auth/register`, {
@@ -74,7 +70,6 @@ const LoginRegisterPage = () => {
             });
             toast.success(res.data.message);
             Cookies.set("user_token", res.data.result.loginToken);
-            Cookies.set("user_data", JSON.stringify(res.data.result.createUser));
             setTimeout(() => {
                 navigate("/");
             }, 3000);
@@ -102,7 +97,6 @@ const LoginRegisterPage = () => {
         <div className="mt-[72px]">
             <Toaster />
             <TabBar />
-            <VerificationTab />
             <div className="border flex flex-col bg-white w-full h-screen place-items-center pt-4">
                 <div className="flex flex-col pb-2 mt-8 w-[424px] h-[504px] border-2 rounded">
                     <div className="flex flex-row justify-between border-b">
@@ -136,7 +130,6 @@ const LoginRegisterPage = () => {
                                 value={state.email}
                                 onChange={handleChange}
                                 type="text"
-                                id="email"
                                 placeholder="Your email..."
                             ></input>
                         </div>
@@ -156,7 +149,6 @@ const LoginRegisterPage = () => {
                                 name="password"
                                 value={state.password}
                                 onChange={handleChange}
-                                id="password"
                                 placeholder="Your password..."
                             ></input>
                         </div>
@@ -187,7 +179,6 @@ const LoginRegisterPage = () => {
                                 className="border w-[365px] h-[50px] rounded-sm pl-3"
                                 type="text"
                                 name="fullname"
-                                id="fullname"
                                 placeholder="Your full name..."
                                 value={input.fullname}
                                 onChange={handleChangeRegister}
@@ -199,7 +190,6 @@ const LoginRegisterPage = () => {
                                 className="border w-[365px] h-[50px] rounded-sm pl-3"
                                 type="text"
                                 name="email"
-                                id="emailregister"
                                 placeholder="Your email..."
                                 value={input.email}
                                 onChange={handleChangeRegister}
@@ -211,7 +201,6 @@ const LoginRegisterPage = () => {
                                 className="border w-[365px] h-[50px] rounded-sm"
                                 type="password"
                                 name="password"
-                                id="passwordregister"
                                 placeholder="Your password..."
                                 value={input.password}
                                 onChange={handleChangeRegister}

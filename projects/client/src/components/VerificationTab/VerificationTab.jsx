@@ -1,21 +1,24 @@
 import toast, { Toaster } from "react-hot-toast";
 import axiosInstance from "../../config/api";
 import Cookies from "js-cookie";
-import { useEffect } from "react";
 
 const VerificationTab = () => {
     const emailButtonHandler = async () => {
         try {
-            const data = Cookies.get("user_data");
-            const user = JSON.parse(data);
+            const loginToken = Cookies.get("user_token");
+
+            const userData = await axiosInstance.get(
+                `/auth/userdata/${loginToken}`
+            );
 
             const res = await axiosInstance.post(
-                `/auth/resend-verification-email/:${user.id}`
+                `/auth/resend-verification-email/${userData.data.result.id}`
             );
             setTimeout(() => {
                 toast.success(res.data.message);
-            }, 3000);
+            }, 1000);
         } catch (error) {
+            toast.error(error.response.data.message)
             console.log(error);
         }
     };
@@ -24,14 +27,14 @@ const VerificationTab = () => {
         <div>
             <Toaster />
             <div className="flex flex-col text-black w-full h-[60px] justify-center border-2 bg-green-500">
-                <div className="flex justify-center text-red-700 font-bold cursor-pointer">
+                <div className="flex justify-center text-red-700 font-bold">
                     Your account has not been verified!
                 </div>
                 <div
                     className="flex justify-center underline cursor-pointer"
                     onClick={emailButtonHandler}
                 >
-                    Resend verification email.
+                    Resend verification email
                 </div>
             </div>
         </div>

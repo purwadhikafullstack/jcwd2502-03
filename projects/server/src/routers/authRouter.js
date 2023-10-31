@@ -11,5 +11,22 @@ router.post(
 );
 router.post("/login", authController.loginUser);
 router.get("/refresh-token", authorizeLoggedInUser, authController.keepLogin);
+router.get(
+    "/userdata/:token",
+    authorizeLoggedInUser,
+    authController.getUserData
+);
+
+router.post(
+    "/change-password",
+    authController.changePassword
+);
+
+router.post("/reset-password", authController.resetPassword);
+router.post(
+    "/send-reset-password-email",
+    authController.sendResetPasswordEmail
+);
+router.get("/reset/user-:userId", authController.getResetToken);
 
 module.exports = router;

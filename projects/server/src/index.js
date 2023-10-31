@@ -2,18 +2,17 @@ require("dotenv/config");
 const express = require("express");
 const cors = require("cors");
 const { join } = require("path");
-const bearerToken = require('express-bearer-token');
+const bearerToken = require("express-bearer-token");
 const PORT = process.env.PORT || 8000;
 const app = express();
 app.use(
-    cors(
+    cors()
     //   {
     //     origin: [
     //         process.env.WHITELISTED_DOMAIN &&
     //             process.env.WHITELISTED_DOMAIN.split(","),
     //     ],
     // }
-    )
 );
 
 app.use(express.json());
@@ -23,25 +22,20 @@ app.use(express.json());
 // ===========================
 // NOTE : Add your routes here
 // Import Router
-const { orderRouter, authRouter } = require("./routers");
-// const { authRouter } = require("./routers");
-// const { userRouter } = require("./routers");
+const {
+    orderRouter,
+    authRouter,
+    userRouter,
+    adminRouter,
+} = require("./routers");
 const { productRouter, categoryRouter, warehouseRouter } = require("./routers");
-// const { adminRouter } = require("./routers");
-// const { cartRouter } = require("./routers");
-// const { transactionRouter } = require("./routers");
-// const { reportRouter } = require("./routers");
-// app.use("/auth", authRouter);
-// app.use("/user", userRouter);
 app.use("/api/product", productRouter);
-// app.use("/admin", adminRouter);
-// app.use("/cart", cartRouter);
-// app.use("/transaction", transactionRouter);
-// app.use("/report", reportRouter);
 app.use(bearerToken());
 
 app.use("/api/order", orderRouter);
-app.use("/api/auth", authRouter)
+app.use("/api/auth", authRouter);
+app.use("/api/user", userRouter);
+app.use("/api/admin", adminRouter);
 // app.use("/profilepicture", express.static(`${__dirname}/public/profilePictures`));
 // app.use("/products", express.static(`${__dirname}/public/products`));
 app.use("/api/category", categoryRouter);
@@ -102,11 +96,11 @@ app.use((err, req, res, next) => {
     const statusCode = err.status || 500;
     const statusMessage = err.message || "Error";
 
-  return res.status(statusCode).send({
-    isError: true,
-    message: statusMessage,
-    data: null,
-  });
+    return res.status(statusCode).send({
+        isError: true,
+        message: statusMessage,
+        data: null,
+    });
 });
 
 //#endregion
