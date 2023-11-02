@@ -10,8 +10,8 @@ const upload = async (req, res, next) => {
       if (err) throw err;
       if (!req.files.images) throw res.status(409).send("tidak ada gambar yang di uploud");
       const totalImages = req.files.images.length;
-      if (totalImages > 4) {
-        throw res.status(409).send(`Jumlah gambar melebihi batas maksimal. Hanya diperbolehkan 4 gambar.`);
+      if (totalImages > 1) {
+        throw res.status(409).send(`Jumlah gambar melebihi batas maksimal. Hanya diperbolehkan 1 gambar.`);
       }
       // console.log(req.files);
       req.files.images.forEach((values) => {

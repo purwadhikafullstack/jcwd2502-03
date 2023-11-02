@@ -57,40 +57,40 @@ const CardProduct = ({ data, addToCart }) => {
             return (
               <div
                 key={index}
-                className="w-[200px] md:w-[248px] min-w-[150px] rounded hover:border-orange-300 border-2 cursor-pointer"
+                className="w-[200px] md:w-[248px] min-w-[150px] rounded hover:border-[#2DA5F3] border-2 cursor-pointer"
               >
-                <Link to={`/product/${item.id}`}>
-                  <div className="p-[16px]">
-                    <div className="cardd">
-                      <div className="relative">
-                        <AiOutlineHeart
-                          className="text-black absolute bg-slate-500 top-0 right-0 h-[32px] w-[32px] cursor-pointer "
-                          style={{ backgroundClip: "text" }}
-                        />
-                        <img src={product1} alt="" />
-                      </div>
-                    </div>
-                    <div className="">
-                      <div className="h-[40px] font-semibold overflow-hidden text-ellipsis text-sm">
-                        {item.product_name}
-                      </div>
-                      <div className="mt-[4px] text-[#2DA5F3] font-semibold">
-                        {new Intl.NumberFormat("id-ID", {
-                          style: "currency",
-                          currency: "IDR",
-                          // minimumFractionDigits: 2
-                        }).format(item.product_price)}
-                      </div>
-                    </div>
-                    {/* add to cart */}
-                    <div className="">
-                      <Button
-                        btnName={"Add To Cart"}
-                        btnCSS={" w-full rounded-md mt-2"}
+                <div className="p-[16px]">
+                  <div className="cardd">
+                    <div className="relative">
+                      <AiOutlineHeart
+                        className="text-black absolute bg-slate-500 top-0 right-0 h-[32px] w-[32px] cursor-pointer "
+                        style={{ backgroundClip: "text" }}
                       />
+                      <img src={product1} alt="" />
                     </div>
                   </div>
-                </Link>
+                  <div className="">
+                    <Link to={`/product/${item.id}`}>
+                      <div className="h-[40px] hover:text-primaryOrange hover:underline hover:decoration-primaryOrange/100 font-semibold overflow-hidden text-ellipsis text-sm">
+                        {item.product_name}
+                      </div>
+                    </Link>
+                    <div className="mt-[4px] text-[#2DA5F3] font-semibold">
+                      {new Intl.NumberFormat("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                        // minimumFractionDigits: 2
+                      }).format(item.product_price)}
+                    </div>
+                  </div>
+                  {/* add to cart */}
+                  <div className="">
+                    <Button
+                      btnName={"Add To Cart"}
+                      btnCSS={" w-full rounded-md mt-2"}
+                    />
+                  </div>
+                </div>
               </div>
             );
           })

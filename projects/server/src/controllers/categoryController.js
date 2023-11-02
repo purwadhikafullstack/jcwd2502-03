@@ -1,5 +1,6 @@
 const categoryService = require("../services/categoryService");
-const db = require("../models")
+const db = require("../models");
+const productService = require("../services/productService");
 
 module.exports = {
 
@@ -12,6 +13,30 @@ module.exports = {
     }
   },
 
+  createKategori : async (req, res, next) => {
+    try {
+      await categoryService.createKategori(JSON.parse(req.body.data), req.files)
+      res.status(200).send({
+        isError: false,
+        message: "Success Create Category",
+        data: null,
+      });
+    } catch (error) {
+      next(error)
+    }
+  },
 
+  updateKategori : async (req, res, next) => {
+    try {
+      await categoryService.updateKategori(req.params, req.body)
+      res.status(200).send({
+        isError: false,
+        message: "Success Update",
+        data: null,
+      });
+    } catch (error) {
+      next(error)
+    }
+  }
 
 };

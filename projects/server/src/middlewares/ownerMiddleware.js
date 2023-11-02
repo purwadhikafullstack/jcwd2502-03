@@ -10,7 +10,7 @@ function adminMiddleware(req, res, next) {
   try {
     const decoded = jwt.verify(token, KEY);
     console.log(decoded);
-    if (decoded.user.role !== 'Owner' || decoded.user.role !== 'Warehouse Admin') {
+    if (decoded.user.role !== 'Owner') {
       return res.status(403).json({ message: 'Hanya admin yang diizinkan mengakses' });
     }
     req.user = decoded.user;

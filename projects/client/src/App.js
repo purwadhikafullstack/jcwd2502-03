@@ -16,13 +16,6 @@ function App() {
   return (
     <>
       <Provider store={store}>
-
-        <NextUIProvider>
-          <Nav />
-          <Routes>{routes.map((value) => value)}</Routes>
-          <Footer />
-        </NextUIProvider>
-
         <Nav />
         <Routes>{routes.map((value) => value)}</Routes>
         <Footer />
