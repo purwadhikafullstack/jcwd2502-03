@@ -137,7 +137,7 @@ const EditShippingModal = ({
             />
           </div>
         </div>
-        <Toaster />
+
       </div>
     </Modal>
   );

@@ -17,7 +17,8 @@ const {
   addAddressById,
   editAddress,
 } = require("./../services/orderService");
-
+const { Op } = require("sequelize");
+const sequelize = require("./../sequelizeInstance/sequelizeInstance");
 const {
   getLatLong,
   getWarehouseTerdekat,
@@ -121,41 +122,45 @@ const orderController = {
   placementOrder: async (req, res, next) => {
     try {
       const { cartProducts } = req.body;
-
       const { id } = req.tokens;
 
-      const maps = cartProducts.map((value) => {
-        return {
-          quantity: value.quantity,
-          product_price: value.total,
-          transaction_uid: null,
-          users_id: id,
-          warehouses_id: value.product.products_stocks[0].warehouse.id,
-          products_id: value.products_id,
-        };
+      const result = await sequelize.transaction(async (t) => {
+        const maps = cartProducts.map((value) => {
+          return {
+            quantity: value.quantity,
+            product_price: value.total,
+            transaction_uid: null,
+            users_id: id,
+            warehouses_id: value.product.products_stocks[0].warehouse.id,
+            products_id: value.products_id,
+          };
+        });
+
+        const placeOrder = await placementOrder(maps, { transaction: t });
+
+        const formattedDate = moment(placeOrder[0].createdAt).format(
+          "YYYY-MM-DD HH:mm:ss"
+        );
+        const formattedTransactionUid = moment(
+          formattedDate,
+          "YYYY-MM-DD HH:mm:ss"
+        ).format("YYYYMMDDHHmmss");
+
+        const updateTransactionUid = await updateUid(
+          formattedDate,
+          formattedTransactionUid,
+          { transaction: t }
+        );
+
+
+        
+        return { placeOrder, formattedTransactionUid };
       });
-
-      const placeOrder = await placementOrder(maps);
-
-      const formattedDate = moment(placeOrder[0].createdAt).format(
-        "YYYY-MM-DD HH:mm:ss"
-      );
-
-      const formattedTransactionUid = moment(
-        formattedDate,
-        "YYYY-MM-DD HH:mm:ss"
-      ).format("YYYYMMDDHHmmss");
-
-      const updateTransactionUid = await updateUid(
-        formattedDate,
-        formattedTransactionUid
-      );
 
       res.status(200).send({
         isError: false,
         message: "Congratulations! Your order has been successfully placed.",
-        placementOrder: placeOrder,
-        transaction_uid: formattedTransactionUid,
+        result: result,
       });
     } catch (error) {
       next(error);

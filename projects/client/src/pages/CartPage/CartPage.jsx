@@ -175,7 +175,7 @@ const CartPage = () => {
           </div>
         </div>
       </div>
-      <Toaster />
+
     </div>
   );
 };

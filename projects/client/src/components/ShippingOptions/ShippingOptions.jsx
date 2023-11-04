@@ -1,7 +1,17 @@
 import React, { useState } from "react";
 
-const ShippingOptions = ({ shippingOptions }) => {
-  const [changeColor, setChangeColor] = useState();
+const ShippingOptions = ({
+  shippingOptions,
+  setShippingPrice,
+  shippingPrice,
+}) => {
+  const [selectedShipping, setSelectedShipping] = useState();
+
+  const handleShippingOptionClick = (item) => {
+    setSelectedShipping(item.service);
+    setShippingPrice(item.cost[0].value);
+  };
+
   return (
     <>
       {shippingOptions.map((value, index) => {
@@ -18,13 +28,13 @@ const ShippingOptions = ({ shippingOptions }) => {
                 {value.costs.map((item, index) => {
                   return (
                     <div
-                      onClick={() => setChangeColor(item.service)}
+                      onClick={() => handleShippingOptionClick(item)}
                       key={index}
-                      className={`w-[300px] ${
-                        changeColor === item.service
+                      className={`w-[300px] ${!shippingPrice ? "border-inherit text-neutral " : ""} ${
+                        selectedShipping === item.service
                           ? "border-primaryOrange text-primaryOrange"
                           : ""
-                      } cursor-pointer hover:border-primaryOrange   flex flex-col items-center justify-center   h-[150px] border-2 rounded-xl shadow-md`}
+                      } cursor-pointer  hover:border-primaryOrange   flex flex-col items-center justify-center   h-[150px] border-2 rounded-xl shadow-md`}
                     >
                       <h1 className="text-center text-[18px] font-medium mb-[4px]">
                         {item.service}
@@ -37,7 +47,7 @@ const ShippingOptions = ({ shippingOptions }) => {
                           .split("HARI")
                           .join("")} days `}
                       </h1>
-                      <h1 className="text-green-400">
+                      <h1 className={ `text-green-400  `}>
                         {`${Number(item.cost[0].value).toLocaleString("id-ID", {
                           style: "currency",
                           currency: "IDR",

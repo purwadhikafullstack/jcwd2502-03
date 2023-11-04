@@ -210,7 +210,7 @@ const Nav = () => {
           </div>
         </div>
       </div>
-      {cartDrop === 1 ? <Toaster /> : <div></div>}
+
     </div>
   );
 };

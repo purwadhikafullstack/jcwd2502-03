@@ -90,7 +90,7 @@ const PlaceOrderModal = ({ isOpen }) => {
           </div>
         </div>
       </div>
-      {cancelOrderIsOpen === true ? "" : <Toaster />}
+
     </Modal>
   );
 };

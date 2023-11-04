@@ -20,7 +20,7 @@ export const orderSlice = createSlice({
 
 const getCart = async () => {
   try {
-    const res = await api.post("/order/dataCart")
+    // const res = await api.post("/order/dataCart")
   } catch (error) {}
 };
 
