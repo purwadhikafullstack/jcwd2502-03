@@ -14,4 +14,36 @@ module.exports = {
     }
   },
 
+  createKategori : async (data, file ) => {
+    try {
+      const dataImage = file.images.map((value) => {
+        return { category_image: value.path };
+      });
+      const createProduk = await db.products_categories.create({
+        ...data,
+        category_status: "Active",
+        category_image: dataImage[0].category_image,
+      });
+      return createProduk
+    } catch (error) {
+      return error
+    }
+  },
+
+  updateKategori : async ({id}, data) => {
+    try {
+      const dataKategori = await db.products_categories.findByPk(id)
+      console.log(dataKategori.dataValues);
+      const update = await db.products_categories.update(
+        {
+          ...dataKategori, ...data
+        },
+        {where : {id}}
+      )
+      return update
+    } catch (error) {
+      return error
+    }
+  }
+
 };

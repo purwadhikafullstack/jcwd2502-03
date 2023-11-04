@@ -15,10 +15,13 @@ import toast, { Toaster } from "react-hot-toast";
 import axiosInstance from "../../config/api";
 import { Dropdown } from "flowbite-react";
 import { GoSignOut, GoStack } from "react-icons/go";
+import Cookies from "js-cookie";
 const Nav = () => {
   const [cartDrop, setCartDrop] = useState(0);
   const [cartDatas, setCartDatas] = useState([]);
   const navigate = useNavigate();
+  const [user, setUser] = useState(Cookies.get("user_token"))
+  console.log((user === true));
 
   const handleCartDropDown = () => {
     setCartDrop(!cartDrop);
@@ -54,6 +57,8 @@ const Nav = () => {
       console.log(error);
     }
   };
+
+
 
   useEffect(() => {
     dataCart();

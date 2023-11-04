@@ -37,7 +37,7 @@ module.exports = {
     },
     restoreWarehouse : async (req, res, next) => {
         try {
-            const data = await warehouseService.restoreWarehouse(req.params)
+            await warehouseService.restoreWarehouse(req.params)
             res.status(200).send({
                 isError : "false",
                 message : "Succes Restore Warehouse"

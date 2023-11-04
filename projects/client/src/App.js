@@ -16,7 +16,6 @@ function App() {
   return (
     <>
       <Provider store={store}>
-
         <Nav />
         <Routes>{routes.map((value) => value)}</Routes>
         <Footer />
