@@ -3,14 +3,14 @@ import React, { useEffect, useState } from "react";
 //components
 import TabBar from "../../components/TabBar/TabBar";
 import Button from "../../components/Button/Button";
-import CardOrderSummary from "../../components/CardOrderSummary/CardOrderSummary";
-import PlaceOrderModal from "../../components/PlaceOrderModal/PlaceOrderModal";
 import Cookies from "js-cookie";
 import "./checkout.css";
 import BillingInformation from "../../components/BillingInformation/BillingInformation";
 import axiosInstance from "../../config/api";
 import toast, { Toaster, useToaster } from "react-hot-toast";
 import AddressModal from "../../components/AddressModal/AddressModal";
+import OrderSummary from "../../components/OrderSummary/OrderSummary";
+
 const CheckoutPage = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [placeOrderIsOpen, setPlaceOrderIsOpen] = useState(false);
@@ -25,17 +25,15 @@ const CheckoutPage = () => {
     JSON.parse(Cookies.get("user_data"))
   );
   const [onClick, setOnClick] = useState();
-  const { send } = useToaster();
+  const [shippingPrice, setShippingPrice] = useState();
+  const [paymentsOption, setPaymentsOption] = useState(false);
+
   const handleConfirmChangeAddress = (value) => {
     if (!value) return toast.error("Please Select an Address");
-
     setModalIsOpen(false);
     setAddress(value);
     toast.success("Change Address Success");
   };
-
-  console.log(addresses);
-  console.log(address);
 
   const getAddress = async () => {
     try {
@@ -64,6 +62,25 @@ const CheckoutPage = () => {
       setPayments(getPaymentMethods.data.data);
       setCouriers(getCouriers.data.data);
       setAddress(primaryAddress.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handlePlaceOrder = async () => {
+    try {
+      if (!shippingPrice)
+        return toast.error(
+          "Please fill in the information and choose a shipping address."
+        );
+
+      const placementOrder = await axiosInstance.post("/order/place-order", {
+        cartProducts: cartData,
+      });
+
+      toast.success(placementOrder.data.message);
+
+      setPlaceOrderIsOpen(true);
     } catch (error) {
       console.log(error);
     }
@@ -102,6 +119,10 @@ const CheckoutPage = () => {
             getAddress={getAddress}
             cartData={cartData}
             totalWeight={totalWeight}
+            setShippingPrice={setShippingPrice}
+            setPaymentsOption={setPaymentsOption}
+            paymentsOption={paymentsOption}
+            shippingPrice={shippingPrice}
           />
         ) : (
           <div className="left-side  xl:w-[70%]  md:w-[100%] h-[400px] flex flex-col justify-center items-center gap-5">
@@ -130,39 +151,13 @@ const CheckoutPage = () => {
             />
           </div>
         )}
-
-        <div className=" right-side xl:w-[30%] md:w-[50%] h-full  px-[24px] rounded-[4px] border-[#E4E7E9] py-[20px] border-[1px] ">
-          <h1 className="text-[18px] font-medium mb-[20px]">Order Summary</h1>
-          <CardOrderSummary />
-          <CardOrderSummary />
-          <div className="flex justify-between items-center text-[14px] mb-[12px]">
-            <h1 className="text-[#5F6C72]">Sub-total</h1>
-            <h1 className="text-[#191C1F] font-semibold">Rp. 3.000.000</h1>
-          </div>
-          <div className="flex justify-between items-center text-[14px] mb-[12px] ">
-            <h1 className="text-[#5F6C72]">Shipping</h1>
-            <h1 className="text-[#191C1F] font-semibold">Rp. 100.000</h1>
-          </div>
-          <div className="flex justify-between items-center text-[14px] mb-[12px]">
-            <h1 className="text-[#5F6C72]">Tax(5%)</h1>
-            <h1 className="text-[#191C1F] font-semibold">Rp. 150.000</h1>
-          </div>
-          <div className="flex justify-between font-bold   border-t-2 text-[14px] pt-[20px] mb-[32px]">
-            <h1 className="text-[#191C1F] text-[16px]">Total</h1>
-            <h1 className="text-[#191C1F]  text-[16px]">Rp. 3.250.000</h1>
-          </div>
-          <div className="w-full h-[56px]">
-            <Button
-              btnName="PLACE ORDER"
-              btnCSS="w-full h-full text-[16px] text-white rounded-[3px]"
-              onClick={() => setPlaceOrderIsOpen(true)}
-            />
-            <PlaceOrderModal
-              isOpen={placeOrderIsOpen}
-              closePlaceOrderModal={() => setPlaceOrderIsOpen(false)}
-            />
-          </div>
-        </div>
+        <OrderSummary
+          cartData={cartData}
+          shippingPrice={shippingPrice}
+          setPlaceOrderIsOpen={setPlaceOrderIsOpen}
+          placeOrderIsOpen={placeOrderIsOpen}
+          handlePlaceOrder={handlePlaceOrder}
+        />
       </div>
     </div>
   );

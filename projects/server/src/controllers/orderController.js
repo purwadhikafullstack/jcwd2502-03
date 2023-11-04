@@ -152,7 +152,7 @@ const orderController = {
           { transaction: t }
         );
 
-        await t.commit();
+
         
         return { placeOrder, formattedTransactionUid };
       });

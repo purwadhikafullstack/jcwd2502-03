@@ -22,6 +22,7 @@ const routes = [
     <Route path="/" element={<Homepage />} />,
     <Route path="/c" element={<CardCategory />} />,
     <Route path="/checkout" element={<CheckoutPage />} />,
+    <Route path="/test" element={<CheckoutPage />} />,
     <Route path="/success" element={<CheckoutSuccessPage />} />,
     <Route path="*" element={<NotFoundPage />} />,
     <Route path="/dashboard" element={<UserDashboardPage />} />,

@@ -37,7 +37,7 @@ const CancelOrderModal = ({ cancelOrderIsOpen, cancel }) => {
         }
         isOpen={cancelOrderIsOpen}
       >
-        {cancelOrderIsOpen === true ? <Toaster /> : <div></div>}
+
         <div className="h-full relative">
           <h1 className="text-[32px] font-bold">Are you sure ?</h1>
           <h1 className="text-[18px]">
