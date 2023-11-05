@@ -42,6 +42,7 @@ const LoginRegisterPage = () => {
                 password,
             });
             toast.success(res.data.message);
+            console.log(res.data);
             Cookies.set("user_token", res.data.result.token);
             dispatch(login(res.data.result.user));
 
@@ -68,6 +69,7 @@ const LoginRegisterPage = () => {
                 email,
                 password,
             });
+            // console.log(res.data.result.loginToken);
             toast.success(res.data.message);
             Cookies.set("user_token", res.data.result.loginToken);
             setTimeout(() => {

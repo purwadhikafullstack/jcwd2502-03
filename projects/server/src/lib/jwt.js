@@ -1,10 +1,11 @@
 const jwt = require("jsonwebtoken");
-
+require("dotenv/config")
 const KEY = process.env.JWT_SECRET_KEY;
 
 const generateToken = (payload) => {
   try {
-    const tokens = jwt.sign(payload, KEY, { expiresIn: "12h" });
+    const tokens = jwt.sign(payload, "SECRET_KEY", { expiresIn: "12h" });
+    // console.log(tokens);
     return tokens;
   } catch (error) {
     return error;
@@ -12,7 +13,7 @@ const generateToken = (payload) => {
 };
 
 const verifyToken = (tokens) => {
-  const isVerified = jwt.verify(tokens, KEY);
+  const isVerified = jwt.verify(tokens, "SECRET_KEY");
   return isVerified;
 };
 

@@ -1,6 +1,5 @@
 import React from "react";
 import TabBar from "../../components/TabBar/TabBar";
-import PageInfo from "../../components/PageInfo/PageInfo";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
@@ -14,7 +13,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 //hooks
-import { useDebouncedCallback } from "use-debounce";
+import { useDebouncedCallback, useDebounce } from "use-debounce";
 import Cookies from "js-cookie";
 import axiosInstance from "../../config/api";
 
@@ -40,7 +39,6 @@ const CartPage = () => {
           productId: id,
           quantity: newQuantity,
         });
-        console.log(res);
         dataCart();
       } catch (error) {
         console.log(error);
@@ -175,7 +173,7 @@ const CartPage = () => {
           </div>
         </div>
       </div>
-      <Toaster />
+
     </div>
   );
 };

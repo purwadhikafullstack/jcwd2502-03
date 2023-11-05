@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TabBar from "../../components/TabBar/TabBar";
 import PageInfo from "../../components/PageInfo/PageInfo";
 import SideBarDashboard from "../../components/SideBarDashboard/SideBarDashboard";
@@ -13,6 +13,8 @@ const UserDashboardPage = () => {
   const onGoToDashboard = (value) => {
     setTabValue(value);
   };
+
+  
 
   return (
     <div className="max-w-[1280px] m-auto">

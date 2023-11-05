@@ -16,8 +16,10 @@ const {
   couriers,
   addAddressById,
   editAddress,
+  getUserData,
 } = require("./../services/orderService");
-
+const { Op } = require("sequelize");
+const sequelize = require("./../sequelizeInstance/sequelizeInstance");
 const {
   getLatLong,
   getWarehouseTerdekat,
@@ -28,7 +30,7 @@ const moment = require("moment");
 const orderController = {
   addToCart: async (req, res, next) => {
     try {
-      const { productId } = req.body;
+      const { productId, quantity } = req.body;
 
       const { id } = req.tokens;
 
@@ -44,16 +46,17 @@ const orderController = {
       }
 
       if (dataCart) {
-        const addQuantity = await addQuantityIfIdExist(productId);
+        const addQuantity = await addQuantityIfIdExist(productId, quantity);
 
         res.status(200).send({
           isError: false,
-          message: "Quantity Added by 1",
+          message: `Quantity Added by ${quantity}`,
         });
       } else {
         const addCart = await addTocart({
           products_id: productId,
           users_id: id,
+          quantity: quantity,
         });
 
         res.status(200).send({
@@ -121,41 +124,43 @@ const orderController = {
   placementOrder: async (req, res, next) => {
     try {
       const { cartProducts } = req.body;
-
       const { id } = req.tokens;
 
-      const maps = cartProducts.map((value) => {
-        return {
-          quantity: value.quantity,
-          product_price: value.total,
-          transaction_uid: null,
-          users_id: id,
-          warehouses_id: value.product.products_stocks[0].warehouse.id,
-          products_id: value.products_id,
-        };
+      const result = await sequelize.transaction(async (t) => {
+        const maps = cartProducts.map((value) => {
+          return {
+            quantity: value.quantity,
+            product_price: value.total,
+            transaction_uid: null,
+            users_id: id,
+            warehouses_id: value.product.products_stocks[0].warehouse.id,
+            products_id: value.products_id,
+          };
+        });
+
+        const placeOrder = await placementOrder(maps, { transaction: t });
+
+        const formattedDate = moment(placeOrder[0].createdAt).format(
+          "YYYY-MM-DD HH:mm:ss"
+        );
+        const formattedTransactionUid = moment(
+          formattedDate,
+          "YYYY-MM-DD HH:mm:ss"
+        ).format("YYYYMMDDHHmmss");
+
+        const updateTransactionUid = await updateUid(
+          formattedDate,
+          formattedTransactionUid,
+          { transaction: t }
+        );
+
+        return { placeOrder, formattedTransactionUid };
       });
-
-      const placeOrder = await placementOrder(maps);
-
-      const formattedDate = moment(placeOrder[0].createdAt).format(
-        "YYYY-MM-DD HH:mm:ss"
-      );
-
-      const formattedTransactionUid = moment(
-        formattedDate,
-        "YYYY-MM-DD HH:mm:ss"
-      ).format("YYYYMMDDHHmmss");
-
-      const updateTransactionUid = await updateUid(
-        formattedDate,
-        formattedTransactionUid
-      );
 
       res.status(200).send({
         isError: false,
         message: "Congratulations! Your order has been successfully placed.",
-        placementOrder: placeOrder,
-        transaction_uid: formattedTransactionUid,
+        result: result,
       });
     } catch (error) {
       next(error);
@@ -260,6 +265,7 @@ const orderController = {
   editAddress: async (req, res, next) => {
     try {
       const { id } = req.tokens;
+      console.log(id);
       const { address, city, idAddress } = req.body;
       const dataToEdit = {
         address: address,
@@ -299,10 +305,25 @@ const orderController = {
       };
 
       const getShipping = await getShippingMethod(data);
-
+      console.log(getShipping.rajaongkir.results.costs);
       res.status(200).send({
         isError: false,
         data: getShipping.rajaongkir.results,
+        nearestWarehouse: nearestWarehouse,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  getUserData: async (req, res, next) => {
+    try {
+      const { id } = req.tokens;
+
+      const dataUser = await getUserData(id);
+
+      res.status(200).send({
+        isError: false,
+        data: dataUser,
       });
     } catch (error) {
       next(error);

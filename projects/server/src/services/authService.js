@@ -289,7 +289,7 @@ class AuthService extends Service {
             const token = generateToken({
                 id: findUser.id,
             });
-
+            console.log(token);
             return this.handleSuccess({
                 message: "Login success!",
                 statusCode: 200,

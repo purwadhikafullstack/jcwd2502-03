@@ -3,7 +3,8 @@ import Cookies from "js-cookie";
 
 export const API_URL = process.env.API_URL || "http://localhost:8000/api";
 
-const axiosInstance = axios.create({ baseURL: API_URL });
+
+const axiosInstance = axios.create({ baseURL: process.env.REACT_APP_API_BASE_URL });
 
 axiosInstance.interceptors.request.use((config) => {
     const userToken = Cookies.get("user_token");
