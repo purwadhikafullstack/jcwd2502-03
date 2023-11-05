@@ -28,31 +28,9 @@ const ShopePage = () => {
   });
   const [searchProductName, setSearchProductName] = useState("")
 
-  const cartData = async () => {
-    try {
-      const res = await axiosInstance.post("/order/dataCart", {});
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  
 
-  const addToCart = async (id) => {
-    try {
-      const res = await axiosInstance.post("/order/cart", {
-        productId: id,
-      });
-      cartData();
-      toast.success(res.data.message);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    addToCart();
-    cartData();
-  }, []);
-
+ 
   const getKategori = async () => {
     try {
       const res = await axiosInstance.get("/category");
@@ -106,7 +84,7 @@ const ShopePage = () => {
 
       <div className="flex  flex-col flex-wrap gap-[24px] my-[40px] ">
         {/* sidebar filter start */}
-        <div className="flex flex-col justify-center md:flex-row flex-wrap gap-5 m-auto md:justify-around w-full">
+        <div className="flex flex-col  justify-center md:flex-row flex-wrap gap-5 m-auto md:justify-between w-full">
           <div className="">
             <select
               className="select select-bordered w-full md:max-w-[312px]"
@@ -156,11 +134,11 @@ const ShopePage = () => {
         {/* sidebar filter end */}
 
         {/* main shop start */}
-        <div className="w-full m-auto">
-          <CardProduct data={datas} addToCart={addToCart} />
+        <div className="w-full  m-auto">
+          <CardProduct data={datas}  />
         </div>
         {/* main shop end */}
-        <Toaster />
+
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import api from "./../../config/api";
+import axiosInstance from "../../config/api";
 const initialState = {
   counter: 0,
   cart: [],
@@ -20,10 +20,12 @@ export const orderSlice = createSlice({
 
 const getCart = async () => {
   try {
-    // const res = await api.post("/order/dataCart")
-  } catch (error) {}
+
+  } catch (error) {
+    console.log(error);
+  }
 };
 
-export const { increment, setCart } = orderSlice.actions; // Remove setUsers if it's not defined
+export const { increment, setCart } = orderSlice.actions; 
 
 export const orderSliceReducer = orderSlice.reducer;

@@ -39,11 +39,11 @@ module.exports = {
       return error;
     }
   },
-  addQuantityIfIdExist: async (data) => {
+  addQuantityIfIdExist: async (data, qty) => {
     try {
       const add = db.carts.update(
         {
-          quantity: sequelize.literal("quantity + 1"),
+          quantity: sequelize.literal(`quantity + ${qty}`),
         },
         { where: { products_id: data } }
       );
@@ -250,4 +250,12 @@ module.exports = {
       return error;
     }
   },
+  getUserData: async(id) => {
+    try {
+      const getUser  = await db.users.findByPk(id)
+      return getUser
+    } catch (error) {
+      return error 
+    }
+  }
 };

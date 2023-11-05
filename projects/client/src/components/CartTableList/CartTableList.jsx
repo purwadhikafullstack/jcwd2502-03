@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { HiMinus } from "react-icons/hi";
 import { HiPlus } from "react-icons/hi";
-import useDebounce from "../../hooks/useDebounce";
-import axios from "axios";
+
+
 const CartTableList = ({
   cartDatas,
   handleIncreaseQuantity,

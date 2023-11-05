@@ -48,7 +48,7 @@ const CardProduct = ({ data, addToCart }) => {
       <div
         className={
           datas && datas.length > 0
-            ? `flex flex-wrap gap-2 sm:gap-5  md:justify-center`
+            ? `flex flex-wrap gap-2 sm:gap-10 justify-center   sm:justify-start`
             : `flex justify-center align-middle items-center gap-5`
         }
       >
@@ -57,21 +57,25 @@ const CardProduct = ({ data, addToCart }) => {
             return (
               <div
                 key={index}
-                className="w-[200px] md:w-[248px] min-w-[150px] rounded hover:border-[#2DA5F3] border-2 cursor-pointer"
+                className="w-[160px]    sm:w-[200px] lg:w-[278px] min-w-[150px] rounded   border-2 cursor-pointer hover:shadow-lg "
               >
                 <div className="p-[16px]">
                   <div className="cardd">
-                    <div className="relative">
+                    <div className="relative ">
                       <AiOutlineHeart
-                        className="text-black absolute bg-slate-500 top-0 right-0 h-[32px] w-[32px] cursor-pointer "
+                        onClick={(e) => {
+                          alert("Wishlist Added");
+                        }}
+                        className="text-black hover:text-primaryOrange absolute z-10   top-0 right-0 h-[32px] w-[32px] cursor-pointer "
                         style={{ backgroundClip: "text" }}
                       />
-                      <img src={product1} alt="" />
+
+                      <img src={product1} className="w-full" alt="" />
                     </div>
                   </div>
                   <div className="">
-                    <Link to={`/product/${item.id}`}>
-                      <div className="h-[40px] hover:text-primaryOrange hover:underline hover:decoration-primaryOrange/100 font-semibold overflow-hidden text-ellipsis text-sm">
+                    <Link className="" to={`/product/${item.id}`}>
+                      <div className="h-[40px]  hover:underline  font-semibold overflow-hidden text-ellipsis text-sm">
                         {item.product_name}
                       </div>
                     </Link>
@@ -84,12 +88,12 @@ const CardProduct = ({ data, addToCart }) => {
                     </div>
                   </div>
                   {/* add to cart */}
-                  <div className="">
+                  {/* <div className="">
                     <Button
                       btnName={"Add To Cart"}
                       btnCSS={" w-full rounded-md mt-2"}
                     />
-                  </div>
+                  </div> */}
                 </div>
               </div>
             );

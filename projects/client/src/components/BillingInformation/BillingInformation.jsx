@@ -34,6 +34,9 @@ const BillingInformation = ({
   const [courierValue, setCourierValue] = useState("");
   const [shippingOptions, setShippingOptions] = useState([]);
   const [btnDisable, setBtnDisable] = useState(false);
+  const [nearestWarehouse, setNearestWarehouse] = useState(false);
+
+  console.log(shippingOptions);
 
   const confirmShippingOptions = async () => {
     try {
@@ -55,6 +58,7 @@ const BillingInformation = ({
         }
       );
       setShippingPrice("")
+      setNearestWarehouse(getShippingOptions.data.nearestWarehouse)
       setShippingOptions(getShippingOptions.data.data);
       toast.dismiss(loading);
     } catch (error) {
@@ -179,6 +183,7 @@ const BillingInformation = ({
         shippingOptions={shippingOptions}
         setShippingPrice={setShippingPrice}
         shippingPrice={shippingPrice}
+        nearestWarehouse={nearestWarehouse}
       />
     </div>
   );
