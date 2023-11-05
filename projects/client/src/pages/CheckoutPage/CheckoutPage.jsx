@@ -10,6 +10,7 @@ import axiosInstance from "../../config/api";
 import toast, { Toaster, useToaster } from "react-hot-toast";
 import AddressModal from "../../components/AddressModal/AddressModal";
 import OrderSummary from "../../components/OrderSummary/OrderSummary";
+import { useNavigate } from "react-router-dom";
 
 const CheckoutPage = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -21,13 +22,12 @@ const CheckoutPage = () => {
   const [rajaOngkir, setRajaOngkir] = useState([]);
   const [cartData, setCartData] = useState([]);
   const [totalWeight, setTotalWeight] = useState("");
-  const [userData, setUserData] = useState(
-    JSON.parse(Cookies.get("user_data"))
-  );
+  const [userData, setUserData] = useState();
   const [onClick, setOnClick] = useState();
   const [shippingPrice, setShippingPrice] = useState();
   const [paymentsOption, setPaymentsOption] = useState(false);
 
+  const navigate = useNavigate();
   const handleConfirmChangeAddress = (value) => {
     if (!value) return toast.error("Please Select an Address");
     setModalIsOpen(false);
@@ -51,11 +51,14 @@ const CheckoutPage = () => {
         { primary: 1 }
       );
       const getCouriers = await axiosInstance.get("/order/couriers");
+      const getUserData = await axiosInstance.post("/order/user-data");
       const getCart = await axiosInstance.post("/order/cartdata");
       const getPaymentMethods = await axiosInstance.get("/order/payments");
       const getROProvinces = await axiosInstance.get(
         "/order/raja-ongkir-cities"
       );
+      setUserData(getUserData.data.data);
+
       setTotalWeight(getCart.data.totalWeight);
       setCartData(getCart.data.data);
       setRajaOngkir(getROProvinces.data.data);
@@ -79,8 +82,7 @@ const CheckoutPage = () => {
       });
 
       toast.success(placementOrder.data.message);
-
-      setPlaceOrderIsOpen(true);
+      navigate("/success");
     } catch (error) {
       console.log(error);
     }

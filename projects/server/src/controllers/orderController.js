@@ -16,6 +16,7 @@ const {
   couriers,
   addAddressById,
   editAddress,
+  getUserData,
 } = require("./../services/orderService");
 const { Op } = require("sequelize");
 const sequelize = require("./../sequelizeInstance/sequelizeInstance");
@@ -29,7 +30,7 @@ const moment = require("moment");
 const orderController = {
   addToCart: async (req, res, next) => {
     try {
-      const { productId } = req.body;
+      const { productId, quantity } = req.body;
 
       const { id } = req.tokens;
 
@@ -45,16 +46,17 @@ const orderController = {
       }
 
       if (dataCart) {
-        const addQuantity = await addQuantityIfIdExist(productId);
+        const addQuantity = await addQuantityIfIdExist(productId, quantity);
 
         res.status(200).send({
           isError: false,
-          message: "Quantity Added by 1",
+          message: `Quantity Added by ${quantity}`,
         });
       } else {
         const addCart = await addTocart({
           products_id: productId,
           users_id: id,
+          quantity: quantity,
         });
 
         res.status(200).send({
@@ -152,8 +154,6 @@ const orderController = {
           { transaction: t }
         );
 
-
-        
         return { placeOrder, formattedTransactionUid };
       });
 
@@ -265,6 +265,7 @@ const orderController = {
   editAddress: async (req, res, next) => {
     try {
       const { id } = req.tokens;
+      console.log(id);
       const { address, city, idAddress } = req.body;
       const dataToEdit = {
         address: address,
@@ -304,10 +305,25 @@ const orderController = {
       };
 
       const getShipping = await getShippingMethod(data);
-
+      console.log(getShipping.rajaongkir.results.costs);
       res.status(200).send({
         isError: false,
         data: getShipping.rajaongkir.results,
+        nearestWarehouse: nearestWarehouse,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  getUserData: async (req, res, next) => {
+    try {
+      const { id } = req.tokens;
+
+      const dataUser = await getUserData(id);
+
+      res.status(200).send({
+        isError: false,
+        data: dataUser,
       });
     } catch (error) {
       next(error);

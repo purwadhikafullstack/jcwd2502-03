@@ -2,86 +2,115 @@ import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import Button from "../../components/Button/Button";
 import CancelOrderModal from "../../components/CancelOrderModal/CancelOrderModal";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import product1 from "../../assets/product1.png";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import PageInfo from "../../components/PageInfo/PageInfo";
 import TabBar from "../../components/TabBar/TabBar";
-
+import SwiperAuto from "../../components/SwiperAuto/SwiperAuto";
+import { HiPlus } from "react-icons/hi";
+import { HiMinus } from "react-icons/hi";
+import { AiOutlineMinus } from "react-icons/ai";
+import { AiOutlinePlus } from "react-icons/ai";
+import axiosInstance from "../../config/api";
 const DetailProduct = () => {
+  const { idProduct } = useParams();
+  const [quantity, setQuantity] = useState(1);
+  const handleIncrement = () => {
+    setQuantity(quantity + 1);
+  };
+  console.log(idProduct);
+  const handleDecrement = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    }
+  };
+
+  const cartData = async () => {
+    try {
+      const res = await axiosInstance.post("/order/cartdata");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const addToCart = async (id) => {
+    try {
+      const res = await axiosInstance.post("/order/cart", {
+        productId: idProduct,
+        quantity: quantity,
+      });
+      toast.success(res.data.message);
+      cartData();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    cartData();
+  }, []);
+
   return (
-    <div className="max-w-[1280px] bg-slate-50 shadow-lg rounded-sm m-auto">
-      <div className="h-full justify-center flex-wrap p-5 mt-[150px]  mb-20 flex ">
-        <div className="flex overflow-auto flex-nowrap items-center justify-center p-4 gap-[10px]">
-            <img
-              className="w-full object-contain max-w-[200px] h-[200px]"
-              src={product1}
-              alt=""
-            />
-            <img
-              className="cursor-pointer object-contain max-w-[200px] h-[200px] "
-              src={product1}
-              alt=""
-            />
-            <img
-              className="cursor-pointer object-contain max-w-[200px] h-[200px] "
-              src={product1}
-              alt=""
-            />
-            <img
-              className="cursor-pointer object-contain max-w-[200px] h-[200px] "
-              src={product1}
-              alt=""
-            />
-        </div>
-        <div className="flex px-5 flex-col justify-between">
-          <div className="flex flex-col">
-            <div className="text-3xl mt-2 font-bold border-b-2 mb-5">
-              Asus ROG Phone 5s 12/256
+    <div className="mt-[154px] px-[300px]  rounded-sm flex justify-center mb-[100px]">
+      <div className="flex  gap-10">
+        <SwiperAuto />
+        <div>
+          <div className="text-[20px] mb-[16px] mt-[50px]">
+            2020 Apple MacBook Pro with Apple M1 Chip (13-inch, 8GB RAM, 256GB
+            SSD Storage) - Space Gray
+          </div>
+          <div className="flex justify-between">
+            <div className="flex gap-5">
+              <h1 className="text-[14px] text-[#5F6C72]">Brand :</h1>
+              <h1 className="text-[14px]  font-semibold">Apple</h1>
             </div>
-            <div className=" text-2xl mb-2 font-bold">DESKRIPSI</div>
-            <div className="font-light sm:max-w-[60%]">
-              Asus Rog phone 3 8/128GB 12/128 12/256GB FULLSETT TAM : FULLSET
-              DENGAN ACC DAN BOX ORIGINAL UNIT ONLY : SECOND BATANGAN TIDAK
-              TERMASUK ACC DAN BOX Asus Rog Phone 2 8/128GB 12/256GB FULLSETT
-              TAM : FULLSET DENGAN ACC DAN BOX ORIGINAL ( 90% -95% unit second
-              tidak mulus 100% ) UNIT ONLY : SECOND BATANGAN TIDAK TERMASUK ACC
-              DAN BOX GARANSI TOKO 30 HARI UNTUK VARIAN SECOND FULLSET TAM , (
-              di luar human eror
+            <div className="flex gap-5">
+              <h1 className="text-[14px] text-[#5F6C72]">Availability :</h1>
+              <h1 className="text-[#2DB224] text-[14px]  font-semibold">
+                In Stock
+              </h1>
             </div>
           </div>
-          <div className="shop grid grid-cols-2 mt-5 gap-5">
-            {/* <div className="flex gap-5 h-full border-primaryOrange border-2 rounded-md justify-around items-center cursor-pointer bg-white">
-              <span className=" pl-6 flex justify-center cursor-pointer items-center align-middle   w-[16px] text-4xl">
-                -
-              </span>
-              <span className="  flex justify-center items-center align-middle cursor-pointer w-[16px]  text-lg">
-                1
-              </span>
-              <span className="  pr-5 flex justify-center items-center align-middle cursor-pointer w-[16px]  text-3xl">
-                +
-              </span>
-            </div> */}
-            <div className=" cursor-pointer  flex justify-center border-primaryOrange border-2 rounded-md bg-primaryOrange">
-              <div className="flex justify-center items-center px-3">
-                <Button
-                  btnCSS={" text-white text-xl font-bold"}
-                  btnName={"ADD TO CART"}
-                />
-                <AiOutlineShoppingCart className="text-white font-bold text-3xl" />
-              </div>
+          <div className="flex gap-5">
+            <h1 className="text-[14px] text-[#5F6C72]">Category :</h1>
+            <h1 className="text-[14px]  font-semibold">Electronics Devices</h1>
+          </div>
+          <h1 className="text-[#2DA5F3] text-[20px] font-bold mt-[24px] mb-[32px]">
+            Rp. 30.000.000,00
+          </h1>
+          <span className="text-[14px] font-medium mt-[32px] border-b-2 border-b-primaryOrange">
+            DESCRIPTION
+          </span>
+          <p className="text-[#5F6C72] text-[14px] mt-[14px]">
+            The most powerful MacBook Pro ever is here. With the blazing-fast M1
+            Pro or M1 Max chip — the first Apple silicon designed for pros — you
+            get groundbreaking performance and amazing battery life. Add to that
+            a stunning Liquid Retina XDR display, the best camera and audio ever
+            in a Mac notebook, and all the ports you need. The first notebook of
+            its kind, this MacBook Pro is a beast. M1 Pro takes the exceptional
+            performance of the M1 architecture to a whole new level for pro
+            users.
+          </p>
+          <div className="w-full flex items-center  gap-10 mt-[32px]">
+            <div className="flex justify-around h-[56px]  items-center gap-5  border-2 w-[25%]">
+              <AiOutlineMinus
+                onClick={() => handleDecrement()}
+                className="cursor-pointer  text-customPrimary bg-white rounded-full text-xl"
+              />
+              <h1 className="font-medium border-none    text-xl">{quantity}</h1>
+              <AiOutlinePlus
+                onClick={() => handleIncrement()}
+                className="cursor-pointer text-customPrimary bg-white rounded-full text-xl "
+              />
             </div>
-            <div className="bg-white cursor-pointer flex justify-center items-center text-primaryOrange border-solid border-primaryOrange">
-              <div className="flex justify-center items-center px-3">
-                <Button
-                  btnName={"BUY NOW"}
-                  btnCSS={
-                    "px-3 text-xl font-bold bg-white text-[rgba(250, 130, 50, 1)] "
-                  }
-                />
-              </div>
-            </div>
+            <button
+              onClick={() => addToCart()}
+              className="w-[75%] flex items-center justify-center gap-5 font-bold text-[16px] text-white h-[56px] bg-primaryOrange"
+            >
+              ADD TO CART <AiOutlineShoppingCart />
+            </button>
           </div>
         </div>
       </div>

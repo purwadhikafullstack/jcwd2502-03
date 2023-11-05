@@ -16,6 +16,7 @@ router.get("/couriers", orderController.getCouriers);
 router.post("/add-address",authorizeLoggedInUser, orderController.addAddress);
 router.post("/edit-address",authorizeLoggedInUser, orderController.editAddress);
 router.post("/shipping-method", orderController.getShippingMethod);
+router.post("/user-data",authorizeLoggedInUser,  orderController.getUserData);
 
 
 module.exports = router;
