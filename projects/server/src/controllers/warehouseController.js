@@ -136,7 +136,6 @@ module.exports = {
           newQty = newQty - cekStock.dataValues.stock;
         }
       }
-      // console.log(hasil);
       return res.status(200).send({
         isError: false,
         message: "Warehouses Berhasil Didapatkan",
