@@ -37,6 +37,60 @@ module.exports = {
     } catch (error) {
       next(error)
     }
-  }
+  },
+
+  updateImage : async (req, res, next) => {
+    try {
+      const hasil = await categoryService.updateImage(req.params, req.files)
+      console.log(hasil);
+      res.status(200).send({
+        isError: false,
+        message: "Update Image Success",
+        data: null,
+      });
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  updateStatus : async (req, res, next) => {
+    try {
+        const hasil = await categoryService.updateStatus(req.params)
+        console.log(hasil);
+        res.status(200).send({
+          isError: false,
+          message: "Status berhasil di update",
+          data: null,
+        });
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  deleteKategori : async (req, res, next) => {
+    try {
+      await categoryService.deleteKategori(req.params);
+      res.status(200).send({
+        isError: false,
+        message: "Succes Delete Product",
+        data: null,
+      });
+    } catch (error) {
+     next(error) 
+    }
+  },
+
+  restoreKategori : async (req, res, next) => {
+    try {
+      await categoryService.restoreKategori(req.params);
+      res.status(200).send({
+        isError: false,
+        message: "Succes Restore Kategori",
+        data : null
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
 
 };
