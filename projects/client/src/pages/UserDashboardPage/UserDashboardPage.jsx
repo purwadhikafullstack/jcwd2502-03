@@ -5,6 +5,7 @@ import SideBarDashboard from "../../components/SideBarDashboard/SideBarDashboard
 import OrderHistory from "../../components/OrderHistory/OrderHistory";
 import CheckoutSuccessPage from "../CheckoutSuccessPage/CheckoutSuccessPage";
 import OrderViewDetails from "../../components/OrderViewDetails/OrderViewDetails";
+import UserBiodata from "../../components/UserBiodata/UserBiodata";
 
 const UserDashboardPage = () => {
   const [tabValue, setTabValue] = useState(1);
@@ -21,7 +22,7 @@ const UserDashboardPage = () => {
         <SideBarDashboard tabValue={tabValue} setTabValue={setTabValue} />
         <div className={`${tabValue === 7 ? "h-auto" : "h-[718px]" } right w-full  rounded-[4px] border-[1px] shadow-xl `}>
           {tabValue === 1 ? (
-            <div></div>
+            <UserBiodata />
           ) : tabValue === 2 ? (
             <OrderHistory tabValue={tabValue} setTabValue={setTabValue} />
           ) : tabValue === 3 ? (
