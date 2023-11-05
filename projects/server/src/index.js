@@ -6,16 +6,16 @@ const bearerToken = require("express-bearer-token");
 const PORT = process.env.PORT || 8000;
 const app = express();
 app.use(
-    cors()
-    //   {
-    //     origin: [
-    //         process.env.WHITELISTED_DOMAIN &&
-    //             process.env.WHITELISTED_DOMAIN.split(","),
-    //     ],
-    // }
+  cors()
+  //   {
+  //     origin: [
+  //         process.env.WHITELISTED_DOMAIN &&
+  //             process.env.WHITELISTED_DOMAIN.split(","),
+  //     ],
+  // }
 );
 
-app.use(express.json())
+app.use(express.json());
 
 //#region API ROUTES
 
@@ -23,10 +23,10 @@ app.use(express.json())
 // NOTE : Add your routes here
 // Import Router
 const {
-    orderRouter,
-    authRouter,
-    userRouter,
-    adminRouter,
+  orderRouter,
+  authRouter,
+  userRouter,
+  adminRouter,
 } = require("./routers");
 const { productRouter, categoryRouter, warehouseRouter } = require("./routers");
 app.use("/api/product", productRouter);
@@ -42,13 +42,13 @@ app.use("/api/category", categoryRouter);
 app.use("/api/warehouse", warehouseRouter);
 
 app.get("/api", (req, res) => {
-    res.send(`Hello, this is my API`);
+  res.send(`Hello, this is my API`);
 });
 
 app.get("/api/greetings", (req, res, next) => {
-    res.status(200).json({
-        message: "Hello, Student !",
-    });
+  res.status(200).json({
+    message: "Hello, Student !",
+  });
 });
 
 // ===========================
@@ -88,27 +88,27 @@ app.use(express.static(join(__dirname, clientPath)));
 
 // Serve the HTML page
 app.get("*", (req, res) => {
-    res.sendFile(join(__dirname, clientPath, "index.html"));
+  res.sendFile(join(__dirname, clientPath, "index.html"));
 });
 
 // Centralized Error
 app.use((err, req, res, next) => {
-    const statusCode = err.status || 500;
-    const statusMessage = err.message || "Error";
+  const statusCode = err.status || 500;
+  const statusMessage = err.message || "Error";
 
-    return res.status(statusCode).send({
-        isError: true,
-        message: statusMessage,
-        data: null,
-    });
+  return res.status(statusCode).send({
+    isError: true,
+    message: statusMessage,
+    data: null,
+  });
 });
 
 //#endregion
 
 app.listen(PORT, (err) => {
-    if (err) {
-        console.log(`ERROR: ${err}`);
-    } else {
-        console.log(`APP RUNNING at ${PORT} ✅`);
-    }
+  if (err) {
+    console.log(`ERROR: ${err}`);
+  } else {
+    console.log(`APP RUNNING at ${PORT} ✅`);
+  }
 });
