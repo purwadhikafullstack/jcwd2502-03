@@ -26,6 +26,11 @@ const CheckoutPage = () => {
   const [onClick, setOnClick] = useState();
   const [shippingPrice, setShippingPrice] = useState();
   const [paymentsOption, setPaymentsOption] = useState(false);
+  const [shippingType, setShippingType] = useState("");
+  const [courierValue, setCourierValue] = useState("");
+  const [nearestWarehouse, setNearestWarehouse] = useState();
+  const [totalPrice, setTotalPrice] = useState();
+  console.log(totalPrice);
 
   const navigate = useNavigate();
   const handleConfirmChangeAddress = (value) => {
@@ -79,6 +84,14 @@ const CheckoutPage = () => {
 
       const placementOrder = await axiosInstance.post("/order/place-order", {
         cartProducts: cartData,
+        weight: totalWeight > 30000 ? 30000 : totalWeight,
+        shippingType: shippingType,
+        delivery_fee: shippingPrice,
+        payment_method: paymentsOption,
+        courier: courierValue,
+        address_detail: address.address,
+        warehouses_id: nearestWarehouse.id,
+        total_price: totalPrice,
       });
 
       toast.success(placementOrder.data.message);
@@ -93,8 +106,6 @@ const CheckoutPage = () => {
     getAddress();
   }, []);
 
-  // if (!address) return <div className="mb-[100px]">Loading</div>;
-  // if (addresses.length === 0) return <div className="mb-[200px]">Loading</div>;
   if (couriers.length === 0) return <div>Loading</div>;
   if (payments.length === 0) return <div>Loading</div>;
 
@@ -125,6 +136,11 @@ const CheckoutPage = () => {
             setPaymentsOption={setPaymentsOption}
             paymentsOption={paymentsOption}
             shippingPrice={shippingPrice}
+            setShippingType={setShippingType}
+            courierValue={courierValue}
+            setCourierValue={setCourierValue}
+            nearestWarehouse={nearestWarehouse}
+            setNearestWarehouse={setNearestWarehouse}
           />
         ) : (
           <div className="left-side  xl:w-[70%]  md:w-[100%] h-[400px] flex flex-col justify-center items-center gap-5">
@@ -159,6 +175,7 @@ const CheckoutPage = () => {
           setPlaceOrderIsOpen={setPlaceOrderIsOpen}
           placeOrderIsOpen={placeOrderIsOpen}
           handlePlaceOrder={handlePlaceOrder}
+          setTotalPrice={setTotalPrice}
         />
       </div>
     </div>

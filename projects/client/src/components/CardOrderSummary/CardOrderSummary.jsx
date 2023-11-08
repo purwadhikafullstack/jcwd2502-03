@@ -3,10 +3,9 @@ import React from "react";
 const CardOrderSummary = ({ cartData }) => {
   return (
     <>
-      {cartData.map((value) => {
-
+      {cartData.map((value, index) => {
         return (
-          <div className="flex gap-2 items-center mb-[16px] w-full">
+          <div key={index} className="flex gap-2 items-center mb-[16px] w-full">
             <img
               className="w-[20%] h-[64px]  "
               src="https://media.discordapp.net/attachments/922883965667393579/1162416550112927884/Image.png?ex=65451646&is=6532a146&hm=6e86dac738717e71ac33aa3f5a7a4abe405ff2effebb4bab36370e2cd5984dfd&="

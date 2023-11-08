@@ -13,14 +13,18 @@ import { HiPlus } from "react-icons/hi";
 import { HiMinus } from "react-icons/hi";
 import { AiOutlineMinus } from "react-icons/ai";
 import { AiOutlinePlus } from "react-icons/ai";
+import Cookies from "js-cookie";
 import axiosInstance from "../../config/api";
 const DetailProduct = () => {
   const { idProduct } = useParams();
   const [quantity, setQuantity] = useState(1);
+  const [user, setUser] = useState(Cookies.get("user_token"));
+  const navigate = useNavigate()
   const handleIncrement = () => {
     setQuantity(quantity + 1);
   };
-  console.log(idProduct);
+
+
   const handleDecrement = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
@@ -37,6 +41,10 @@ const DetailProduct = () => {
 
   const addToCart = async (id) => {
     try {
+      if (!user) {
+        toast.error("Please log in to add items to your cart.")
+        navigate("/login");
+      }
       const res = await axiosInstance.post("/order/cart", {
         productId: idProduct,
         quantity: quantity,
@@ -109,7 +117,7 @@ const DetailProduct = () => {
               onClick={() => addToCart()}
               className="w-[75%] flex items-center justify-center gap-5 font-bold text-[16px] text-white h-[56px] bg-primaryOrange"
             >
-              ADD TO CART <AiOutlineShoppingCart />
+              ADD TO CART <AiOutlineShoppingCart className="text-[24px]" />
             </button>
           </div>
         </div>
