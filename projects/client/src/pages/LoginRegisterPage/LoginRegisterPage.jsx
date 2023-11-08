@@ -96,10 +96,10 @@ const LoginRegisterPage = () => {
     };
 
     return (
-        <div className="mt-[72px]">
+        <div className="mt-[72px] px-[300px]">
             <Toaster />
             <TabBar />
-            <div className="border flex flex-col bg-white w-full h-screen place-items-center pt-4">
+            <div className=" flex flex-col bg-white w-full h-screen place-items-center pt-4">
                 <div className="flex flex-col pb-2 mt-8 w-[424px] h-[504px] border-2 rounded">
                     <div className="flex flex-row justify-between border-b">
                         <div

@@ -29,15 +29,16 @@ const BillingInformation = ({
   cartData,
   totalWeight,
   setShippingPrice,
-  shippingPrice
+  shippingPrice,
+  setShippingType,
+  courierValue,
+  setCourierValue,
+  nearestWarehouse,
+  setNearestWarehouse,
 }) => {
-  const [courierValue, setCourierValue] = useState("");
   const [shippingOptions, setShippingOptions] = useState([]);
   const [btnDisable, setBtnDisable] = useState(false);
-  const [nearestWarehouse, setNearestWarehouse] = useState(false);
-
-  console.log(shippingOptions);
-
+  
   const confirmShippingOptions = async () => {
     try {
       setBtnDisable(true);
@@ -57,8 +58,9 @@ const BillingInformation = ({
           courier: courierValue.toLocaleLowerCase(),
         }
       );
-      setShippingPrice("")
-      setNearestWarehouse(getShippingOptions.data.nearestWarehouse)
+
+      setShippingPrice("");
+      setNearestWarehouse(getShippingOptions.data.nearestWarehouse);
       setShippingOptions(getShippingOptions.data.data);
       toast.dismiss(loading);
     } catch (error) {
@@ -82,7 +84,10 @@ const BillingInformation = ({
           isOpen={modalIsOpen}
           onRequestClose={() => setModalIsOpen(false)}
           handleConfirmChangeAddress={handleConfirmChangeAddress}
-          closeModal={() => setModalIsOpen(false)}
+          closeModal={() => {
+            setOnClick(undefined);
+            setModalIsOpen(false);
+          }}
           addresses={addresses}
           setAddress={setAddress}
           setOnClick={setOnClick}
@@ -162,7 +167,7 @@ const BillingInformation = ({
             labelCSS="text-[14px]"
             labelName="Weight (gram)"
             type="number"
-            value={totalWeight}
+            value={totalWeight > 30000 ? 30000 : totalWeight}
             disabled="disabled"
           />
         </div>
@@ -184,6 +189,7 @@ const BillingInformation = ({
         setShippingPrice={setShippingPrice}
         shippingPrice={shippingPrice}
         nearestWarehouse={nearestWarehouse}
+        setShippingType={setShippingType}
       />
     </div>
   );

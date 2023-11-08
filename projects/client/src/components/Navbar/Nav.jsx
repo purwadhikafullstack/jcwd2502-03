@@ -23,7 +23,7 @@ const Nav = () => {
   const [user, setUser] = useState(Cookies.get("user_token"));
   console.log(user === true);
   const [localId, setLocalId] = useState(null);
-
+  console.log(user);
   useEffect(() => {
     const storedUser = Cookies.get("user_token");
     if (storedUser) {
@@ -32,6 +32,7 @@ const Nav = () => {
   }, [localId, setLocalId]);
 
   const handleCartDropDown = () => {
+    if(!user) return navigate("/login")
     setCartDrop(!cartDrop);
   };
   const handleCheckoutNow = () => {
@@ -117,21 +118,25 @@ const Nav = () => {
                   <h1 className="py-[16px] px-[24px]  ">Shopping Cart</h1>
                   <div className="px-[24px] h-[220px] overflow-auto py-[20px] border-y-[2px] ">
                     {cartDatas.map((value, index) => {
-                      console.log(value);
                       return (
-                        <div className="flex items-center gap-2 mb-[16px]">
+                        <div key={index} className="flex items-center gap-2 mb-[16px]">
                           <div>
                             <img className="w-[80px] h-[80px] " src="" alt="" />
                           </div>
                           <div className=" w-full flex justify-between items-center">
-                            <div className="flex flex-col h-full ">
+                            <div  className="flex flex-col h-full ">
                               <h1 className="text-[14px]">
                                 {value.product.product_name}
                               </h1>
                               <div className="flex gap-2 ">
                                 <h1>{`${value.quantity}x `}</h1>
                                 <h2 className="text-primaryBlue text-[14px]">
-                                  {`Rp. ${value.product.product_price}`}
+                                  {`${Number(
+                                    value.product.product_price
+                                  ).toLocaleString("id-ID", {
+                                    style: "currency",
+                                    currency: "IDR",
+                                  })}`}
                                 </h2>
                               </div>
                             </div>
@@ -171,7 +176,7 @@ const Nav = () => {
                 {/* END CART DROP */}
               </ul>
               <AiOutlineHeart className="text-white h-[32px] w-[32px] cursor-pointer " />
-              <Link to={"/dashboard"}>
+              <Link to={"/dashboard/profile"}>
                 <CiUser className="text-white h-[32px] w-[32px]" />
               </Link>
             </div>
@@ -230,7 +235,6 @@ const Nav = () => {
         )}
         {/* ukuran laptop */}
       </div>
-
     </div>
   );
 };

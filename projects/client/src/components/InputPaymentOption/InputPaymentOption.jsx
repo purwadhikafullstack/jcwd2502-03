@@ -17,10 +17,10 @@ const InputPaymentOption = ({ payments, setPaymentsOption }) => {
         <option onChange={() => setPaymentsOption("")} selected>
           Select a Payment
         </option>
-        {payments.map((value) => {
+        {payments.map((value, index) => {
           return (
             <>
-              <option value={value.id}>{value.method}</option>
+              <option key={index} value={value.id}>{value.method}</option>
             </>
           );
         })}

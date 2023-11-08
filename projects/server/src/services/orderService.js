@@ -1,6 +1,7 @@
 const db = require("./../models");
 const { Op, sequelize } = require("./../models");
 const moment = require("moment");
+
 module.exports = {
   addTocart: async (data) => {
     try {
@@ -250,12 +251,195 @@ module.exports = {
       return error;
     }
   },
-  getUserData: async(id) => {
+  getUserData: async (id) => {
     try {
-      const getUser  = await db.users.findByPk(id)
-      return getUser
+      const getUser = await db.users.findByPk(id);
+      return getUser;
     } catch (error) {
-      return error 
+      return error;
     }
-  }
+  },
+  filterPaymentStatus: async (query, id) => {
+    try {
+      // "Payment Pending",
+      // "Waiting for Payment Approval",
+      // "Order Process",
+      // "Package Sent",
+      // "Package Arrived",
+      // "Order Completed",
+      // "Order Canceled"
+      //  "Payment Pending"
+      // ,
+
+      if (query.status === "") {
+        const filterPaymentStatusOrder = await db.orders_details.findAll({
+          attributes: [
+            "id",
+            "transaction_uid",
+            "quantity",
+            "status",
+            "createdAt",
+            "updatedAt",
+            "users_id",
+            [
+              db.Sequelize.fn("sum", db.Sequelize.col("product_price")),
+              "total_price",
+            ],
+          ],
+          where: {
+            users_id: id,
+            transaction_uid: { [db.Sequelize.Op.like]: `%${query.search}%` },
+          },
+          raw: true,
+          group: ["transaction_uid"],
+          order: [["createdAt", "DESC"]],
+        });
+
+        return filterPaymentStatusOrder;
+      }
+      const filterPaymentStatusOrder = await db.orders_details.findAll({
+        attributes: [
+          "transaction_uid",
+          "quantity",
+          "status",
+          "createdAt",
+          "updatedAt",
+          "users_id",
+          [
+            db.Sequelize.fn("sum", db.Sequelize.col("product_price")),
+            "total_price",
+          ],
+        ],
+        raw: true,
+        where: {
+          users_id: id,
+          status: query.status,
+          transaction_uid: { [db.Sequelize.Op.like]: `%${query.search}%` },
+        },
+        group: ["transaction_uid"],
+        order: [["createdAt", "DESC"]],
+      });
+      return filterPaymentStatusOrder;
+    } catch (error) {
+      return error;
+    }
+  },
+  getWarehouseTerdekat2: async (datas) => {
+    try {
+      const data = await db.warehouses.findAll();
+      let nearestWarehouse = null;
+      let nearestDistance = Infinity;
+      function degToRad(deg) {
+        return deg * (Math.PI / 180);
+      }
+      function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371; // Radius bumi dalam kilometer
+        const dLat = degToRad(lat2 - lat1);
+        const dLon = degToRad(lon2 - lon1);
+
+        const a =
+          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos(degToRad(lat1)) *
+            Math.cos(degToRad(lat2)) *
+            Math.sin(dLon / 2) *
+            Math.sin(dLon / 2);
+
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const distance = R * c;
+        return Math.ceil(distance);
+      }
+
+      data.forEach((warehouse) => {
+        const distance = calculateDistance(
+          datas.lat,
+          datas.lng,
+          warehouse.lat,
+          warehouse.lng
+        );
+        if (distance < nearestDistance) {
+          nearestDistance = distance;
+          nearestWarehouse = warehouse;
+        }
+      });
+
+      return nearestWarehouse;
+    } catch (error) {
+      return error;
+    }
+  },
+  createOrder: async (data) => {
+    try {
+      const createOrder = await db.orders.create(data);
+      return createOrder;
+    } catch (error) {
+      return error;
+    }
+  },
+  deleteCartProduct: async (id) => {
+    try {
+      const deleteCart = await db.carts.destroy({ where: { users_id: id } });
+      return deleteCart;
+    } catch (error) {
+      return error;
+    }
+  },
+  orderByTransactionId: async (transaction_uid, id) => {
+    try {
+      const order = await db.orders.findOne({
+        include: [
+          {
+            model: db.payment_methods,
+            attributes: ["method"],
+          },
+          {
+            model: db.users,
+            attributes: ["fullname", "email"],
+          },
+          {
+            model: db.tb_ro_cities,
+            attributes: ["city_id", "city_name", "postal_code", "provinces_id"],
+            include: [
+              {
+                model: db.tb_ro_provinces,
+                attributes: ["province_name"],
+              },
+            ],
+          },
+        ],
+        where: { transaction_uid: transaction_uid, users_id: id },
+      });
+
+      return order;
+    } catch (error) {
+      return error;
+    }
+  },
+  orderDetailsByTransactionId: async (transaction_uid, id) => {
+    try {
+      const orderDetails = await db.orders_details.findAll({
+        include: [
+          {
+            model: db.warehouses,
+            attributes: ["name", "id"],
+          },
+          {
+            model: db.products,
+            attributes: ["id", "product_name", "product_price"],
+            include: [
+              {
+                model: db.products_images,
+                attributes: ["image"],
+              },
+            ],
+          },
+        ],
+        where: { transaction_uid: transaction_uid, users_id: id },
+      });
+      
+
+      return orderDetails;
+    } catch (error) {
+      return error;
+    }
+  },
 };
