@@ -14,7 +14,7 @@ app.use(
   //     ],
   // }
 );
-
+app.use(express.static('public'))
 app.use(express.json());
 
 //#region API ROUTES
@@ -28,7 +28,7 @@ const {
   userRouter,
   adminRouter,
 } = require("./routers");
-const { productRouter, categoryRouter, warehouseRouter } = require("./routers");
+const { productRouter, categoryRouter, warehouseRouter, stockRouter, rajaOngkirRouter } = require("./routers");
 app.use("/api/product", productRouter);
 app.use(bearerToken());
 
@@ -40,6 +40,8 @@ app.use("/api/admin", adminRouter);
 // app.use("/products", express.static(`${__dirname}/public/products`));
 app.use("/api/category", categoryRouter);
 app.use("/api/warehouse", warehouseRouter);
+app.use("/api/stock", stockRouter);
+app.use("/api/rajaongkir", rajaOngkirRouter);
 
 app.get("/api", (req, res) => {
   res.send(`Hello, this is my API`);

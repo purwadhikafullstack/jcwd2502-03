@@ -5,6 +5,7 @@ const apiKey = "ae3e97cbd5794c5a9110d1c04da85bda";
 module.exports = {
   getLatLong: async (cities_id) => {
     try {
+      console.log(cities_id);
       const city = await db.tb_ro_cities.findByPk(cities_id);
       const province = await db.tb_ro_provinces.findByPk(
         city?.dataValues.provinces_id
@@ -63,7 +64,7 @@ module.exports = {
           nearestWarehouse = warehouse;
         }
       });
-      console.log("11");
+      // console.log("11");
       return nearestWarehouse;
     } catch (error) {
       return error;

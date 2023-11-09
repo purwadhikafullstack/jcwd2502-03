@@ -16,6 +16,7 @@ import OwnerDashboard from "../pages/OwnerDashboard/OwnerDashboard";
 import ChangePasswordPage from "../pages/ChangePasswordPage/ChangePasswordPage";
 import ForgetPasswordPage from "../pages/ForgetPasswordPage/ForgetPasswordPage";
 import ResetPasswordPage from "../pages/ResetPasswordPage/ResetPasswordPage";
+import WarehouseList from "../components/AdminDashboard/WarehouseList";
 
 const routes = [
     <Route path="/cart" element={<CartPage />} />,
@@ -34,6 +35,8 @@ const routes = [
     <Route path="/change-password" element={<ChangePasswordPage />} />,
     <Route path="/forget-password" element={<ForgetPasswordPage />} />,
     <Route path="/reset-password" element={<ResetPasswordPage />} />,
+    <Route path="/admin/warehouses" element={<WarehouseList />} />,
+
 ];
 
 export default routes;

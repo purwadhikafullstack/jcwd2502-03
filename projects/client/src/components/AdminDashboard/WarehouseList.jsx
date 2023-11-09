@@ -1,12 +1,23 @@
 import React, { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import axiosInstance from "../../config/api";
-import { FaRegEdit } from "react-icons/fa";
-import { BiTrash } from "react-icons/bi";
 import Input from "../Input/Input";
+import NavAdmin from "./NavAdmin";
+import Select from "react-select";
+import Button from "../Button/Button";
+import Swal from 'sweetalert2';
 
 const WarehouseList = () => {
   const [warehouses, setWarehouses] = useState(null);
+  const [cities, setCities] = useState(null);
+  const [prov, setProv] = useState(null);
+  const [idUpdate, setIdUpdate] = useState(null);
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [data, setDatas] = useState({
+    name: "",
+    cities_id: null,
+    province_id: null,
+  });
   const getWarehouse = async () => {
     try {
       const data = await axiosInstance.get(`/warehouse`);
@@ -15,78 +26,211 @@ const WarehouseList = () => {
       toast.error("error");
     }
   };
-  const handleEdit = async () => {
+  // console.log(data);
+  const getCities = async () => {
     try {
-        
+      const res = await axiosInstance.get(
+        `/rajaongkir?provinces_id=${data.province_id}`
+      );
+      const pro = await axiosInstance.get(`/rajaongkir/pro`);
+      const formattedData = res.data.data.map((item) => ({
+        value: item.city_id.toString(),
+        label: item.city_name,
+        name: "cities_id",
+        province_id: item.province_id,
+      }));
+      const dataPro = pro.data.data.map((item) => ({
+        value: item.province_id.toString(),
+        label: item.province_name,
+        name: "province_id",
+      }));
+      setProv(dataPro);
+      setCities(formattedData);
     } catch (error) {
-        toast.error("error")
+      console.log(error);
+    }
+  };
+  const submitData = async () => {
+    try {
+      if (!idUpdate) {
+        const res = await axiosInstance.post(`/warehouse`, { ...data });
+        toast.success(res.data.message);
+        setDatas({
+          name: "",
+          cities_id: null,
+          province_id: null,
+        });
+        setSelectedOption(null);
+      } else {
+        const res = await axiosInstance.put(`/warehouse/${idUpdate}`, {
+          name: data.name,
+        });
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  };
+  const handleEdit = async (e) => {
+    try {
+      setIdUpdate(e);
+      const dataEdit = await axiosInstance.get(`/warehouse/${e}`);
+      // console.log(dataEdit.data.data);
+      let newData = { ...data };
+      newData["name"] = dataEdit.data.data.name;
+      // newData["province_id"] = dataEdit.data.data.provinces_id
+      setDatas(newData);
+    } catch (error) {
+      toast.error("error");
+    }
+  };
+  const handleChange = (e) => {
+    let newData = { ...data };
+    newData[e.name] = e.value;
+    setDatas(newData);
+  };
+  const handleInput = (e) => {
+    let newData = { ...data };
+    newData[e.target.name] = e.target.value;
+    setDatas(newData);
+  };
+  const handleBatal = async () => {
+    setIdUpdate(null);
+    setDatas({
+      name: "",
+      cities_id: null,
+      province_id: null,
+    });
+  };
+  const handleHapus = async (e) => {
+    try {
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success",
+          cancelButton: "btn btn-danger"
+        },
+        buttonsStyling: true
+      });
+  
+      const result = await swalWithBootstrapButtons.fire({
+        title: "Are you sure?",
+        text: "you want to delete?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "No, cancel!",
+        reverseButtons: true
+      });
+  
+      if (result.isConfirmed) {
+        const response = await axiosInstance.delete(`/warehouse/${e}`);
+        swalWithBootstrapButtons.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success"
+        });
+        getWarehouse();
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        swalWithBootstrapButtons.fire({
+          title: "Cancelled",
+          text: "Delete has been cancelled",
+          icon: "error"
+        });
+      }
+    } catch (error) {
+      toast.error(error.response.data.message);
     }
   }
-  console.log(warehouses);
+  
   useEffect(() => {
     getWarehouse();
-  }, []);
-  // const [currentPage, setCurrentPage] = useState(0);
-  // const perPage = 2; // Jumlah item per halaman
-
-  // const handlePageClick = (selectedPage) => {
-  //   setCurrentPage(selectedPage.selected);
-  // }
-
-  // const offset = currentPage * perPage;
-  // const currentPageData = warehouses?.slice(offset, offset + perPage);
+    getCities();
+  }, [data, setDatas]);
   return (
-    <div className="container mx-auto px-2 rounded-sm">
+    <div className="flex mt-36 bg-slate-300 justify-center gap-5 max-w-[1280px] m-auto">
+      {/* <NavAdmin /> */}
+      <div className="px-2 max-w-[80%] max-h-[500px] mb-10 overflow-auto rounded-sm">
         <div className="">
-            <span>Create Warehouse</span>
+          <span>Create Warehouse</span>
+          <div>
+            <label>Nama Warehouse</label>
+            <Input
+              inputCSS={""}
+              placeholder={"nama warehouse ..."}
+              value={data.name}
+              onChange={handleInput}
+              name={"name"}
+            />
+          </div>
+          {!idUpdate && (
+            <div>
+              <label>Pilih Provinsi</label>
+              <Select
+                onChange={handleChange}
+                options={prov}
+                defaultValue={selectedOption}
+              />
+            </div>
+          )}
 
-            <Input inputCSS={""} placeholder={"Name Warehouse"} />
-            
+          {data.province_id && (
+            <div>
+              <label>Pilih Kota </label>
+              <Select
+                onChange={handleChange}
+                options={cities}
+                defaultValue={selectedOption}
+              />
+            </div>
+          )}
+
+          <div className="flex gap-4">
+            <Button
+              onClick={submitData}
+              btnCSS={"rounded-md text-white font-semibold"}
+              btnName={"Simpan"}
+            />
+            {idUpdate && (
+              <Button
+                onClick={handleBatal}
+                btnCSS={"rounded-md text-white font-semibold"}
+                btnName={"Batalkan"}
+              />
+            )}
+          </div>
         </div>
-      <table className="min-w-full border border-gray-300">
-        <thead>
-          <tr>
-            <th className="border p-2">Warehouse</th>
-            <th className="border p-2">City</th>
-            <th className="border p-2">Action</th>
-            {/* ...Tambahkan header lain jika diperlukan */}
-          </tr>
-        </thead>
-        <tbody>
-          {warehouses?.map((item, index) => (
-            <tr key={index}>
-              <td className="border p-2 cursor-pointer hover:underline">{item.name}</td>
-              <td className="border p-2">{item.city}</td>
-              <td className="border p-2 flex justify-center gap-2">
-                <button onClick={handleEdit} className="bg-sky-600 cursor-pointer font-semibold p-2 rounded-md"  >
-                  Edit
-                </button>
-                <button className="bg-red-400 font-semibold cursor-pointer p-2 rounded-md">
-                  Delete
-                </button>
-              </td>
+        <table className="min-w-full border border-gray-300">
+          <thead>
+            <tr>
+              <th className="border p-2">Warehouse</th>
+              <th className="border p-2">City</th>
+              <th className="border p-2">Action</th>
+              {/* ...Tambahkan header lain jika diperlukan */}
             </tr>
-          ))}
-        </tbody>
-      </table>
-
-      {/* <ReactPaginate
-  previousLabel={"Previous"}
-  nextLabel={"Next"}
-  breakLabel={"..."}
-  breakClassName={"break-me"}
-  pageCount={Math.ceil(warehouses?.length / perPage)}
-  marginPagesDisplayed={2}
-  pageRangeDisplayed={5}
-  onPageChange={handlePageClick}
-  containerClassName={"flex gap-1 justify-center my-4"}
-  subContainerClassName={"flex items-center space-x-2"}
-  activeClassName={"bg-blue-500 text-white border border-blue-500 px-4 py-2 rounded"}
-  pageClassName={"border border-gray-300 px-4 py-2 rounded"}
-  previousClassName={"border border-gray-300 px-4 py-2 rounded"}
-  nextClassName={"border border-gray-300 px-4 py-2 rounded"}
-  disabledClassName={"opacity-50 cursor-not-allowed"}
-/> */}
+          </thead>
+          <tbody>
+            {warehouses?.map((item, index) => (
+              <tr key={index}>
+                <td className="border p-2 cursor-pointer hover:underline">
+                  {item.name}
+                </td>
+                <td className="border p-2">{item.city}</td>
+                <td className="border p-2 flex justify-center gap-2">
+                  <button
+                    onClick={() => handleEdit(item.id)}
+                    className="bg-sky-600 cursor-pointer font-semibold p-2 rounded-md"
+                  >
+                    Edit
+                  </button>
+                  <button onClick={() => handleHapus(item.id)} className="bg-red-400 font-semibold cursor-pointer p-2 rounded-md">
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

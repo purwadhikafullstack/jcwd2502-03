@@ -11,7 +11,7 @@ module.exports = {
       if (cekNama) {
         throw res.status(400).send({
           isError: "true",
-          message: "Nama gudang sudah ada, pilih nama lain.",
+          message: "Nama gudang sudah tersedia",
         });
       }
       const loc = await opencageService.getLatLong(cities_id);
@@ -84,17 +84,25 @@ module.exports = {
   },
   updateWarehouse: async (req, res, next) => {
     try {
+      const cekNama = await db.warehouses.findOne({ where: { name : req.body.name } });
+      if (cekNama) {
+        throw res.status(400).send({
+          isError: "true",
+          message: "Nama gudang sudah tersedia",
+        });
+      }
       const loc = await opencageService.getLatLong(req.body.cities_id);
-      console.log(loc);
+
       const datas = {
         name: req.body.name,
         cities_id: req.body.cities_id,
         lng: loc.lng,
         lat: loc.lat,
       };
+
       const hasil = await warehouseService.updateWarehouse({
-        ...req.query,
         ...datas,
+        ...req.params
       });
       res.status(200).send({
         isError: "false",
@@ -145,4 +153,16 @@ module.exports = {
       next(error);
     }
   },
+  getWarehouseById : async (req, res, next) => {
+    try {
+      const hasil = await warehouseService.getById(req.params)
+      res.status(200).send({
+        isError: false,
+        message: "Success",
+        data : hasil
+      });
+    } catch (error) {
+      next(error)
+    }
+  }
 };

@@ -40,7 +40,7 @@ const ShopePage = () => {
     }
   };
 
-  const getProduct = async () => {
+  const getProduct = async (e) => {
     try {
       const res = await axiosInstance.get(`/product${param.search}&search=${searchProductName}&sortBy=${filter.sortBy}&product_status=Active`
       );

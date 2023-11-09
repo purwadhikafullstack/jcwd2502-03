@@ -32,4 +32,26 @@ module.exports = {
       return error;
     }
   },
+
+  getAllCities: async ({provinces_id}) => {
+    try {
+      // console.log(provinces_id);
+      where = {}
+      if(provinces_id) where.provinces_id = provinces_id
+      const getRajaOngkir = await db.tb_ro_cities.findAll({where});
+      return getRajaOngkir;
+    } catch (error) {
+      return error;
+    }
+  },
+
+  getAllPropinsi: async () => {
+    try {
+      const getRajaOngkir = await db.tb_ro_provinces.findAll();
+      return getRajaOngkir;
+    } catch (error) {
+      return error;
+    }
+  },
+
 };

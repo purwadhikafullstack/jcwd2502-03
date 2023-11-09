@@ -7,11 +7,14 @@ import { Provider } from "react-redux";
 import { store } from "./redux/store";
 
 import { Toaster } from "react-hot-toast";
+import NavAdmin from "./components/AdminDashboard/NavAdmin";
+
 function App() {
   return (
     <>
       <Provider store={store}>
         <Nav />
+        <NavAdmin />
         <Routes>{routes.map((value) => value)}</Routes>
         <Footer />
         <Toaster position="top-center" />
