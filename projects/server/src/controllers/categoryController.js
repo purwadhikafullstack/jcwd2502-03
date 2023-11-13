@@ -13,6 +13,15 @@ module.exports = {
     }
   },
 
+  kategoriId : async (req, res, next) => {
+    try {
+        const data = await categoryService.kategoriId(req.params)
+        res.send(data);
+    } catch (error) {
+        next(error)
+    }
+  },
+
   createKategori : async (req, res, next) => {
     try {
       await categoryService.createKategori(JSON.parse(req.body.data), req.files)

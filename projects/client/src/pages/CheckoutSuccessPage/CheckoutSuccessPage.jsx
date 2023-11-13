@@ -12,7 +12,7 @@ const CheckoutSuccessPage = ({ handleGoToDashboard }) => {
   const navigate = useNavigate();
 
   const handleGoDashboard = () => {
-    navigate("/dashboard");
+    navigate("/dashboard/OrderHistory");
     handleGoToDashboard(2);
   };
   return (

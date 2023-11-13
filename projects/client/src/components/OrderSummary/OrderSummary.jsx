@@ -9,13 +9,16 @@ const OrderSummary = ({
   setPlaceOrderIsOpen,
   placeOrderIsOpen,
   handlePlaceOrder,
+  setTotalPrice,
 }) => {
   const subTotal = cartData.reduce((item, current) => {
     return Number(item) + Number(current.total);
   }, 0);
 
   const tax = (subTotal + Number(shippingPrice)) * 0.05;
+  const total = subTotal + Number(shippingPrice) + tax;
 
+  setTotalPrice(Math.ceil(total));
   return (
     <div className=" right-side xl:w-[30%] md:w-[50%] h-full  px-[24px] rounded-[4px] border-[#E4E7E9] py-[20px] border-[1px] ">
       <h1 className="text-[18px] font-medium mb-[20px]">Order Summary</h1>
@@ -51,8 +54,12 @@ const OrderSummary = ({
       </div>
       <div className="flex justify-between font-bold   border-t-2 text-[14px] pt-[20px] mb-[32px]">
         <h1 className="text-[#191C1F] text-[16px]">Total</h1>
-        <h1 className="text-[#191C1F]  text-[16px]">{`${Number(
-          tax ? subTotal + Number(shippingPrice) + tax : 0
+        <h1
+          value={subTotal + Number(shippingPrice) + tax}
+          onChange={(e) => setTotalPrice(e.target.value)}
+          className="text-[#191C1F]  text-[16px]"
+        >{`${Number(
+          tax ? Math.ceil(subTotal + Number(shippingPrice) + tax) : 0
         ).toLocaleString("id-ID", {
           style: "currency",
           currency: "IDR",

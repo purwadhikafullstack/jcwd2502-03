@@ -22,7 +22,6 @@ module.exports = {
         lat: loc.lat,
       };
       const add = await warehouseService.addWarehouse(data);
-      // console.log(add);
       res.status(200).send({
         isError: "false",
         message: "Success Add Warehouse",

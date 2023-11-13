@@ -17,13 +17,16 @@ const {
   addAddressById,
   editAddress,
   getUserData,
+  filterPaymentStatus,
+  getWarehouseTerdekat2,
+  createOrder,
+  deleteCartProduct,
+  orderByTransactionId,
+  orderDetailsByTransactionId,
 } = require("./../services/orderService");
 const { Op } = require("sequelize");
 const sequelize = require("./../sequelizeInstance/sequelizeInstance");
-const {
-  getLatLong,
-  getWarehouseTerdekat,
-} = require("./../services/opencageService");
+const { getLatLong } = require("./../services/opencageService");
 const { getShippingMethod } = require("./../services/rajaOngkirService");
 const moment = require("moment");
 
@@ -123,8 +126,20 @@ const orderController = {
   },
   placementOrder: async (req, res, next) => {
     try {
-      const { cartProducts } = req.body;
+      const {
+        cartProducts,
+        weight,
+        shippingType,
+        delivery_fee,
+        payment_method,
+        courier,
+        address_detail,
+        warehouses_id,
+        total_price,
+      } = req.body;
       const { id } = req.tokens;
+
+      if (cartProducts.length === 0) throw { message: "Please add an item " };
 
       const result = await sequelize.transaction(async (t) => {
         const maps = cartProducts.map((value) => {
@@ -150,17 +165,34 @@ const orderController = {
 
         const updateTransactionUid = await updateUid(
           formattedDate,
-          formattedTransactionUid,
+          `INV-${formattedTransactionUid}`,
           { transaction: t }
         );
 
-        return { placeOrder, formattedTransactionUid };
+        return `INV-${formattedTransactionUid}`;
       });
+
+      const data = {
+        total_price: total_price,
+        transaction_uid: result,
+        payment_methods_id: payment_method,
+        total_weight: weight,
+        shipping_type: shippingType,
+        delivery_fee: delivery_fee,
+        users_id: id,
+        courier: courier,
+        address_detail: address_detail,
+        warehouses_id: warehouses_id,
+      };
+
+      const order = await createOrder(data);
+
+      const deleteCart = await deleteCartProduct(id);
 
       res.status(200).send({
         isError: false,
         message: "Congratulations! Your order has been successfully placed.",
-        result: result,
+        result: order,
       });
     } catch (error) {
       next(error);
@@ -288,24 +320,22 @@ const orderController = {
   getShippingMethod: async (req, res, next) => {
     try {
       const { cities_id, weight, courier } = req.body;
-      console.log(courier);
 
       if (!courier) throw { message: "Select a Courier" };
       if (courier === "select a courier") throw { message: "Select a Courier" };
 
       const userAddressLatLong = await getLatLong(cities_id);
-
-      const nearestWarehouse = await getWarehouseTerdekat(userAddressLatLong);
-
+      const nearestWarehouse = await getWarehouseTerdekat2(userAddressLatLong);
+      console.log(nearestWarehouse);
       const data = {
         userCity: cities_id.toString(),
         nearestWarehouse: nearestWarehouse.cities_id.toString(),
-        weight: weight,
+        weight: weight > 30000 ? 30000 : weight,
         courier: courier.toString(),
       };
 
       const getShipping = await getShippingMethod(data);
-      console.log(getShipping.rajaongkir.results.costs);
+
       res.status(200).send({
         isError: false,
         data: getShipping.rajaongkir.results,
@@ -325,6 +355,41 @@ const orderController = {
         isError: false,
         data: dataUser,
       });
+    } catch (error) {
+      next(error);
+    }
+  },
+  filterOrder: async (req, res, next) => {
+    try {
+      const { id } = req.tokens;
+      const filterOrders = await filterPaymentStatus(req.query, id);
+
+      res.status(200).send({
+        isError: false,
+        data: filterOrders,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  OrderDetailsByTransactionId: async (req, res, next) => {
+    try {
+      const { transaction_uid } = req.body;
+      const { id } = req.tokens;
+
+      const order = await orderByTransactionId(transaction_uid, id);
+
+      const orderDetails = await orderDetailsByTransactionId(
+        transaction_uid,
+        id
+      );
+
+      res.status(200).send({
+        isError: false,
+        order: order,
+        orderDetails: orderDetails,
+      });
+      
     } catch (error) {
       next(error);
     }

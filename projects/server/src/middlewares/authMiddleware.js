@@ -9,7 +9,7 @@ const authorizeLoggedInUser = (req, res, next) => {
     const verifiedToken = verifyToken(tokens);
 
     req.tokens = verifiedToken;
-
+    console.log(req.tokens);
     next();
   } catch (error) {
     if (error.message === "jwt expired") {

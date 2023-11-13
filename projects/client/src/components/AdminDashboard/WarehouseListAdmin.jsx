@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import axiosInstance from "../../config/api";
 import Input from "../Input/Input";
-import NavAdmin from "./NavAdmin";
+import NavAdmin from "./SidebarAdmin";
 import Select from "react-select";
 import Button from "../Button/Button";
 import Swal from 'sweetalert2';
@@ -147,9 +147,9 @@ const WarehouseList = () => {
     getCities();
   }, [data, setDatas]);
   return (
-    <div className="flex mt-36 bg-slate-300 justify-center gap-5 max-w-[1280px] m-auto">
+    <div className="flex justify-center gap-5 max-w-[1280px] m-auto">
       {/* <NavAdmin /> */}
-      <div className="px-2 max-w-[80%] max-h-[500px] mb-10 overflow-auto rounded-sm">
+      <div className="px-2 max-w-[80%] max-h-[screen] mb-10 overflow-auto rounded-sm">
         <div className="">
           <span>Create Warehouse</span>
           <div>

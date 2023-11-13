@@ -1,6 +1,6 @@
 import React from "react";
 
-const OptionProvince = (props ) => {
+const OptionProvince = (props) => {
   return (
     <>
       <label
