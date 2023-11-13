@@ -386,6 +386,7 @@ module.exports = {
   orderByTransactionId: async (transaction_uid, id) => {
     try {
       const order = await db.orders.findOne({
+        attributes: ["total_price", "id", "address_detail", "transaction_uid"],
         include: [
           {
             model: db.payment_methods,
@@ -435,9 +436,19 @@ module.exports = {
         ],
         where: { transaction_uid: transaction_uid, users_id: id },
       });
-      
 
       return orderDetails;
+    } catch (error) {
+      return error;
+    }
+  },
+  cancelOrderByTransactionId: async (id, transaction_uid) => {
+    try {
+      const cancelOrder = await db.orders_details.update(
+        { status: "Order Canceled" },
+        { where: { transaction_uid: transaction_uid, users_id: id } }
+      );
+      return cancelOrder
     } catch (error) {
       return error;
     }

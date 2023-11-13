@@ -5,7 +5,7 @@
 }
 
 .cart-slide-out {
-  transform: translateX(100%);
+  transform: translateX(200%);
   opacity: 0;
   transition: transform 0.3s ease, opacity 0.3s ease;
 }

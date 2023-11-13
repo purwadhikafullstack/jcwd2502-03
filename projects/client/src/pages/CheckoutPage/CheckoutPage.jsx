@@ -30,7 +30,7 @@ const CheckoutPage = () => {
   const [courierValue, setCourierValue] = useState("");
   const [nearestWarehouse, setNearestWarehouse] = useState();
   const [totalPrice, setTotalPrice] = useState();
-  console.log(totalPrice);
+
 
   const navigate = useNavigate();
   const handleConfirmChangeAddress = (value) => {
@@ -92,6 +92,7 @@ const CheckoutPage = () => {
         address_detail: address.address,
         warehouses_id: nearestWarehouse.id,
         total_price: totalPrice,
+        city_id: address.cities_id
       });
 
       toast.success(placementOrder.data.message);
@@ -108,6 +109,8 @@ const CheckoutPage = () => {
 
   if (couriers.length === 0) return <div>Loading</div>;
   if (payments.length === 0) return <div>Loading</div>;
+
+
 
   return (
     <div className="checkout max-w-[1280px] m-auto lg:px-[100px] md:px-[50px] ">

@@ -17,12 +17,14 @@ const OrderViewDetails = ({ setTabValue }) => {
 
   const [order, setOrder] = useState({});
   const [orderDetails, setOrderDetails] = useState([]);
-  console.log(order);
+
+
   const getOrderDetails = async () => {
     try {
       const res = await axiosInstance.post("/order/order-details", {
         transaction_uid: transactionUid,
       });
+      console.log(res);
       setOrder(res.data.order);
       setOrderDetails(res.data.orderDetails);
     } catch (error) {
@@ -54,7 +56,7 @@ const OrderViewDetails = ({ setTabValue }) => {
         <div className="h-[104px] p-[24px] bg-[#FDFAE7] border-[4px] border-[#F7E99E] flex justify-between items-center mb-[24px]">
           <div>
             <h1 className="text-[20px] mb-[8px] text-[#191C1F]">
-              {order.transaction_uid}
+              {transactionUid}
             </h1>
             <h1 className="text-[14px] text-[#475156]">
               {`${orderDetails.length} Products Order Placed in ${formattedTimestamp}`}

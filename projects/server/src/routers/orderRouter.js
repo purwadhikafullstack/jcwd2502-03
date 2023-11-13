@@ -19,7 +19,8 @@ router.post("/edit-address",authorizeLoggedInUser, orderController.editAddress);
 router.post("/shipping-method", orderController.getShippingMethod);
 router.post("/user-data",authorizeLoggedInUser,  orderController.getUserData);
 router.post("/filter-order",authorizeLoggedInUser,  orderController.filterOrder);
-router.post("/order-details",authorizeLoggedInUser ,  orderController.OrderDetailsByTransactionId);
+router.post("/order-details",authorizeLoggedInUser , customerMiddleware,  orderController.OrderDetailsByTransactionId);
+router.post("/cancel-order",authorizeLoggedInUser , customerMiddleware,  orderController.cancelOrder);
 
 
 module.exports = router;

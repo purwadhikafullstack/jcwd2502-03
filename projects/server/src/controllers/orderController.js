@@ -23,6 +23,7 @@ const {
   deleteCartProduct,
   orderByTransactionId,
   orderDetailsByTransactionId,
+  cancelOrderByTransactionId,
 } = require("./../services/orderService");
 const { Op } = require("sequelize");
 const sequelize = require("./../sequelizeInstance/sequelizeInstance");
@@ -136,8 +137,10 @@ const orderController = {
         address_detail,
         warehouses_id,
         total_price,
+        city_id
       } = req.body;
       const { id } = req.tokens;
+      console.log(city_id);
 
       if (cartProducts.length === 0) throw { message: "Please add an item " };
 
@@ -183,6 +186,7 @@ const orderController = {
         courier: courier,
         address_detail: address_detail,
         warehouses_id: warehouses_id,
+        customer_cities_id: city_id
       };
 
       const order = await createOrder(data);
@@ -378,7 +382,7 @@ const orderController = {
       const { id } = req.tokens;
 
       const order = await orderByTransactionId(transaction_uid, id);
-
+      console.log(order);
       const orderDetails = await orderDetailsByTransactionId(
         transaction_uid,
         id
@@ -389,7 +393,21 @@ const orderController = {
         order: order,
         orderDetails: orderDetails,
       });
-      
+    } catch (error) {
+      next(error);
+    }
+  },
+  cancelOrder: async (req, res, next) => {
+    try {
+      const { id } = req.tokens;
+      const { transaction_uid } = req.body;
+
+      const cancel = await cancelOrderByTransactionId(id, transaction_uid);
+
+      res.send({
+        isError: false,
+        message: "The Order Has been Canceled",
+      });
     } catch (error) {
       next(error);
     }
