@@ -82,12 +82,12 @@ const OrderHistory = ({ tabValue, setTabValue }) => {
   const cancel = () =>
     Swal.fire({
       title: "Are you sure?",
-      text: "The order will be  deleted!",
+      text: "The order will be  canceled!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
+      confirmButtonText: "Yes, canceled it!",
     }).then((result) => {
       if (result.isConfirmed) {
         cancelOrder();
