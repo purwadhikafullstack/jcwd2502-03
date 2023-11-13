@@ -7,7 +7,9 @@
 .cart-slide-out {
   transform: translateX(200%);
   opacity: 0;
+  /* display: none; */
   transition: transform 0.3s ease, opacity 0.3s ease;
+  /* right: 0; */
 }
 
 @media (min-width: 768px) {

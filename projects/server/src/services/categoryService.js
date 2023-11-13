@@ -4,18 +4,24 @@ const db = require("./../models");
 module.exports = {
   getAllCategory: async ({ category_status }) => {
     try {
-        console.log(category_status);
       const where = {};
-      if(category_status) where.category_status = category_status
+      if (category_status) where.category_status = category_status;
       const allCategory = await db.products_categories.findAll({ where });
-      console.log(allCategory);
-      return allCategory
+      return allCategory;
+    } catch (error) {
+      return error;
+    }
+  },
+  kategoriId: async ({ id }) => {
+    try {
+      const allCategory = await db.products_categories.findByPk(id);
+      return allCategory;
     } catch (error) {
       return error;
     }
   },
 
-  createKategori : async (data, file ) => {
+  createKategori: async (data, file) => {
     try {
       const dataImage = file.images.map((value) => {
         return { category_image: value.path };
@@ -25,29 +31,30 @@ module.exports = {
         category_status: "Active",
         category_image: dataImage[0].category_image,
       });
-      return createProduk
+      return createProduk;
     } catch (error) {
-      return error
+      return error;
     }
   },
 
-  updateKategori : async ({id}, data) => {
+  updateKategori: async ({ id }, data) => {
     try {
-      const dataKategori = await db.products_categories.findByPk(id)
+      const dataKategori = await db.products_categories.findByPk(id);
       console.log(dataKategori.dataValues);
       const update = await db.products_categories.update(
         {
-          ...dataKategori, ...data
+          ...dataKategori,
+          ...data,
         },
-        {where : {id}}
-      )
-      return update
+        { where: { id } }
+      );
+      return update;
     } catch (error) {
-      return error
+      return error;
     }
   },
 
-  updateImage: async ({id}, files) => {
+  updateImage: async ({ id }, files) => {
     try {
       const images = files.images[0].path;
       const getPath = await db.products_categories.findByPk(id);

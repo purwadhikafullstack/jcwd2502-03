@@ -10,7 +10,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       status: {
-        type: Sequelize.STRING
+        type: Sequelize.ENUM("Bertambah", "Berkurang")
       },
       quantity: {
         type: Sequelize.INTEGER

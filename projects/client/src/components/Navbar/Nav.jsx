@@ -9,7 +9,7 @@ import { AiOutlineArrowRight } from "react-icons/ai";
 import Logo from "../Logo/Logo";
 import Button from "../Button/Button";
 import "./nav.css";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import axiosInstance from "../../config/api";
@@ -21,10 +21,30 @@ const Nav = () => {
   const [cartDatas, setCartDatas] = useState([]);
   const navigate = useNavigate();
   const [user, setUser] = useState(Cookies.get("user_token"));
-  console.log(user === true);
+  // console.log(user === true);
   const [localId, setLocalId] = useState(null);
-  console.log(user);
+  const param = useLocation();
+  const [text, setText] = useState(
+    param.pathname
+  );
+  const [role, setRole] = useState(null);
+
+  const getUser = async () => {
+    try {
+      const data = await axiosInstance.get(
+        `/auth/userdata/${Cookies.get("user_token")}`
+      );
+      setRole(data.data.result.role);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  let ClassName = "";
+  if (role && role !== "Customer") {
+    ClassName = "hidden";
+  }
   useEffect(() => {
+    getUser();
     const storedUser = Cookies.get("user_token");
     if (storedUser) {
       setLocalId(storedUser);
@@ -55,7 +75,7 @@ const Nav = () => {
   };
 
   const handleDeleteCart = async (id) => {
-    console.log(id);
+    // console.log(id);
     try {
       const deleteCart = await axiosInstance.post("/order/delete-cart", {
         productId: id,
@@ -82,7 +102,8 @@ const Nav = () => {
   };
 
   return (
-    <div className="wrap-nav w-full  bg-primaryBlue  fixed top-0 z-50">
+    
+    <div className={`wrap-nav w-full bg-primaryBlue  fixed top-0 z-50 ${ClassName}`}>
       <div className=" my-7  h-full m-auto gap-2 sm:gap-10 flex items-center align-middle justify-between">
         <Link to={"/"}>
           <Logo />

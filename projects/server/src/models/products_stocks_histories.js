@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     products_stocks_histories.init(
         {
-            status: DataTypes.STRING,
+            status: DataTypes.ENUM("Bertambah", "Berkurang"),
             quantity: DataTypes.INTEGER,
             reference: DataTypes.STRING,
         },

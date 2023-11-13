@@ -7,7 +7,8 @@ router.post("/",ownerMiddleware, warehouseController.addWarehouse)
 router.delete("/:id",ownerMiddleware, warehouseController.deleteWarehouse)
 router.delete("/restore/:id",ownerMiddleware, warehouseController.restoreWarehouse)
 router.get("/", warehouseController.getAllWarehouse)
-router.put("/",ownerMiddleware, warehouseController.updateWarehouse)
+router.put("/:id",ownerMiddleware, warehouseController.updateWarehouse)
 router.post("/nearest", warehouseController.getWarehouseTerdekat)
+router.get("/:id", warehouseController.getWarehouseById)
 
 module.exports = router
