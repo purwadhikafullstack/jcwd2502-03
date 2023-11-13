@@ -5,8 +5,6 @@ const { sequelize } = require("./../models");
 module.exports = {
   getAllProduct: async ({ categori, sortBy, search, product_status }) => {
     try {
-      // console.log(search);
-      // perkondisian untuk sorBy
       let sortOrder = null;
       if (sortBy === "high_to_low") {
         sortOrder = "DESC";
@@ -16,16 +14,14 @@ module.exports = {
       const order = [];
       if (sortOrder) order.push(["product_price", sortOrder]);
 
+      const dataKategori = await db.products_categories.findAll();
+      // console.log(dataKategori[0].id);
       let id = null;
-      if (categori == "SmartPhone") {
-        id = 1;
-      } else if (categori == "Laptop") {
-        id = 2;
-      } else if (categori == "HeadPhone") {
-        id = 3;
-      } else if (categori == "Accessories") {
-        id = 4;
-      }
+      dataKategori.map((item, index) => {
+        if (categori == item.category) {
+          id = item.id;
+        }
+      })
 
       const where = {};
       if (product_status) where.product_status = product_status;
@@ -36,10 +32,11 @@ module.exports = {
         };
       }
 
+      // order = [[]]
       const allProduct = await db.products.findAll({
         where,
         includes: db.product_categories,
-        order,
+        order: order,
       });
       return allProduct;
     } catch (error) {
@@ -122,10 +119,7 @@ module.exports = {
 
   deleteProduct: async ({ id }) => {
     try {
-      await db.products.update(
-        { status: "Inactive" },
-        { where: { id } }
-      );
+      await db.products.update({ status: "Inactive" }, { where: { id } });
       const res = await db.products.destroy({ where: { id } });
       return res;
     } catch (error) {
