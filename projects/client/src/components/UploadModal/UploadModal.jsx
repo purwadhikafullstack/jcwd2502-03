@@ -4,8 +4,10 @@ import QRCode from "react-qr-code";
 import { HiOutlineArrowSmLeft } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../config/api";
-
-const UploadModal = ({ isOpen, setIsModalOpen, order }) => {
+import Swal from 'sweetalert2'
+const UploadModal = ({ isOpen, setIsModalOpen, order, debouncedSearchValue , orderStatus}) => {
+  const [images, setImages] = useState(null);
+    console.log(orderStatus);
   const customStyle = {
     content: {
       width: "700px",
@@ -22,6 +24,50 @@ const UploadModal = ({ isOpen, setIsModalOpen, order }) => {
     },
   };
 
+  const onSelectImages = (event) => {
+    try {
+      const selectedImage = event.target.files[0];
+      if (selectedImage.size > 20000000)
+        throw {
+          message: `${selectedImage.name} size must be below 2MB`,
+        };
+      if (selectedImage.type.split("/")[0] !== "image") {
+        throw {
+          message: `${selectedImage.name} must be an image`,
+        };
+      }
+      setImages(selectedImage);
+    } catch (error) {
+      console.log(error);
+      alert(error.message);
+      setImages(null);
+    }
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const fd = new FormData();
+      const objTransaction_uid = {
+        transaction_uid: order?.transaction_uid,
+      };
+      fd.append("data", JSON.stringify(objTransaction_uid));
+      fd.append("images", images);
+
+      const res = await axiosInstance.put("/order/upload", fd)
+      console.log(res);
+      setIsModalOpen(false)
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Payment Proof Uploaded Successfully",
+        showConfirmButton: false,
+        timer: 2000
+      });
+      debouncedSearchValue()
+    } catch (error) {
+      alert(error.message);
+    }
+  };
   return (
     <Modal
       style={customStyle}
@@ -76,7 +122,17 @@ const UploadModal = ({ isOpen, setIsModalOpen, order }) => {
         </div>
         <div className="flex justify-normal gap-5 items-center mt-[24px]">
           <h1>Screenshot Payment Approval :</h1>
-          <input required type="file" className="" />
+          <input
+            onChange={(e) => onSelectImages(e)}
+            required
+            type="file"
+            className=""
+          />
+        </div>
+        <div className=" mt-[24px]  flex justify-center items-center">
+          <button onClick={handleSubmit} className="w-[100%]  bg-primaryOrange h-[38px] rounded-xl text-white">
+            Submit
+          </button>
         </div>
       </div>
     </Modal>

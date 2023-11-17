@@ -24,8 +24,14 @@ const {
   orderByTransactionId,
   orderDetailsByTransactionId,
   cancelOrderByTransactionId,
+  upload,
+  updateStatusAfterUpload,
+  statusByTransactionId,
+  statusUpdateAfter15Mins,
 } = require("./../services/orderService");
+
 const { Op } = require("sequelize");
+const cron = require("node-cron");
 const sequelize = require("./../sequelizeInstance/sequelizeInstance");
 const { getLatLong } = require("./../services/opencageService");
 const { getShippingMethod } = require("./../services/rajaOngkirService");
@@ -137,10 +143,9 @@ const orderController = {
         address_detail,
         warehouses_id,
         total_price,
-        city_id
+        city_id,
       } = req.body;
       const { id } = req.tokens;
-      console.log(city_id);
 
       if (cartProducts.length === 0) throw { message: "Please add an item " };
 
@@ -161,6 +166,7 @@ const orderController = {
         const formattedDate = moment(placeOrder[0].createdAt).format(
           "YYYY-MM-DD HH:mm:ss"
         );
+
         const formattedTransactionUid = moment(
           formattedDate,
           "YYYY-MM-DD HH:mm:ss"
@@ -186,12 +192,14 @@ const orderController = {
         courier: courier,
         address_detail: address_detail,
         warehouses_id: warehouses_id,
-        customer_cities_id: city_id
+        customer_cities_id: city_id,
       };
 
       const order = await createOrder(data);
 
       const deleteCart = await deleteCartProduct(id);
+
+      const updateStatusAfter15Mins = await statusUpdateAfter15Mins(req.io);
 
       res.status(200).send({
         isError: false,
@@ -407,6 +415,41 @@ const orderController = {
       res.send({
         isError: false,
         message: "The Order Has been Canceled",
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  uploadPaymentAproval: async (req, res, next) => {
+    try {
+      const { transaction_uid } = JSON.parse(req.body.data);
+      const { id } = req.tokens;
+      const file = req.files.images;
+
+      const checkStatus = await statusByTransactionId(transaction_uid, id);
+
+      console.log(checkStatus);
+      const uploadImage = await upload(id, transaction_uid, file);
+      const updateStatus = await updateStatusAfterUpload(id, transaction_uid);
+
+      res.send({
+        isError: false,
+        message: "Submit Payment Success",
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  statusOrder: async (req, res, next) => {
+    try {
+      const { id } = req.tokens;
+      const { transaction_uid } = req.body;
+
+      const status = await statusByTransactionId(transaction_uid, id);
+
+      res.status(200).send({
+        isError: false,
+        data: status,
       });
     } catch (error) {
       next(error);

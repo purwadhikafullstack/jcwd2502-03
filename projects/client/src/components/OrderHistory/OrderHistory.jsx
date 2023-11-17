@@ -9,6 +9,9 @@ import { useNavigate } from "react-router-dom";
 import UploadModal from "../UploadModal/UploadModal";
 import Swal from "sweetalert2";
 import "./OrderHistory.css";
+// import io from "socket.io-client";
+// const socket = io.connect("http://localhost:8000");
+
 const OrderHistory = ({ tabValue, setTabValue }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
@@ -17,7 +20,20 @@ const OrderHistory = ({ tabValue, setTabValue }) => {
   const [orderHistory, setOrderHistory] = useState([]);
   const [order, setOrder] = useState({});
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [orderStatus, setOrderStatus] = useState("");
   const navigate = useNavigate();
+
+  // useEffect(() => {
+
+  //   socket.on('welcome', () => {
+  //     console.log("connect"); // This should log "Welcome to the Socket.IO server"
+  //   });
+
+    
+  //   return () => {
+  //     socket.disconnect();
+  //   };
+  // }, []);
 
   useEffect(() => {
     const getOrderDetails = async () => {
@@ -173,7 +189,7 @@ const OrderHistory = ({ tabValue, setTabValue }) => {
                           : value.status === "Package Arrived"
                           ? "text-[#008000]"
                           : value.status === "Order Completed"
-                          ? "text-[#00BFFF]"
+                          ? "text-[#008000]"
                           : value.status === "Order Canceled"
                           ? "text-[#FF0000]"
                           : ""
@@ -220,6 +236,7 @@ const OrderHistory = ({ tabValue, setTabValue }) => {
                             onClick={() => {
                               setIsModalOpen(true);
                               setTransaction_uid(value.transaction_uid);
+                              setOrderStatus(value.status);
                             }}
                             className=" bg-primaryOrange cursor-pointer w-[50%] rounded-xl h-full  text-white"
                           >
@@ -229,6 +246,8 @@ const OrderHistory = ({ tabValue, setTabValue }) => {
                             isOpen={isModalOpen}
                             setIsModalOpen={setIsModalOpen}
                             order={order}
+                            debouncedSearchValue={debouncedSearchValue}
+                            orderStatus={orderStatus}
                           />
                         </div>
                       )}

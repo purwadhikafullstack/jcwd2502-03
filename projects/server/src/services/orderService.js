@@ -1,7 +1,9 @@
 const db = require("./../models");
-const { Op, sequelize } = require("./../models");
+const { sequelize } = require("./../models");
+const { Op } = require("sequelize");
 const moment = require("moment");
 
+const cron = require("node-cron");
 module.exports = {
   addTocart: async (data) => {
     try {
@@ -177,30 +179,27 @@ module.exports = {
   },
   getAddressByPrimaryKey: async (data) => {
     try {
-      const getAddressByPrimaryKey = await db.users_addresses.findOne(
-        {
-          include: [
-            {
-              model: db.tb_ro_cities,
-              attributes: ["city_name", "postal_code", "provinces_id"],
-              include: [
-                {
-                  model: db.tb_ro_provinces,
-                  attributes: ["province_name"],
-                },
-              ],
-            },
-          ],
-        },
-        {
-          where: { users_id: data.id, is_primary: data.primary },
-        }
-      );
+      const getAddressByPrimaryKey = await db.users_addresses.findOne({
+        include: [
+          {
+            model: db.tb_ro_cities,
+            attributes: ["city_name", "postal_code", "provinces_id"],
+            include: [
+              {
+                model: db.tb_ro_provinces,
+                attributes: ["province_name"],
+              },
+            ],
+          },
+        ],
+        where: { users_id: data.id, is_primary: 1 },
+      });
       return getAddressByPrimaryKey;
     } catch (error) {
       return error;
     }
   },
+
   getRajaOngkir: async (data) => {
     try {
       const getRajaOngkir = await db.tb_ro_provinces.findAll({
@@ -448,9 +447,73 @@ module.exports = {
         { status: "Order Canceled" },
         { where: { transaction_uid: transaction_uid, users_id: id } }
       );
-      return cancelOrder
+      return cancelOrder;
     } catch (error) {
       return error;
     }
+  },
+  upload: async (id, transaction_uid, file) => {
+    try {
+      const upload = await db.orders.update(
+        {
+          payment_proof: file[0].path,
+        },
+        {
+          where: { transaction_uid: transaction_uid, users_id: id },
+        }
+      );
+      return upload;
+    } catch (error) {
+      return error;
+    }
+  },
+  updateStatusAfterUpload: async (id, transaction_uid) => {
+    try {
+      const updateStatus = await db.orders_details.update(
+        {
+          status: "Waiting for Payment Approval",
+        },
+        { where: { users_id: id, transaction_uid: transaction_uid } }
+      );
+      return updateStatus;
+    } catch (error) {
+      return error;
+    }
+  },
+  statusByTransactionId: async (transaction_uid, id) => {
+    try {
+      const status = await db.orders_details.findOne({
+        attributes: ["status", "updatedAt"],
+        where: { users_id: id, transaction_uid: transaction_uid },
+      });
+
+      return status;
+    } catch (error) {
+      return error;
+    }
+  },
+  statusUpdateAfter15Mins: async (io) => {
+    cron.schedule("* * * * *", async () => {
+      try {
+        const fifteenMinutesAgo = new Date();
+        fifteenMinutesAgo.setMinutes(fifteenMinutesAgo.getMinutes() - 15);
+
+        const [affectedRowsCount] = await db.orders_details.update(
+          { status: "Order Canceled" },
+          {
+            where: {
+              createdAt: {
+                [Op.lt]: fifteenMinutesAgo,
+              },
+              status: "Payment Pending",
+            },
+          }
+        );
+
+       
+      } catch (error) {
+        console.error("Error cancelling orders:", error);
+      }
+    });
   },
 };

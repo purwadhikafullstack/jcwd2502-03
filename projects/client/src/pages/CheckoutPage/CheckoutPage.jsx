@@ -31,7 +31,8 @@ const CheckoutPage = () => {
   const [nearestWarehouse, setNearestWarehouse] = useState();
   const [totalPrice, setTotalPrice] = useState();
 
-
+  console.log(address);
+  console.log(addresses);
   const navigate = useNavigate();
   const handleConfirmChangeAddress = (value) => {
     if (!value) return toast.error("Please Select an Address");
@@ -82,7 +83,7 @@ const CheckoutPage = () => {
           "Please fill in the information and choose a shipping address."
         );
 
-      const placementOrder = await axiosInstance.post("/order/place-order", {
+      const placementOrder = await axiosInstance.put("/order/place-order", {
         cartProducts: cartData,
         weight: totalWeight > 30000 ? 30000 : totalWeight,
         shippingType: shippingType,
