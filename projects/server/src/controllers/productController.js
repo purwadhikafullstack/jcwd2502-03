@@ -35,18 +35,18 @@ module.exports = {
       const datasImage = dataImage.map((obj, index) => {
         return { products_id: createdProduct.dataValues.id, ...obj };
       });
-      const dataStock = data.stock.map((obj, index) => {
-        return { products_id: createdProduct.dataValues.id, ...obj };
-      });
-      const dataMutasi = data.stock.map((obj, index) => {
-        return {
-          warehouses_id: obj.warehouses_id,
-          status: "Bertambah",
-          quantity: obj.stock,
-          reference: "Manual",
-          products_id: createdProduct.dataValues.id,
-        };
-      });
+      // const dataStock = data.stock.map((obj, index) => {
+      //   return { products_id: createdProduct.dataValues.id, ...obj };
+      // });
+      // const dataMutasi = data.stock.map((obj, index) => {
+      //   return {
+      //     warehouses_id: obj.warehouses_id,
+      //     status: "Bertambah",
+      //     quantity: obj.stock,
+      //     reference: "Manual",
+      //     products_id: createdProduct.dataValues.id,
+      //   };
+      // });
       // [
       //   {
       //     status: "bertambah",
@@ -57,8 +57,8 @@ module.exports = {
       //   },
       // ];
       await db.products_images.bulkCreate(datasImage, { transaction: t });
-      await db.products_stocks.bulkCreate(dataStock, { transaction: t });
-      await db.products_stocks_histories.bulkCreate(dataMutasi, { transaction: t });
+      // await db.products_stocks.bulkCreate(dataStock, { transaction: t });
+      // await db.products_stocks_histories.bulkCreate(dataMutasi, { transaction: t });
       await t.commit();
       res.status(200).send({
         isError: false,

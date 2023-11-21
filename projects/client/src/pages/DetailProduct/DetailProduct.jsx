@@ -24,7 +24,6 @@ const DetailProduct = () => {
     setQuantity(quantity + 1);
   };
 
-
   const handleDecrement = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);

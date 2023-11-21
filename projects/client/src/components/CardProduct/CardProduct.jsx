@@ -74,7 +74,7 @@ const CardProduct = ({ data, addToCart }) => {
                     </div>
                   </div>
                   <div className="">
-                    <Link className="" to={`/product/${item.id}`}>
+                    <Link to={`/product/${encodeURIComponent(item.id)}`}>
                       <div className="h-[40px]  hover:underline  font-semibold overflow-hidden text-ellipsis text-sm">
                         {item.product_name}
                       </div>

@@ -11,6 +11,7 @@ const Products = () => {
     try {
       const res = await axiosInstance.get("/product")
       console.log(res.data);
+      setProduct(res.data)
     } catch (error) {
       console.log(error.response.data.message);
     }
@@ -75,8 +76,11 @@ const Products = () => {
           {/* head */}
           <thead>
             <tr>
-              <th>Category Name</th>
-              <th>Total Product</th>
+              <th>Product Name</th>
+              <th>Stock</th>
+              <th>Harga</th>
+              <th>Kategori</th>
+              <th>Status</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -90,16 +94,16 @@ const Products = () => {
                       <div className="flex items-center space-x-3">
                         <div className="avatar">
                           <div className="mask mask-squircle w-12 h-12">
-                            <img
+                            {/* <img
                               src={`http://localhost:8000${item.category_image.substring(
                                 6
                               )}`}
                               alt="image"
-                            />
+                            /> */}
                           </div>
                         </div>
                         <div>
-                          <div className="font-bold">{item.category}</div>
+                          <div className="font-bold">{item.product_name}</div>
                         </div>
                       </div>
                     </td>
