@@ -65,4 +65,12 @@ module.exports = {
       return error;
     }
   },
+  getById : async ({id}) => {
+    try {
+      const hasil = await db.warehouses.findByPk(id)
+      return hasil
+    } catch (error) {
+      next(error)
+    }
+  }
 };

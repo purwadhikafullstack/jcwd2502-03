@@ -2,6 +2,7 @@ const router = require("express").Router();
 
 const { orderController } = require("./../controllers");
 const authorizeLoggedInUser = require("./../middlewares/authMiddleware");
+const {customerMiddleware} = require("./../middlewares/customerMiddleware")
 
 router.post("/cart", authorizeLoggedInUser, orderController.addToCart);
 router.post("/cartdata", authorizeLoggedInUser, orderController.getCartData);
@@ -17,6 +18,8 @@ router.post("/add-address",authorizeLoggedInUser, orderController.addAddress);
 router.post("/edit-address",authorizeLoggedInUser, orderController.editAddress);
 router.post("/shipping-method", orderController.getShippingMethod);
 router.post("/user-data",authorizeLoggedInUser,  orderController.getUserData);
+router.post("/filter-order",authorizeLoggedInUser,  orderController.filterOrder);
+router.post("/order-details",authorizeLoggedInUser ,  orderController.OrderDetailsByTransactionId);
 
 
 module.exports = router;

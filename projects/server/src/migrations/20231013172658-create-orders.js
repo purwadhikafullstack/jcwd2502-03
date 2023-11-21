@@ -30,6 +30,12 @@ module.exports = {
       payment_proof: {
         type: Sequelize.STRING
       },
+      address_detail: {
+        type: Sequelize.STRING
+      },
+      courier: {
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

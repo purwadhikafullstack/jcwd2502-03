@@ -15,8 +15,8 @@ const OptionCourier = ({ couriers, setCourierValue }) => {
         onChange={(e) => setCourierValue(e.target.value)}
       >
         <option selected>Select a Courier</option>
-        {couriers.map((value) => {
-          return <option value={value.courier}>{value.courier}</option>;
+        {couriers.map((value,index) => {
+          return <option key={index} value={value.courier}>{value.courier}</option>;
         })}
       </select>
     </>
