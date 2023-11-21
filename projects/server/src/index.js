@@ -3,8 +3,24 @@ const express = require("express");
 const cors = require("cors");
 const { join } = require("path");
 const bearerToken = require("express-bearer-token");
+const db = require("./models");
+const { Op } = require("sequelize");
+const http = require("http"); // Import the HTTP module
+const socketIo = require("socket.io");
+
 const PORT = process.env.PORT || 8000;
 const app = express();
+
+const server = http.createServer(app); // Create an HTTP server
+
+const { verifyToken } = require("./lib/jwt");
+
+const io = socketIo(server, {
+  cors: {
+    origin: "http://localhost:3000", // Replace with your client's URL
+    methods: ["GET", "POST"],
+  },
+});
 app.use(
   cors()
   //   {
@@ -14,10 +30,116 @@ app.use(
   //     ],
   // }
 );
-app.use(express.static('public'))
-app.use(express.json());
 
+app.use(express.static("public"));
+app.use(express.json());
+const cron = require("node-cron");
 //#region API ROUTES
+
+const socketIdMap = new Map();
+const adminSocketsMap = new Map();
+
+io.on("connection", async (socket) => {
+  const userId = socket.handshake.query.userToken;
+
+  const decoded = verifyToken(userId);
+
+  const data = await db.users.findByPk(decoded.id);
+
+  if (data.dataValues.role !== "Customer") {
+    const warehouseId = data.warehouses_id;
+    if (!adminSocketsMap.has(warehouseId)) {
+      adminSocketsMap.set(warehouseId, []);
+    }
+    adminSocketsMap.get(warehouseId).push(socket.id);
+  }
+
+  if (decoded) {
+    socketIdMap.set(decoded.id, socket.id);
+    socket.userId = userId;
+  }
+  console.log(`A user connected ${socket.id}`);
+
+  socket.on("disconnect", () => {
+    if (decoded && data.dataValues.role === "Customer") {
+      socketIdMap.delete(socket.userId);
+    } else if (decoded) {
+      const warehouseId = data.dataValues.warehouses_id;
+      if (adminSocketsMap.has(warehouseId)) {
+        const adminSockets = adminSocketsMap.get(warehouseId);
+        const index = adminSockets.indexOf(socket.id);
+        if (index !== -1) {
+          adminSockets.splice(index, 1);
+          if (adminSockets.length === 0) {
+            adminSocketsMap.delete(warehouseId);
+          }
+        }
+      }
+    }
+  });
+  console.log("socketId",socketIdMap); 
+  console.log("admin",adminSocketsMap); 
+});
+
+
+const checkAndUpdateOrders = async () => {
+  try {
+    const fifteenMinutesAgo = new Date();
+    fifteenMinutesAgo.setMinutes(fifteenMinutesAgo.getMinutes() - 15);
+
+    const [affectedRows] = await db.orders_details.update(
+      { status: "Order Canceled" },
+      {
+        where: {
+          createdAt: {
+            [Op.lt]: fifteenMinutesAgo,
+          },
+          status: "Payment Pending",
+        },
+      }
+    );
+
+    // const oneSecondAgo = new Date();
+    // oneSecondAgo.setSeconds(oneSecondAgo.getSeconds() - 1);
+
+    // const dataWithinOneSecond = await db.orders_details.findAll({
+    //   where: {
+    //     updatedAt: {
+    //       [Op.gte]: oneSecondAgo,
+    //     },
+    //     status: "Order Canceled",
+    //   },
+    //   group: ["transaction_uid"],
+    // });
+
+    // console.log(`Canceled ${affectedRows} orders.`);
+
+    // if (dataWithinOneSecond.length > 0) {
+    //   dataWithinOneSecond.forEach((order) => {
+    //     const userId = order.dataValues.users_id;
+    //     const socketId = socketIdMap.get(userId);
+    //     if (socketId) {
+    //       io.to(socketId).emit("statusChange", { status: "Order Canceled" });
+    //     }
+    //   });
+    // }
+  } catch (error) {
+    console.error("Error canceling orders:", error);
+  }
+};
+
+cron.schedule("* * * * *", checkAndUpdateOrders);
+
+const attachIoToRequest = (req, res, next) => {
+  req.io = io;
+  next();
+};
+
+const adminSocket = (req, res, next) => {
+  req.adminSocket = adminSocketsMap;
+  req.customerSocket = socketIdMap;
+  next();
+};
 
 // ===========================
 // NOTE : Add your routes here
@@ -28,11 +150,17 @@ const {
   userRouter,
   adminRouter,
 } = require("./routers");
-const { productRouter, categoryRouter, warehouseRouter, stockRouter, rajaOngkirRouter } = require("./routers");
+
+const {
+  productRouter,
+  categoryRouter,
+  warehouseRouter,
+  stockRouter,
+  rajaOngkirRouter,
+} = require("./routers");
 app.use("/api/product", productRouter);
 app.use(bearerToken());
-
-app.use("/api/order", orderRouter);
+app.use("/api/order", attachIoToRequest, adminSocket, orderRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/admin", adminRouter);
@@ -107,7 +235,7 @@ app.use((err, req, res, next) => {
 
 //#endregion
 
-app.listen(PORT, (err) => {
+server.listen(PORT, (err) => {
   if (err) {
     console.log(`ERROR: ${err}`);
   } else {

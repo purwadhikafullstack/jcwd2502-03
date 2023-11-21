@@ -28,6 +28,11 @@ const {
   updateStatusAfterUpload,
   statusByTransactionId,
   statusUpdateAfter15Mins,
+  findAdminData,
+  orderApproval,
+  orderApprovalDetails,
+  orders,
+  rejectOrder,
 } = require("./../services/orderService");
 
 const { Op } = require("sequelize");
@@ -146,11 +151,13 @@ const orderController = {
         city_id,
       } = req.body;
       const { id } = req.tokens;
+      const io = req.io;
 
       if (cartProducts.length === 0) throw { message: "Please add an item " };
 
       const result = await sequelize.transaction(async (t) => {
         const maps = cartProducts.map((value) => {
+          console.log(value);
           return {
             quantity: value.quantity,
             product_price: value.total,
@@ -178,12 +185,21 @@ const orderController = {
           { transaction: t }
         );
 
-        return `INV-${formattedTransactionUid}`;
+        const warehouse_id = maps.map((value) => {
+          return {
+            warehouse_id: value.warehouses_id,
+          };
+        });
+
+        return {
+          result: `INV-${formattedTransactionUid}`,
+          warehouse_id: warehouse_id,
+        };
       });
 
       const data = {
         total_price: total_price,
-        transaction_uid: result,
+        transaction_uid: result.result,
         payment_methods_id: payment_method,
         total_weight: weight,
         shipping_type: shippingType,
@@ -199,7 +215,15 @@ const orderController = {
 
       const deleteCart = await deleteCartProduct(id);
 
-      const updateStatusAfter15Mins = await statusUpdateAfter15Mins(req.io);
+      const adminSocket = req.adminSocket;
+
+      const sendToAdmin = result.warehouse_id.map((value) => {
+        const adminId = adminSocket.get(value.warehouse_id);
+        console.log(adminId);
+        return io
+          .to(adminId)
+          .emit("newOrder", { message: "New Order Available !" });
+      });
 
       res.status(200).send({
         isError: false,
@@ -425,12 +449,33 @@ const orderController = {
       const { transaction_uid } = JSON.parse(req.body.data);
       const { id } = req.tokens;
       const file = req.files.images;
+      // const status = await statusByTransactionId(transaction_uid, id);
 
-      const checkStatus = await statusByTransactionId(transaction_uid, id);
+      // if (status.status === "Order Canceled") throw { message: "refresh" };
 
-      console.log(checkStatus);
       const uploadImage = await upload(id, transaction_uid, file);
       const updateStatus = await updateStatusAfterUpload(id, transaction_uid);
+
+      const dataOrder = await orderByTransactionId(transaction_uid, id);
+
+      const warehouseId = dataOrder.dataValues.warehouses_id;
+      const adminSocket = req.adminSocket;
+
+      console.log(adminSocket);
+      const admin = adminSocket.get(warehouseId);
+      const io = req.io;
+
+      console.log(warehouseId);
+
+      console.log(admin);
+
+      if (admin) {
+        const result = admin.map((value) => {
+          return io.to(value).emit("upload", {
+            message: "New Payment Approval Available !",
+          });
+        });
+      }
 
       res.send({
         isError: false,
@@ -446,10 +491,77 @@ const orderController = {
       const { transaction_uid } = req.body;
 
       const status = await statusByTransactionId(transaction_uid, id);
-
       res.status(200).send({
         isError: false,
         data: status,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  adminOrderAprroval: async (req, res, next) => {
+    try {
+      const { id } = req.tokens;
+      const adminData = await findAdminData(id);
+
+      console.log(adminData);
+      const orderApprovalData = await orderApproval(
+        adminData.dataValues.warehouses_id
+      );
+
+      res.status(200).send({
+        isError: false,
+        data: orderApprovalData,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  adminOrderAprrovalDetails: async (req, res, next) => {
+    try {
+      const { id } = req.tokens;
+      const { transaction_uid } = req.body;
+      const adminData = await findAdminData(id);
+
+      const adminOrdersApproval = await orders(
+        adminData.dataValues.warehouses_id,
+        transaction_uid
+      );
+      const adminOrdersApprovalDetails = await orderApprovalDetails(
+        adminData.dataValues.warehouses_id,
+        transaction_uid
+      );
+
+      res.status(200).send({
+        isError: false,
+        orders: adminOrdersApproval,
+        ordersDetails: adminOrdersApprovalDetails,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  rejectOrder: async (req, res, next) => {
+    try {
+      const { transaction_uid, users_id } = req.body;
+      const reject = await rejectOrder(transaction_uid, users_id);
+      const dataOrder = await orderByTransactionId(transaction_uid, users_id);
+
+      const io = req.io;
+      const customerSocket = req.customerSocket;
+
+      const userId = customerSocket.get(users_id);
+
+      console.log(userId);
+console.log(customerSocket);
+      io.to(userId).emit("reject", {
+        message:
+          "Your order has been rejected. Please upload a new payment proof.",
+      });
+
+      res.status(200).send({
+        isError: false,
+        message: "Reject Order Success",
       });
     } catch (error) {
       next(error);

@@ -1,4 +1,5 @@
 import { Route } from "react-router-dom";
+import React from "react";
 import Button from "../components/Button/Button";
 import Nav from "../components/Navbar/Nav";
 import CartPage from "../pages/CartPage/CartPage";
@@ -16,13 +17,13 @@ import ChangePasswordPage from "../pages/ChangePasswordPage/ChangePasswordPage";
 import ForgetPasswordPage from "../pages/ForgetPasswordPage/ForgetPasswordPage";
 import ResetPasswordPage from "../pages/ResetPasswordPage/ResetPasswordPage";
 import OrderHistory from "../components/OrderHistory/OrderHistory";
-
+import Swal from "sweetalert2";
 import TabBar from "../components/TabBar/TabBar";
 import SideBarDashboard from "../components/SideBarDashboard/SideBarDashboard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import OrderViewDetails from "../components/OrderViewDetails/OrderViewDetails";
 import { useLocation } from "react-router-dom";
-
+import AdminOrderApproval from "../components/AdminOrderApproval/AdminOrderApproval";
 import { HiChartPie, HiShoppingBag, HiUser } from "react-icons/hi";
 import { TbBuildingWarehouse } from "react-icons/tb";
 import { Link } from "react-router-dom";
@@ -33,12 +34,61 @@ import UsersAdmin from "../components/AdminDashboard/UsersAdmin";
 import ProductsAdmin from "../components/AdminDashboard/ProductsAdmin";
 import ReportAdmin from "../components/AdminDashboard/ReportAdmin";
 import CategoryAdmin from "../components/AdminDashboard/CategoryAdmin";
+import Cookies from "js-cookie";
+import io from "socket.io-client";
+import audioNotif from "./../assets/audionotif.mp3";
+const userToken = Cookies.get("user_token");
+let socket;
+if (userToken) {
+  socket = io("http://localhost:8000", {
+    query: { userToken },
+  });
+}
+
 const SideBar = ({ children }) => {
   const [tabValue, setTabValue] = useState(1);
   const location = useLocation();
-
   const currentPath = location.pathname;
-  // console.log(currentPath);
+  const [isRefreshingOrderHistory, setIsRefreshingOrderHistory] =
+    useState(false);
+
+  const refreshOrdersHistory = async () => {
+    try {
+      setIsRefreshingOrderHistory(true);
+    } catch (error) {
+      console.error("Error refreshing orders:", error);
+    } finally {
+      setTimeout(() => {
+        setIsRefreshingOrderHistory(false);
+      }, 1000);
+    }
+  };
+
+  useEffect(() => {
+    if (userToken) {
+      socket.on("connect", () => {
+        console.log("Socket connected successfully");
+      });
+
+      socket.on("reject", (message) => {
+        Swal.fire({
+          position: "top-end",
+          icon: "warning",
+          title: message.message,
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        const audio = new Audio(audioNotif);
+        audio.play();
+        refreshOrdersHistory();
+      });
+
+      return () => {
+        socket.disconnect();
+      };
+    }
+  }, []);
+
   return (
     <div className={`max-w-[1280px] m-auto `}>
       <TabBar />
@@ -53,7 +103,12 @@ const SideBar = ({ children }) => {
             currentPath === "/dashboard/orders/details" ? "h-auto" : "h-[718px]"
           } right w-full  rounded-[4px] border-[1px] shadow-xl `}
         >
-          {children}
+          {React.isValidElement(children) &&
+            React.cloneElement(children, {
+              isRefreshingOrderHistory,
+              setIsRefreshingOrderHistory,
+              refreshOrdersHistory,
+            })}
         </div>
       </div>
     </div>
@@ -63,12 +118,71 @@ const SideBar = ({ children }) => {
 const SideBarAdmin = ({ children }) => {
   const [tabValue, setTabValue] = useState(1);
   const location = useLocation();
-
   const currentPath = location.pathname;
-  // console.log(currentPath);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const refreshOrders = async () => {
+    try {
+      setIsRefreshing(true);
+    } catch (error) {
+      console.error("Error refreshing orders:", error);
+    } finally {
+      setTimeout(() => {
+        setIsRefreshing(false);
+      }, 1000);
+    }
+  };
+
+  useEffect(() => {
+    if (userToken) {
+      socket.on("newOrder", (message) => {
+        try {
+          Swal.fire({
+            position: "top-end",
+            icon: "warning",
+            title: message.message,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          const audio = new Audio(audioNotif);
+          audio.play();
+        } catch (error) {
+          alert(error);
+        }
+      });
+
+      return () => {
+        socket.disconnect();
+      };
+    }
+  }, []);
+
+  useEffect(() => {
+    if (userToken) {
+      socket.on("upload", (message) => {
+        try {
+          Swal.fire({
+            position: "top-end",
+            icon: "warning",
+            title: message.message,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          const audio = new Audio(audioNotif);
+          audio.play();
+          refreshOrders();
+        } catch (error) {
+          alert(error);
+        }
+      });
+      return () => {
+        socket.disconnect();
+      };
+    }
+  }, []);
   return (
-    <div className={`max-w-[1280px] m-auto `}>
-      <TabBar />
+    <div className={`max-w-[1280px] m-auto my-[70px]`}>
+      {/* <TabBar /> */}
       <div className=" flex gap-[72px] h-full mb-[32px] relative">
         <SidebarAdmin
           tabValue={tabValue}
@@ -80,7 +194,11 @@ const SideBarAdmin = ({ children }) => {
             currentPath === "/dashboard/orders/details" ? "h-auto" : "h-[718px]"
           } right w-full  rounded-[4px] border-[1px] shadow-xl `}
         >
-          {children}
+          {React.cloneElement(children, {
+            refreshOrders,
+            setIsRefreshing,
+            isRefreshing,
+          })}
         </div>
       </div>
     </div>
@@ -166,6 +284,14 @@ const routes = [
     element={
       <SideBarAdmin>
         <CategoryAdmin />
+      </SideBarAdmin>
+    }
+  />,
+  <Route
+    path="/admin/approval"
+    element={
+      <SideBarAdmin>
+        <AdminOrderApproval />
       </SideBarAdmin>
     }
   />,

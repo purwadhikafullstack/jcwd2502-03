@@ -2,7 +2,7 @@ const router = require("express").Router();
 
 const { orderController } = require("./../controllers");
 const authorizeLoggedInUser = require("./../middlewares/authMiddleware");
-const {customerMiddleware} = require("./../middlewares/customerMiddleware")
+const {customerMiddleware,adminMiddleware} = require("./../middlewares/customerMiddleware")
 const upload1 = require("../middlewares/upload1");
 
 
@@ -22,9 +22,13 @@ router.post("/shipping-method", orderController.getShippingMethod);
 router.post("/user-data",authorizeLoggedInUser,  orderController.getUserData);
 router.post("/filter-order",authorizeLoggedInUser,  orderController.filterOrder);
 router.post("/order-details",authorizeLoggedInUser , customerMiddleware,  orderController.OrderDetailsByTransactionId);
+router.post("/status",authorizeLoggedInUser , customerMiddleware,  orderController.statusOrder);
 router.post("/cancel-order",authorizeLoggedInUser , customerMiddleware,  orderController.cancelOrder);
 router.put("/upload",authorizeLoggedInUser , customerMiddleware, upload1,  orderController.uploadPaymentAproval);
-router.post("/status",authorizeLoggedInUser , customerMiddleware,  orderController.statusOrder);
 
+//ADMIN ROUTER 
+router.post("/order-approval",authorizeLoggedInUser ,adminMiddleware, orderController.adminOrderAprroval);
+router.post("/approval-details",authorizeLoggedInUser ,adminMiddleware, orderController.adminOrderAprrovalDetails);
+router.put("/reject",authorizeLoggedInUser ,adminMiddleware, orderController.rejectOrder);
 
 module.exports = router;

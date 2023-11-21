@@ -153,25 +153,21 @@ module.exports = {
   },
   getAddessByUserId: async (data) => {
     try {
-      const getAddress = await db.users_addresses.findAll(
-        {
-          include: [
-            {
-              model: db.tb_ro_cities,
-              attributes: ["city_name", "postal_code", "provinces_id"],
-              include: [
-                {
-                  model: db.tb_ro_provinces,
-                  attributes: ["province_name"],
-                },
-              ],
-            },
-          ],
-        },
-        {
-          where: { users_id: data },
-        }
-      );
+      const getAddress = await db.users_addresses.findAll({
+        include: [
+          {
+            model: db.tb_ro_cities,
+            attributes: ["city_name", "postal_code", "provinces_id"],
+            include: [
+              {
+                model: db.tb_ro_provinces,
+                attributes: ["province_name"],
+              },
+            ],
+          },
+        ],
+        where: { users_id: data },
+      });
       return getAddress;
     } catch (error) {
       return error;
@@ -385,7 +381,7 @@ module.exports = {
   orderByTransactionId: async (transaction_uid, id) => {
     try {
       const order = await db.orders.findOne({
-        attributes: ["total_price", "id", "address_detail", "transaction_uid"],
+        attributes: ["total_price", "id", "address_detail", "transaction_uid","warehouses_id"],
         include: [
           {
             model: db.payment_methods,
@@ -492,16 +488,17 @@ module.exports = {
       return error;
     }
   },
-  statusUpdateAfter15Mins: async (io) => {
+  statusUpdateAfter15Mins: async (io, id) => {
     cron.schedule("* * * * *", async () => {
       try {
         const fifteenMinutesAgo = new Date();
-        fifteenMinutesAgo.setMinutes(fifteenMinutesAgo.getMinutes() - 15);
+        fifteenMinutesAgo.setMinutes(fifteenMinutesAgo.getMinutes() - 2);
 
         const [affectedRowsCount] = await db.orders_details.update(
           { status: "Order Canceled" },
           {
             where: {
+              users_id: id,
               createdAt: {
                 [Op.lt]: fifteenMinutesAgo,
               },
@@ -509,11 +506,110 @@ module.exports = {
             },
           }
         );
+        console.log(affectedRowsCount);
 
-       
+        if (affectedRowsCount > 0) {
+          io.to("Bp8n4Un8QR6X7RtTAAAC").emit("statusChange", {
+            status: "Order Canceled",
+          });
+        }
       } catch (error) {
         console.error("Error cancelling orders:", error);
       }
     });
+  },
+  findAdminData: async (id) => {
+    try {
+      const adminData = await db.users.findByPk(id);
+      return adminData;
+    } catch (error) {
+      return error;
+    }
+  },
+  orderApproval: async (warehouses_id) => {
+    try {
+      const data = await db.orders_details.findAll({
+        where: {
+          status: "Waiting for Payment Approval",
+          warehouses_id: warehouses_id,
+        },
+        group: ["transaction_uid"],
+      });
+      return data;
+    } catch (error) {
+      return error;
+    }
+  },
+  orderApprovalDetails: async (warehouses_id, transaction_uid) => {
+    try {
+      const data = await db.orders_details.findAll({
+        attributes: [
+          "id",
+          "quantity",
+          "transaction_uid",
+          "products_id",
+          "users_id",
+        ],
+        include: [
+          {
+            model: db.products,
+            include: [
+              {
+                model: db.products_stocks,
+                attributes: ["stock"],
+                where: { warehouses_id: warehouses_id },
+              },
+              {
+                model: db.products_images,
+                attributes: ["image"],
+              },
+            ],
+          },
+        ],
+        where: {
+          status: "Waiting for Payment Approval",
+          warehouses_id: warehouses_id,
+          transaction_uid: transaction_uid,
+        },
+      });
+      return data;
+    } catch (error) {
+      return error;
+    }
+  },
+  orders: async (warehouses_id, transaction_uid) => {
+    try {
+      const order = await db.orders.findOne({
+        attributes: [
+          "id",
+          "total_price",
+          "transaction_uid",
+          "payment_proof",
+          "users_id",
+        ],
+        where: {
+          transaction_uid: transaction_uid,
+          warehouses_id: warehouses_id,
+        },
+      });
+      return order;
+    } catch (error) {
+      return error;
+    }
+  },
+  rejectOrder: async (transaction_uid, users_id) => {
+    try {
+      const reject = await db.orders_details.update(
+        {
+          status: "Payment Pending",
+          createdAt: new Date()
+        },
+        { where: { users_id: users_id, transaction_uid: transaction_uid } }
+      );
+      console.log(reject);
+      return reject;
+    } catch (error) {
+      return error;
+    }
   },
 };

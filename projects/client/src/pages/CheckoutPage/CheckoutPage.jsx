@@ -118,7 +118,7 @@ const CheckoutPage = () => {
       <TabBar />
 
       <div className="wrapper-checkout flex sm:flex-col md:flex-col   xl:flex-row gap-5 h-full mb-[24px] md:items-center xl:items-start">
-        {address ? (
+        {address   ? (
           <BillingInformation
             address={address}
             setModalIsOpen={setModalIsOpen}
@@ -146,10 +146,10 @@ const CheckoutPage = () => {
             nearestWarehouse={nearestWarehouse}
             setNearestWarehouse={setNearestWarehouse}
           />
-        ) : (
+        )  :   (
           <div className="left-side  xl:w-[70%]  md:w-[100%] h-[400px] flex flex-col justify-center items-center gap-5">
             <p className="text-[24px] text-center font-semibold">
-              No address found. Please add an address.
+              No primary address found. Please add or select an address.
             </p>
             <Button
               btnCSS="text-white h-[44px]  px-[100px] rounded-[4px]"

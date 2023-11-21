@@ -9,31 +9,29 @@ import { useNavigate } from "react-router-dom";
 import UploadModal from "../UploadModal/UploadModal";
 import Swal from "sweetalert2";
 import "./OrderHistory.css";
-// import io from "socket.io-client";
-// const socket = io.connect("http://localhost:8000");
+import Cookies from "js-cookie";
+import io from "socket.io-client";
+const userToken = Cookies.get("user_token");
+let socket;
+if (userToken) {
+  socket = io("http://localhost:8000", {
+    query: { userToken },
+  });
+}
 
-const OrderHistory = ({ tabValue, setTabValue }) => {
+const OrderHistory = ({
+  isRefreshingOrderHistory,
+  refreshOrdersHistory
+}) => {
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [statusValue, setStatusValue] = useState("");
   const [transaction_uid, setTransaction_uid] = useState("");
   const [orderHistory, setOrderHistory] = useState([]);
   const [order, setOrder] = useState({});
-  const [isRefreshing, setIsRefreshing] = useState(false);
   const [orderStatus, setOrderStatus] = useState("");
   const navigate = useNavigate();
-
-  // useEffect(() => {
-
-  //   socket.on('welcome', () => {
-  //     console.log("connect"); // This should log "Welcome to the Socket.IO server"
-  //   });
-
-    
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, []);
 
   useEffect(() => {
     const getOrderDetails = async () => {
@@ -77,7 +75,6 @@ const OrderHistory = ({ tabValue, setTabValue }) => {
   const filterStatus = async (e) => {
     try {
       setStatusValue(e.target.value);
-
       debouncedSearchValue();
     } catch (error) {
       console.log(error);
@@ -95,6 +92,15 @@ const OrderHistory = ({ tabValue, setTabValue }) => {
     debouncedSearchValue();
   }, [searchValue, statusValue]);
 
+  useEffect(() => {
+    if (isRefreshingOrderHistory === true) {
+      debouncedSearchValue();
+    }
+  }, [isRefreshingOrderHistory]);
+
+  useEffect(() => {
+    debouncedSearchValue();
+  }, []);
   const cancel = () =>
     Swal.fire({
       title: "Are you sure?",
@@ -115,19 +121,6 @@ const OrderHistory = ({ tabValue, setTabValue }) => {
         debouncedSearchValue();
       }
     });
-
-  const refreshOrders = async () => {
-    try {
-      setIsRefreshing(true);
-      await debouncedSearchValue();
-    } catch (error) {
-      console.error("Error refreshing orders:", error);
-    } finally {
-      setTimeout(() => {
-        setIsRefreshing(false);
-      }, 1000);
-    }
-  };
 
   return (
     <>
@@ -152,18 +145,18 @@ const OrderHistory = ({ tabValue, setTabValue }) => {
       <div className="w-full h-[564px] overflow-auto">
         <div className="h-[38px] px-[24px] flex  justify-end items-center">
           <button
-            onClick={refreshOrders}
+            onClick={refreshOrdersHistory}
             className="cursor-pointer  flex gap-2 justify-center items-center"
           >
             <FiRefreshCw
               className={`font-bold text-[14px] ${
-                isRefreshing === true ? "spin" : ""
+                isRefreshingOrderHistory === true ? "spin" : ""
               }`}
             />
             <h1 className="text-[14px]">Refresh</h1>
           </button>
         </div>
-        {orderHistory.length !== 0 && isRefreshing === false ? (
+        {orderHistory.length !== 0 && isRefreshingOrderHistory === false ? (
           <table className="w-full">
             <tbody className=" w-full ">
               {orderHistory.map((value, index) => {
@@ -257,7 +250,7 @@ const OrderHistory = ({ tabValue, setTabValue }) => {
               })}
             </tbody>
           </table>
-        ) : isRefreshing === true ? (
+        ) : isRefreshingOrderHistory === true ? (
           <div className="flex justify-center items-center h-full">
             <FiRefreshCw className={`font-bold text-[50px] spin`} />
           </div>

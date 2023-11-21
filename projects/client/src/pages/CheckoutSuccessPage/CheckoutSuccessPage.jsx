@@ -12,7 +12,7 @@ const CheckoutSuccessPage = ({ handleGoToDashboard }) => {
   const navigate = useNavigate();
 
   const handleGoDashboard = () => {
-    navigate("/dashboard/orders");
+    navigate("/dashboard/orders",  { replace: true });
   };
   return (
     <div className="max-w-[1280px] m-auto mb-[124px]">
