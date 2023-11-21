@@ -1,4 +1,6 @@
 const Service = require("./service");
+const db = require("../models/");
+const { sequelize } = require("../models");
 
 class UserService extends Service {
     static editUser = async (req, body) => {
@@ -39,7 +41,7 @@ class UserService extends Service {
         }
     };
 
-    static editUserProfilePicture = async (users_id, file) => {
+    static editUserAvatar = async (users_id, file) => {
         try {
             const findUser = await db.users.findOne({
                 where: {
@@ -56,15 +58,15 @@ class UserService extends Service {
 
             const uploadFileDomain = process.env.UPLOAD_FILE_DOMAIN;
 
-            const filePath = "Avatar";
+            const filePath = "avatar";
 
             const { filename } = file;
 
-            const newProfilePicture = `${uploadFileDomain}/${filePath}/${filename}`;
+            const newAvatar = `${uploadFileDomain}/${filePath}/${filename}`;
 
             await db.users.update(
                 {
-                    avatar: newProfilePicture,
+                    avatar: newAvatar,
                 },
                 {
                     where: {
