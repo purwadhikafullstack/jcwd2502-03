@@ -4,7 +4,7 @@ import { Routes } from "react-router-dom";
 import Nav from "./components/Navbar/Nav";
 import Footer from "./components/Footer/Footer";
 import { Provider } from "react-redux";
-import { store } from "./redux/store";
+import { store } from "./redux/App/store";
 
 import { Toaster } from "react-hot-toast";
 
