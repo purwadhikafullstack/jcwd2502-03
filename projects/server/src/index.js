@@ -1,5 +1,6 @@
 require("dotenv/config");
 const express = require("express");
+const bodyParser = require('body-parser');
 const cors = require("cors");
 const { join } = require("path");
 const bearerToken = require("express-bearer-token");
@@ -16,6 +17,8 @@ app.use(
 );
 app.use(express.static('public'))
 app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 //#region API ROUTES
 

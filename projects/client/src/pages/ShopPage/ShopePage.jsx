@@ -79,7 +79,7 @@ const ShopePage = () => {
     getProduct();
   }, [currentCategory, filter, filter]);
   return (
-    <div className="max-w-[1280px] px-5 m-auto">
+    <div className="max-w-[1280px] px-1 sm:px-5 m-auto">
       <TabBar />
 
       <div className="flex  flex-col flex-wrap gap-[24px] my-[40px] ">
