@@ -1,4 +1,5 @@
 const productService = require("../services/productService");
+const warehouseService = require("../services/warehouseService")
 const db = require("./../models");
 const { sequelize } = require("./../models");
 const { deleteFiles } = require("./../helper/deleteFile");
@@ -17,6 +18,7 @@ module.exports = {
       const data = await productService.getProductDetails(req.params);
       res.status(200).send(data);
     } catch (error) {
+      // console.log(error);
       next(error);
     }
   },
@@ -35,9 +37,11 @@ module.exports = {
       const datasImage = dataImage.map((obj, index) => {
         return { products_id: createdProduct.dataValues.id, ...obj };
       });
-      // const dataStock = data.stock.map((obj, index) => {
-      //   return { products_id: createdProduct.dataValues.id, ...obj };
-      // });
+      const dataWarehouse = await warehouseService.getAllWarehouse()
+      // res.send(dataWarehouse);
+      const dataStock = dataWarehouse.map((obj, index) => {
+        return { products_id: createdProduct.dataValues.id, stock : 0, warehouses_id : obj.id };
+      });
       // const dataMutasi = data.stock.map((obj, index) => {
       //   return {
       //     warehouses_id: obj.warehouses_id,
@@ -57,7 +61,7 @@ module.exports = {
       //   },
       // ];
       await db.products_images.bulkCreate(datasImage, { transaction: t });
-      // await db.products_stocks.bulkCreate(dataStock, { transaction: t });
+      await db.products_stocks.bulkCreate(dataStock, { transaction: t });
       // await db.products_stocks_histories.bulkCreate(dataMutasi, { transaction: t });
       await t.commit();
       res.status(200).send({
@@ -66,6 +70,7 @@ module.exports = {
         data: null,
       });
     } catch (error) {
+      console.log(error);
       deleteFiles(req.files);
       await t.rollback();
       next(error);
