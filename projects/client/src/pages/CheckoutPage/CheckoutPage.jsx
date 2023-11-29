@@ -30,8 +30,9 @@ const CheckoutPage = () => {
   const [courierValue, setCourierValue] = useState("");
   const [nearestWarehouse, setNearestWarehouse] = useState();
   const [totalPrice, setTotalPrice] = useState();
-  console.log(totalPrice);
 
+  console.log(address);
+  console.log(addresses);
   const navigate = useNavigate();
   const handleConfirmChangeAddress = (value) => {
     if (!value) return toast.error("Please Select an Address");
@@ -82,7 +83,7 @@ const CheckoutPage = () => {
           "Please fill in the information and choose a shipping address."
         );
 
-      const placementOrder = await axiosInstance.post("/order/place-order", {
+      const placementOrder = await axiosInstance.put("/order/place-order", {
         cartProducts: cartData,
         weight: totalWeight > 30000 ? 30000 : totalWeight,
         shippingType: shippingType,
@@ -92,6 +93,7 @@ const CheckoutPage = () => {
         address_detail: address.address,
         warehouses_id: nearestWarehouse.id,
         total_price: totalPrice,
+        city_id: address.cities_id
       });
 
       toast.success(placementOrder.data.message);
@@ -109,12 +111,14 @@ const CheckoutPage = () => {
   if (couriers.length === 0) return <div>Loading</div>;
   if (payments.length === 0) return <div>Loading</div>;
 
+
+
   return (
     <div className="checkout max-w-[1280px] m-auto lg:px-[100px] md:px-[50px] ">
       <TabBar />
 
       <div className="wrapper-checkout flex sm:flex-col md:flex-col   xl:flex-row gap-5 h-full mb-[24px] md:items-center xl:items-start">
-        {address ? (
+        {address   ? (
           <BillingInformation
             address={address}
             setModalIsOpen={setModalIsOpen}
@@ -142,10 +146,10 @@ const CheckoutPage = () => {
             nearestWarehouse={nearestWarehouse}
             setNearestWarehouse={setNearestWarehouse}
           />
-        ) : (
+        )  :   (
           <div className="left-side  xl:w-[70%]  md:w-[100%] h-[400px] flex flex-col justify-center items-center gap-5">
             <p className="text-[24px] text-center font-semibold">
-              No address found. Please add an address.
+              No primary address found. Please add or select an address.
             </p>
             <Button
               btnCSS="text-white h-[44px]  px-[100px] rounded-[4px]"
