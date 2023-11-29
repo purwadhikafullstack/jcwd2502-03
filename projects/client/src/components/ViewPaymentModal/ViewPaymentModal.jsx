@@ -14,8 +14,27 @@ const ViewPaymentModal = ({
   ordersDetails,
   getOrderList,
   setIsRefreshing,
-  setTransaction_uid
+  setTransaction_uid,
 }) => {
+  const handleConfirm = async () => {
+    try {
+      const res = await axiosInstance.put("/order/confirm", {
+        products: ordersDetails, users_id: order.users_id
+      });
+      console.log(res);
+      toast.success(res.data.message);
+      setIsModalOpen(false);
+      getOrderList();
+      setIsRefreshing(true);
+    } catch (error) {
+      console.log(error);
+    }finally{
+      setTimeout(() => {
+        setIsRefreshing(false);
+      }, 1000);
+    }
+  };
+
   const customStyle = {
     content: {
       width: "700px",
@@ -32,6 +51,8 @@ const ViewPaymentModal = ({
     },
   };
 
+  console.log(order);
+
   const handleReject = async () => {
     try {
       const res = await axiosInstance.put("/order/reject", {
@@ -39,6 +60,7 @@ const ViewPaymentModal = ({
         users_id: order?.users_id,
       });
 
+      console.log(res);
       toast.success(res.data.message);
       setIsModalOpen(false);
       getOrderList();
@@ -51,6 +73,11 @@ const ViewPaymentModal = ({
       }, 1000);
     }
   };
+  console.log(
+    `${process.env.REACT_APP_IMAGE_SERVER_URL}${order?.payment_proof?.substring(
+      6
+    )}`
+  );
 
   return (
     <Modal
@@ -64,8 +91,7 @@ const ViewPaymentModal = ({
         <div
           onClick={() => {
             setIsModalOpen(false);
-            setTransaction_uid("")
-
+            setTransaction_uid("");
           }}
           className="cursor-pointer px-[24px] py-[16px] flex mb-[24px]  items-center gap-3 border-b-2"
         >
@@ -105,6 +131,7 @@ const ViewPaymentModal = ({
         <div className="w-full h-[250px] overflow-auto ">
           <CardOrderDetail ordersDetails={ordersDetails} />
         </div>
+
         <div className="flex justify-between gap-5 items-center">
           <div className=" mt-[24px] w-[50%]  flex justify-center  items-center">
             <button
@@ -116,7 +143,7 @@ const ViewPaymentModal = ({
           </div>
           <div className=" mt-[24px]  w-[50%] flex justify-center items-center">
             <button
-              //   onClick={handleSubmit}
+              onClick={() => handleConfirm()}
               className=" w-full bg-primaryOrange h-[38px] rounded-xl text-white"
             >
               Confirm

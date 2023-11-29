@@ -21,9 +21,9 @@ if (userToken) {
 
 const OrderHistory = ({
   isRefreshingOrderHistory,
-  refreshOrdersHistory
+  refreshOrdersHistory,
+  setIsRefreshingOrderHistory,
 }) => {
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [statusValue, setStatusValue] = useState("");
@@ -92,7 +92,7 @@ const OrderHistory = ({
     debouncedSearchValue();
   }, [searchValue, statusValue]);
 
-  useEffect(() => {
+  useEffect(() => {    
     if (isRefreshingOrderHistory === true) {
       debouncedSearchValue();
     }
@@ -145,7 +145,9 @@ const OrderHistory = ({
       <div className="w-full h-[564px] overflow-auto">
         <div className="h-[38px] px-[24px] flex  justify-end items-center">
           <button
-            onClick={refreshOrdersHistory}
+            onClick={() => {
+              refreshOrdersHistory();
+            }}
             className="cursor-pointer  flex gap-2 justify-center items-center"
           >
             <FiRefreshCw

@@ -55,14 +55,16 @@ io.on("connection", async (socket) => {
   }
 
   if (decoded) {
-    socketIdMap.set(decoded.id, socket.id);
-    socket.userId = userId;
+    if (!socketIdMap.has(decoded.id)) {
+      socketIdMap.set(decoded.id, []);
+    }
+    socketIdMap.get(decoded.id).push(socket.id)
   }
   console.log(`A user connected ${socket.id}`);
 
   socket.on("disconnect", () => {
     if (decoded && data.dataValues.role === "Customer") {
-      socketIdMap.delete(socket.userId);
+      socketIdMap.delete(socket.id);
     } else if (decoded) {
       const warehouseId = data.dataValues.warehouses_id;
       if (adminSocketsMap.has(warehouseId)) {
@@ -77,10 +79,9 @@ io.on("connection", async (socket) => {
       }
     }
   });
-  console.log("socketId",socketIdMap); 
-  console.log("admin",adminSocketsMap); 
+  console.log("socketId", socketIdMap);
+  // console.log("admin",adminSocketsMap);
 });
-
 
 const checkAndUpdateOrders = async () => {
   try {

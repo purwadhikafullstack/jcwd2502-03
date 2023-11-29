@@ -37,6 +37,8 @@ import CategoryAdmin from "../components/AdminDashboard/CategoryAdmin";
 import Cookies from "js-cookie";
 import io from "socket.io-client";
 import audioNotif from "./../assets/audionotif.mp3";
+import UserBiodata from "../components/UserBiodata/UserBiodata";
+import AdminOrderList from "../components/AdminOrderList/AdminOrderList";
 const userToken = Cookies.get("user_token");
 let socket;
 if (userToken) {
@@ -66,14 +68,33 @@ const SideBar = ({ children }) => {
 
   useEffect(() => {
     if (userToken) {
-      socket.on("connect", () => {
-        console.log("Socket connected successfully");
-      });
-
       socket.on("reject", (message) => {
+        console.log(message);
         Swal.fire({
           position: "top-end",
           icon: "warning",
+          title: message.message,
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        const audio = new Audio(audioNotif);
+        audio.play();
+        refreshOrdersHistory();
+      });
+
+      return () => {
+        socket.disconnect();
+      };
+    }
+  }, []);
+
+  useEffect(() => {
+    if (userToken) {
+      socket.on("accept", (message) => {
+        console.log(message);
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
           title: message.message,
           showConfirmButton: false,
           timer: 1500,
@@ -213,7 +234,7 @@ const routes = [
   <Route path="/test" element={<CheckoutPage />} />,
   <Route path="/success" element={<CheckoutSuccessPage />} />,
   <Route path="*" element={<NotFoundPage />} />,
-  <Route path="/dashboard" element={<UserDashboardPage />} />,
+  // <Route path="/dashboard" element={<UserDashboardPage />} />,
   <Route path="/login" element={<LoginRegisterPage />} />,
   <Route path="/verification" element={<UserVerificationPage />} />,
   <Route path="/product" element={<ShopePage />} />,
@@ -241,7 +262,14 @@ const routes = [
       </SideBar>
     }
   />,
-  <Route path="/dashboard/profile" element={<SideBar>Profile</SideBar>} />,
+  <Route
+    path="/dashboard/profile"
+    element={
+      <SideBar>
+        <UserBiodata />
+      </SideBar>
+    }
+  />,
   <Route path="/dashboard/wishlist" element={<SideBar>Wishlist</SideBar>} />,
   <Route path="/dashboard/addresses" element={<SideBar>Addresses</SideBar>} />,
   <Route path="/dashboard/settings" element={<SideBar>settings</SideBar>} />,
@@ -284,6 +312,14 @@ const routes = [
     element={
       <SideBarAdmin>
         <CategoryAdmin />
+      </SideBarAdmin>
+    }
+  />,
+  <Route
+    path="/admin/orders"
+    element={
+      <SideBarAdmin>
+        <AdminOrderList />
       </SideBarAdmin>
     }
   />,

@@ -26,7 +26,6 @@ module.exports = {
     }
   },
   getProductById: async (productId) => {
-    console.log(productId);
     try {
       const getProduct = await db.products.findOne({
         where: { id: productId },
@@ -381,7 +380,13 @@ module.exports = {
   orderByTransactionId: async (transaction_uid, id) => {
     try {
       const order = await db.orders.findOne({
-        attributes: ["total_price", "id", "address_detail", "transaction_uid","warehouses_id"],
+        attributes: [
+          "total_price",
+          "id",
+          "address_detail",
+          "transaction_uid",
+          "warehouses_id",
+        ],
         include: [
           {
             model: db.payment_methods,
@@ -528,6 +533,8 @@ module.exports = {
   },
   orderApproval: async (warehouses_id) => {
     try {
+      console.log(warehouses_id);
+
       const data = await db.orders_details.findAll({
         where: {
           status: "Waiting for Payment Approval",
@@ -549,6 +556,7 @@ module.exports = {
           "transaction_uid",
           "products_id",
           "users_id",
+          "warehouses_id",
         ],
         include: [
           {
@@ -577,6 +585,7 @@ module.exports = {
       return error;
     }
   },
+
   orders: async (warehouses_id, transaction_uid) => {
     try {
       const order = await db.orders.findOne({
@@ -586,6 +595,7 @@ module.exports = {
           "transaction_uid",
           "payment_proof",
           "users_id",
+          "warehouses_id",
         ],
         where: {
           transaction_uid: transaction_uid,
@@ -602,12 +612,301 @@ module.exports = {
       const reject = await db.orders_details.update(
         {
           status: "Payment Pending",
-          createdAt: new Date()
+          createdAt: new Date(),
         },
         { where: { users_id: users_id, transaction_uid: transaction_uid } }
       );
       console.log(reject);
       return reject;
+    } catch (error) {
+      return error;
+    }
+  },
+  getWarehouseData: async (warehouses_id, productId) => {
+    try {
+      const warehouse = await db.warehouses.findOne({
+        include: [
+          {
+            model: db.products_stocks,
+            where: { products_id: productId },
+          },
+        ],
+        where: { id: warehouses_id },
+      });
+      return warehouse;
+    } catch (error) {
+      return error;
+    }
+  },
+  getWarehouseTerdekat3: async (datas, ids) => {
+    try {
+      const data = await db.warehouses.findAll({
+        where: {
+          id: {
+            [db.Sequelize.Op.notIn]: ids,
+          },
+          lat: {
+            [Op.not]: datas.lat,
+          },
+          lng: {
+            [Op.not]: datas.lng,
+          },
+        },
+      });
+      let nearestWarehouse = null;
+      let nearestDistance = Infinity;
+      function degToRad(deg) {
+        return deg * (Math.PI / 180);
+      }
+      function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371; // Radius bumi dalam kilometer
+        const dLat = degToRad(lat2 - lat1);
+        const dLon = degToRad(lon2 - lon1);
+
+        const a =
+          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos(degToRad(lat1)) *
+            Math.cos(degToRad(lat2)) *
+            Math.sin(dLon / 2) *
+            Math.sin(dLon / 2);
+
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const distance = R * c;
+        return Math.ceil(distance);
+      }
+
+      data.forEach((warehouse) => {
+        const distance = calculateDistance(
+          datas.lat,
+          datas.lng,
+          warehouse.lat,
+          warehouse.lng
+        );
+        if (distance < nearestDistance) {
+          nearestDistance = distance;
+          nearestWarehouse = warehouse;
+        }
+      });
+
+      return nearestWarehouse;
+    } catch (error) {
+      return error;
+    }
+  },
+  updateStock: async (warehouses_id, productId, qty) => {
+    try {
+      const update = await db.products_stocks.update(
+        {
+          stock: sequelize.literal(`stock - ${qty}`),
+        },
+        {
+          where: { products_id: productId, warehouses_id: warehouses_id },
+        }
+      );
+      return update;
+    } catch (error) {
+      return error;
+    }
+  },
+  createHistory: async (data) => {
+    try {
+      const create = await db.products_stocks_histories.create(data);
+      return create;
+    } catch (error) {
+      return error;
+    }
+  },
+  updateStatusAfterAccept: async (transaction_uid, users_id) => {
+    try {
+      const update = await db.orders_details.update(
+        {
+          status: "Order Process",
+        },
+        {
+          where: { transaction_uid: transaction_uid, users_id: users_id },
+        }
+      );
+    } catch (error) {
+      return error;
+    }
+  },
+  createStockMutation: async (data) => {
+    try {
+      const createMutation = await db.stocks_mutations.create(data);
+      return createMutation;
+    } catch (error) {
+      return error;
+    }
+  },
+  userRole: async (id) => {
+    try {
+      const role = await db.users.findByPk(id);
+      return role;
+    } catch (error) {
+      return error;
+    }
+  },
+  filterAdminOrders: async (status, warehouses_id, role, page = 1) => {
+    try {
+      const limit = 10;
+      if (role === "Warehouse Admin") {
+        if (status === "") {
+          const count = await db.orders_details.count({
+            where: { warehouses_id: warehouses_id },
+          });
+
+          const maxPages = Math.ceil(count / limit);
+          const offset = (page - 1) * limit;
+
+          const filterPaymentStatusOrder = await db.orders_details.findAll({
+            attributes: [
+              "id",
+              "transaction_uid",
+              "quantity",
+              "status",
+              "createdAt",
+              "updatedAt",
+              "users_id",
+              "warehouses_id",
+              [
+                db.Sequelize.fn("sum", db.Sequelize.col("product_price")),
+                "total_price",
+              ],
+            ],
+            include: [
+              {
+                model: db.warehouses,
+                attributes: ["name"],
+              },
+            ],
+            where: {
+              warehouses_id: warehouses_id,
+            },
+
+            group: ["transaction_uid"],
+            order: [["createdAt", "DESC"]],
+            limit,
+            offset,
+          });
+
+          return filterPaymentStatusOrder;
+        } else {
+          const count = await db.orders_details.count({
+            where: { warehouses_id: warehouses_id },
+          });
+
+          const maxPages = Math.ceil(count / limit);
+          const offset = (page - 1) * limit;
+
+          const filterPaymentStatusOrder = await db.orders_details.findAll({
+            attributes: [
+              "id",
+              "transaction_uid",
+              "quantity",
+              "status",
+              "createdAt",
+              "updatedAt",
+              "users_id",
+              "warehouses_id",
+              [
+                db.Sequelize.fn("sum", db.Sequelize.col("product_price")),
+                "total_price",
+              ],
+            ],
+            include: [
+              {
+                model: db.warehouses,
+                attributes: ["name"],
+              },
+            ],
+            where: {
+              warehouses_id: warehouses_id,
+              status: status,
+            },
+
+            group: ["transaction_uid"],
+            order: [["createdAt", "DESC"]],
+            limit,
+            offset,
+          });
+          return filterPaymentStatusOrder;
+        }
+      } else {
+        if (status === "") {
+          const count = await db.orders_details.count({
+            where: { warehouses_id: warehouses_id },
+          });
+
+          const maxPages = Math.ceil(count / limit);
+          const offset = (page - 1) * limit;
+          const filterPaymentStatusOrder = await db.orders_details.findAll({
+            attributes: [
+              "id",
+              "transaction_uid",
+              "quantity",
+              "status",
+              "createdAt",
+              "updatedAt",
+              "users_id",
+              "warehouses_id",
+              [
+                db.Sequelize.fn("sum", db.Sequelize.col("product_price")),
+                "total_price",
+              ],
+            ],
+            include: [
+              {
+                model: db.warehouses,
+                attributes: ["name"],
+              },
+            ],
+            where: {},
+
+            group: ["transaction_uid"],
+            order: [["createdAt", "DESC"]],
+            limit,
+            offset
+          });
+          return filterPaymentStatusOrder;
+        } else {
+          const count = await db.orders_details.count({
+            where: { warehouses_id: warehouses_id },
+          });
+
+          const maxPages = Math.ceil(count / limit);
+          const offset = (page - 1) * limit;
+          const filterPaymentStatusOrder = await db.orders_details.findAll({
+            attributes: [
+              "id",
+              "transaction_uid",
+              "quantity",
+              "status",
+              "createdAt",
+              "updatedAt",
+              "users_id",
+              "warehouses_id",
+              [
+                db.Sequelize.fn("sum", db.Sequelize.col("product_price")),
+                "total_price",
+              ],
+            ],
+            include: [
+              {
+                model: db.warehouses,
+                attributes: ["name"],
+              },
+            ],
+            where: {
+              status: status,
+            },
+            group: ["transaction_uid"],
+            order: [["createdAt", "DESC"]],
+            limit,
+            offset
+          });
+          return filterPaymentStatusOrder;
+        }
+      }
     } catch (error) {
       return error;
     }

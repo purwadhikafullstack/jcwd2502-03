@@ -6,6 +6,7 @@ const {customerMiddleware,adminMiddleware} = require("./../middlewares/customerM
 const upload1 = require("../middlewares/upload1");
 
 
+
 router.post("/cart", authorizeLoggedInUser, orderController.addToCart);
 router.post("/cartdata", authorizeLoggedInUser, orderController.getCartData);
 router.post("/delete-cart",authorizeLoggedInUser,  orderController.deleteProductCart);
@@ -24,11 +25,13 @@ router.post("/filter-order",authorizeLoggedInUser,  orderController.filterOrder)
 router.post("/order-details",authorizeLoggedInUser , customerMiddleware,  orderController.OrderDetailsByTransactionId);
 router.post("/status",authorizeLoggedInUser , customerMiddleware,  orderController.statusOrder);
 router.post("/cancel-order",authorizeLoggedInUser , customerMiddleware,  orderController.cancelOrder);
-router.put("/upload",authorizeLoggedInUser , customerMiddleware, upload1,  orderController.uploadPaymentAproval);
+router.put("/upload",  authorizeLoggedInUser ,upload1, customerMiddleware,  orderController.uploadPaymentAproval);
 
 //ADMIN ROUTER 
 router.post("/order-approval",authorizeLoggedInUser ,adminMiddleware, orderController.adminOrderAprroval);
 router.post("/approval-details",authorizeLoggedInUser ,adminMiddleware, orderController.adminOrderAprrovalDetails);
 router.put("/reject",authorizeLoggedInUser ,adminMiddleware, orderController.rejectOrder);
+router.put("/confirm",authorizeLoggedInUser ,adminMiddleware, orderController.confirmOrderAdmin);
+router.post("/admin-orders",authorizeLoggedInUser ,adminMiddleware, orderController.adminFilterOrders);
 
 module.exports = router;

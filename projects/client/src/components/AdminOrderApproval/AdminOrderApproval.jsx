@@ -67,10 +67,6 @@ const AdminOrderApproval = ({
     <>
       <div className="w-full py-[16px] px-[24px] flex justify-between items-center">
         <h1 className="text-[16px]  font-medium">ORDER APPROVAL</h1>
-        {/* <div className="w-[50%]">
-          <Search onChange={(e) => filterSearch(e)} />
-        </div>
-        <OptionStatus onChange={(e) => filterStatus(e)} /> */}
         <div className="h-[38px] px-[24px] flex  justify-end items-center">
           <button
             onClick={() => {

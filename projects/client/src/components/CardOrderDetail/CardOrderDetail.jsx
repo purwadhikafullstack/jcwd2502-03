@@ -4,6 +4,8 @@ const CardOrderDetail = ({ ordersDetails }) => {
   if (ordersDetails.length === 0) {
     return <div>Loading</div>;
   }
+
+  console.log(ordersDetails);
   return (
     <>
       {ordersDetails.map((value, index) => {

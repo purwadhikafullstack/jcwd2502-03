@@ -8,7 +8,6 @@ import {
 } from "react-icons/ai";
 import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
 import { AxiosInstance } from "../../config/api";
-import { Card, CardBody, CardFooter, Image } from "@nextui-org/react";
 import ModalShowProduct from "../ModalShowProduct/ModalShowProduct";
 // import { Button } from "flowbite-react";
 import Button from "../Button/Button";
