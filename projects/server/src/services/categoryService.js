@@ -104,6 +104,11 @@ module.exports = {
         { category_status: "Inactive" },
         { where: { id } }
       );
+      await db.products.update(
+        { product_status: 'Inactive' },
+        { where: { products_categories_id : id} } 
+      );
+      // const product = await db.products.findAll
       const res = await db.products_categories.destroy({ where: { id } });
       return res;
     } catch (error) {
@@ -114,6 +119,10 @@ module.exports = {
   restoreKategori: async ({ id }) => {
     try {
       const res = await db.products_categories.restore({ where: { id } });
+      await db.products.update(
+        { product_status: 'Active' },
+        { where: { products_categories_id : id} } 
+      );
       const update = await db.products_categories.update(
         { category_status: "Active" },
         { where: { id } }

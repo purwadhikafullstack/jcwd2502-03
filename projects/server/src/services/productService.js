@@ -15,13 +15,12 @@ module.exports = {
       if (sortOrder) order.push(["product_price", sortOrder]);
 
       const dataKategori = await db.products_categories.findAll();
-      // console.log(dataKategori[0].id);
       let id = null;
       dataKategori.map((item, index) => {
         if (categori == item.category) {
           id = item.id;
         }
-      })
+      });
 
       const where = {};
       if (product_status) where.product_status = product_status;
@@ -34,8 +33,31 @@ module.exports = {
 
       // order = [[]]
       const allProduct = await db.products.findAll({
+        attributes: [
+          "product_name",
+          "product_description",
+          "id",
+          "product_price",
+          "product_weight",
+          "product_status",
+          [sequelize.col("stock"), "stock"],
+        ],
         where,
-        includes: db.product_categories,
+        include: [
+          {
+            model: db.products_categories,
+            attributes: ["id", "category"],
+          },
+          {
+            model: db.products_stocks,
+            attributes: [],
+          },
+          {
+            model: db.products_images,
+            attributes: ["image"],
+          },
+        ],
+
         order: order,
       });
       return allProduct;
@@ -46,7 +68,32 @@ module.exports = {
 
   getProductDetails: async ({ id }) => {
     try {
-      const data = await db.products.findByPk(id);
+      const data = await db.products.findAll({
+        attributes: [
+          "product_name",
+          "product_description",
+          "id",
+          "product_price",
+          "product_weight",
+          "product_status",
+          [sequelize.col("stock"), "stock"],
+        ],
+        include: [
+          {
+            model: db.products_categories,
+            attributes: ["id", "category"],
+          },
+          {
+            model: db.products_stocks,
+            attributes: [],
+          },
+          {
+            model: db.products_images,
+            attributes: ["image"],
+          },
+        ],
+        where: { id: id },
+      });
       return data;
     } catch (error) {
       return error;

@@ -12,16 +12,27 @@ import "./styles.css";
 // import required modules
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 
-const SwiperAuto = () => {
+const SwiperAuto = ({ gambar }) => {
+  console.log(gambar);
   return (
-    <div className="w-[616px] h-[464px] mt-[32px]">
+    <div className="w-[616px] max-h-[550px] mt-[32px]">
       <Swiper
         navigation={true}
         modules={[Navigation]}
         className="h-full w-full shadow-md rounded-2xl "
       >
-        <SwiperSlide>Slide 1</SwiperSlide>
-        <SwiperSlide>Slide 1</SwiperSlide>
+        {gambar &&
+          gambar[0].products_images.map((item) => {
+            return (
+              <SwiperSlide className="imag">
+                <img
+                className=""
+                  src={`http://localhost:8000${item.image.substring(6)}`}
+                  alt=""
+                />
+              </SwiperSlide>
+            );
+          })}
       </Swiper>
     </div>
   );

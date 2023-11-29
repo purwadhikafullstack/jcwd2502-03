@@ -59,7 +59,7 @@ const SidebarAdmin = ({ tabValue, setTabValue, currentPath }) => {
           <div
             onClick={() => setTabValue(4)}
             className={`flex items-center px-[26px] gap-3 h-[40px] text-[#5F6C72] cursor-pointer ${
-              currentPath === "/admin/products" || currentPath === "/admin/category" 
+              currentPath === "/admin/products"
                 ? "bg-primaryOrange  text-white"
                 : ""
             }`}
@@ -68,6 +68,7 @@ const SidebarAdmin = ({ tabValue, setTabValue, currentPath }) => {
             <h1 className="text-[14px] ">Products</h1>
           </div>
         </Link>
+
         <Link to={"/admin/orders"}>
           <div
             onClick={() => setTabValue(20)}
@@ -91,10 +92,26 @@ const SidebarAdmin = ({ tabValue, setTabValue, currentPath }) => {
           </div>
         </Link>
         <Link to={"/admin/report"}>
+
+        <Link to={"/admin/category"}>
+
           <div
             onClick={() => setTabValue(5)}
             className={`flex items-center px-[26px] gap-3 h-[40px] text-[#5F6C72] cursor-pointer ${
-              tabValue === 5 ? "bg-primaryOrange  text-white" : ""
+              currentPath === "/admin/category"
+                ? "bg-primaryOrange  text-white"
+                : ""
+            }`}
+          >
+            <SlEarphones className="text-[18px]" />
+            <h1 className="text-[14px] ">Category</h1>
+          </div>
+        </Link>
+        <Link to={"/admin/report"}>
+          <div
+            onClick={() => setTabValue(6)}
+            className={`flex items-center px-[26px] gap-3 h-[40px] text-[#5F6C72] cursor-pointer ${
+              tabValue === 6 ? "bg-primaryOrange  text-white" : ""
             }`}
           >
             <TbReport className="text-[18px]" />
@@ -102,9 +119,9 @@ const SidebarAdmin = ({ tabValue, setTabValue, currentPath }) => {
           </div>
         </Link>
         <div
-          onClick={() => setTabValue(6)}
+          onClick={() => setTabValue(7)}
           className={`flex items-center px-[26px] gap-3 h-[40px] text-[#5F6C72] cursor-pointer ${
-            tabValue === 6 ? "bg-primaryOrange  text-white" : ""
+            tabValue === 7 ? "bg-primaryOrange  text-white" : ""
           }`}
         >
           <GoSignOut className="text-[18px]" />
