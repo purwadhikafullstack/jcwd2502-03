@@ -3,6 +3,8 @@ const axios = require("axios");
 
 const key = "444bbf4c27b3522ec578ebc1b1f75e95";
 const requestUrl = "https://api.rajaongkir.com/starter/cost";
+// const key = process.env.RAJAONGKIRKEY;
+// const requestUrl = process.env.RAJAONGKIR;
 module.exports = {
   getShippingMethod: async (datas) => {
     try {

@@ -2,10 +2,11 @@ const { multerupload } = require("./../lib/multer");
 
 const { deleteFiles } = require("./../helper/deleteFile");
 
-const upload = async (req, res, next) => {
+const upload1 = async (req, res, next) => {
   const result = multerupload.fields([{ name: "images" }]);
   const allowedMimeTypes = ["image/jpeg", "image/png"];
   result(req, res, function (err) {
+
     try {
       if (err) throw err;
       if (!req.files.images) throw res.status(409).send("tidak ada gambar yang di uploud");
@@ -29,4 +30,4 @@ const upload = async (req, res, next) => {
   });
 };
 
-module.exports = upload;
+module.exports = upload1;
