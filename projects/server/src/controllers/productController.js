@@ -42,6 +42,7 @@ module.exports = {
       const dataStock = dataWarehouse.map((obj, index) => {
         return { products_id: createdProduct.dataValues.id, stock : 0, warehouses_id : obj.id };
       });
+      
       // const dataMutasi = data.stock.map((obj, index) => {
       //   return {
       //     warehouses_id: obj.warehouses_id,
@@ -94,7 +95,7 @@ module.exports = {
     try {
       const { id } = req.params;
       const hasil = await productService.updateImage(id, req.files);
-      console.log(hasil);
+      // console.log(hasil);
     } catch (error) {
       next(error);
     }

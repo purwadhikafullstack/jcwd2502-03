@@ -13,6 +13,7 @@ import ModalShowProduct from "../ModalShowProduct/ModalShowProduct";
 import Button from "../Button/Button";
 import { Link } from "react-router-dom";
 import { Card, CardHeader, Image, CardBody } from "@nextui-org/react";
+export const IMAGE = process.env.IMAGE;
 
 const CardProduct = ({ data, addToCart }) => {
   const datas = data;
@@ -48,7 +49,7 @@ const CardProduct = ({ data, addToCart }) => {
       <div
         className={
           datas && datas.length > 0
-            ? `gap-2 flex sm:grid sm:grid-cols-4 md:grid-cols-5 flex-wrap bg-slate-500 md:gap-2 justify-between galeri sm:justify-start`
+            ? `gap-2 flex sm:grid sm:grid-cols-4 md:grid-cols-5 flex-wrap md:gap-2 justify-between galeri sm:justify-start`
             : `flex justify-center align-middle galeri items-center gap-5`
         }
       >
@@ -104,14 +105,14 @@ const CardProduct = ({ data, addToCart }) => {
                 <Link className="" to={`/product/${item.id}`}>
                   <Image
                     alt="Card background"
-                    className=" rounded-xl gambar"
+                    className=" rounded-xl max-h-[200px] w-full gambar"
                     src={`http://localhost:8000${item.products_images[0].image.substring(
                       6
                     )}`}
                   />
                   {/* </CardBody> */}
                   <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-                    <p className="text-tiny  uppercase font-bold">
+                    <p className="text-tiny uppercase font-bold">
                       {item.product_name}
                     </p>
                     <small className="text-default-500">
