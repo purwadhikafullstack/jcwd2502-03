@@ -12,7 +12,6 @@ import LoginRegisterPage from "../pages/LoginRegisterPage/LoginRegisterPage";
 import UserVerificationPage from "../pages/UserVerificationPage/UserVerificationPage";
 import ShopePage from "../pages/ShopPage/ShopePage";
 import DetailProduct from "../pages/DetailProduct/DetailProduct";
-import ChangePasswordPage from "../pages/ChangePasswordPage/ChangePasswordPage";
 import ForgetPasswordPage from "../pages/ForgetPasswordPage/ForgetPasswordPage";
 import ResetPasswordPage from "../pages/ResetPasswordPage/ResetPasswordPage";
 import OrderHistory from "../components/OrderHistory/OrderHistory";
@@ -105,7 +104,6 @@ const routes = [
     <Route path="/verification" element={<UserVerificationPage />} />,
     <Route path="/product" element={<ShopePage />} />,
     <Route path="/product/:idProduct" element={<DetailProduct />} />,
-    <Route path="/change-password" element={<ChangePasswordPage />} />,
     <Route path="/forget-password" element={<ForgetPasswordPage />} />,
     <Route path="/reset-password" element={<ResetPasswordPage />} />,
     // <Route path="/admin/warehouses" element={<WarehouseList />} />,

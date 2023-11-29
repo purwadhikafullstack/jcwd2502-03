@@ -1,11 +1,16 @@
-const UserService = require("../services/userService")
+const UserService = require("../services/userService");
 
 const userController = {
     editUser: async (req, res) => {
         try {
+            const { users_id } = req.params;
+
             const { fullname } = req.body;
 
-            const serviceResult = await UserService.editUser(fullname);
+            const serviceResult = await UserService.editUser(
+                users_id,
+                req.body
+            );
 
             if (!serviceResult.success) throw serviceResult;
 
@@ -27,7 +32,7 @@ const userController = {
 
             const serviceResult = await UserService.editUserAvatar(
                 users_id,
-                req.file
+                req.files
             );
 
             if (!serviceResult.success) throw serviceResult;
@@ -43,6 +48,6 @@ const userController = {
             });
         }
     },
-}
+};
 
-module.exports = userController
+module.exports = userController;

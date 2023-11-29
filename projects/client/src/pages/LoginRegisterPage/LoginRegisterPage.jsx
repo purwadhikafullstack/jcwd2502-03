@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import TabBar from "../../components/TabBar/TabBar";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../config/api";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { login } from "../../redux/Features/auth";
 
 const LoginRegisterPage = () => {
@@ -42,9 +42,7 @@ const LoginRegisterPage = () => {
                 password,
             });
             toast.success(res.data.message);
-            console.log(res.data);
             Cookies.set("user_token", res.data.result.token);
-            // console.log(res.data.result.user)
             dispatch(login(res.data.result.user));
 
             setTimeout(() => {
@@ -95,14 +93,6 @@ const LoginRegisterPage = () => {
         setIsSignIn("hidden");
         setIsSignUp("block");
     };
-
-    const { fullname, email, avatar, status, is_verified } = useSelector(
-        (state) => state.user
-    );
-
-    useEffect(() => {
-        console.log({fullname})
-    },[fullname])
 
     return (
         <div className="mt-[72px] px-[300px]">
