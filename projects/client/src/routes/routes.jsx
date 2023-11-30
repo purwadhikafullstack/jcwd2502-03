@@ -13,7 +13,6 @@ import LoginRegisterPage from "../pages/LoginRegisterPage/LoginRegisterPage";
 import UserVerificationPage from "../pages/UserVerificationPage/UserVerificationPage";
 import ShopePage from "../pages/ShopPage/ShopePage";
 import DetailProduct from "../pages/DetailProduct/DetailProduct";
-import ChangePasswordPage from "../pages/ChangePasswordPage/ChangePasswordPage";
 import ForgetPasswordPage from "../pages/ForgetPasswordPage/ForgetPasswordPage";
 import ResetPasswordPage from "../pages/ResetPasswordPage/ResetPasswordPage";
 import OrderHistory from "../components/OrderHistory/OrderHistory";
@@ -39,6 +38,8 @@ import io from "socket.io-client";
 import audioNotif from "./../assets/audionotif.mp3";
 import UserBiodata from "../components/UserBiodata/UserBiodata";
 import AdminOrderList from "../components/AdminOrderList/AdminOrderList";
+import MyAddressPage from "../pages/MyAddressPage/MyAddressPage";
+import UserListPage from "../pages/UserListPage/UserListPage";
 const userToken = Cookies.get("user_token");
 let socket;
 if (userToken) {
@@ -239,7 +240,7 @@ const routes = [
   <Route path="/verification" element={<UserVerificationPage />} />,
   <Route path="/product" element={<ShopePage />} />,
   <Route path="/product/:idProduct" element={<DetailProduct />} />,
-  <Route path="/change-password" element={<ChangePasswordPage />} />,
+  // <Route path="/change-password" element={<ChangePasswordPage />} />,
   <Route path="/forget-password" element={<ForgetPasswordPage />} />,
   <Route path="/reset-password" element={<ResetPasswordPage />} />,
   // <Route path="/admin/warehouses" element={<WarehouseList />} />,
@@ -271,7 +272,9 @@ const routes = [
     }
   />,
   <Route path="/dashboard/wishlist" element={<SideBar>Wishlist</SideBar>} />,
-  <Route path="/dashboard/addresses" element={<SideBar>Addresses</SideBar>} />,
+  <Route path="/dashboard/addresses" element={<SideBar>
+    <MyAddressPage/>
+  </SideBar>} />,
   <Route path="/dashboard/settings" element={<SideBar>settings</SideBar>} />,
 
   // Admin Dashboard
@@ -295,7 +298,7 @@ const routes = [
     path="/admin/users"
     element={
       <SideBarAdmin>
-        <UsersAdmin />
+        <UserListPage />
       </SideBarAdmin>
     }
   />,
