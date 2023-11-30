@@ -23,8 +23,28 @@ const {
   deleteCartProduct,
   orderByTransactionId,
   orderDetailsByTransactionId,
+  cancelOrderByTransactionId,
+  upload,
+  updateStatusAfterUpload,
+  statusByTransactionId,
+  statusUpdateAfter15Mins,
+  findAdminData,
+  orderApproval,
+  orderApprovalDetails,
+  orders,
+  rejectOrder,
+  getWarehouseData,
+  getWarehouseTerdekat3,
+  updateStock,
+  createHistory,
+  updateStatusAfterAccept,
+  createStockMutation,
+  userRole,
+  filterAdminOrders,
 } = require("./../services/orderService");
+
 const { Op } = require("sequelize");
+const cron = require("node-cron");
 const sequelize = require("./../sequelizeInstance/sequelizeInstance");
 const { getLatLong } = require("./../services/opencageService");
 const { getShippingMethod } = require("./../services/rajaOngkirService");
@@ -43,8 +63,21 @@ const orderController = {
       });
 
       const getProductId = await getProductById(productId);
+      let totalStock;
+      if (getProductId) {
+        totalStock = getProductId.dataValues.products_stocks.reduce(
+          (acc, productStock) => acc + productStock.stock,
+          0
+        );
+        console.log(totalStock);
+      }
+      if (quantity > totalStock) {
+        throw {
+          message: "Quantity exceeds total stock",
+        };
+      }
 
-      if (getProductId.dataValues.products_stocks[0].stock <= 0) {
+      if (totalStock <= 0) {
         throw { message: "Out of stock" };
       }
 
@@ -136,19 +169,22 @@ const orderController = {
         address_detail,
         warehouses_id,
         total_price,
+        city_id,
       } = req.body;
       const { id } = req.tokens;
+      const io = req.io;
 
       if (cartProducts.length === 0) throw { message: "Please add an item " };
 
       const result = await sequelize.transaction(async (t) => {
         const maps = cartProducts.map((value) => {
+          console.log(value);
           return {
             quantity: value.quantity,
             product_price: value.total,
             transaction_uid: null,
             users_id: id,
-            warehouses_id: value.product.products_stocks[0].warehouse.id,
+            warehouses_id: warehouses_id,
             products_id: value.products_id,
           };
         });
@@ -158,6 +194,7 @@ const orderController = {
         const formattedDate = moment(placeOrder[0].createdAt).format(
           "YYYY-MM-DD HH:mm:ss"
         );
+
         const formattedTransactionUid = moment(
           formattedDate,
           "YYYY-MM-DD HH:mm:ss"
@@ -169,12 +206,21 @@ const orderController = {
           { transaction: t }
         );
 
-        return `INV-${formattedTransactionUid}`;
+        const warehouse_id = maps.map((value) => {
+          return {
+            warehouse_id: value.warehouses_id,
+          };
+        });
+
+        return {
+          result: `INV-${formattedTransactionUid}`,
+          warehouse_id: warehouse_id,
+        };
       });
 
       const data = {
         total_price: total_price,
-        transaction_uid: result,
+        transaction_uid: result.result,
         payment_methods_id: payment_method,
         total_weight: weight,
         shipping_type: shippingType,
@@ -183,11 +229,22 @@ const orderController = {
         courier: courier,
         address_detail: address_detail,
         warehouses_id: warehouses_id,
+        customer_cities_id: city_id,
       };
 
       const order = await createOrder(data);
 
       const deleteCart = await deleteCartProduct(id);
+
+      const adminSocket = req.adminSocket;
+
+      const sendToAdmin = result.warehouse_id.map((value) => {
+        const adminId = adminSocket.get(value.warehouse_id);
+        console.log(adminId);
+        return io
+          .to(adminId)
+          .emit("newOrder", { message: "New Order Available !" });
+      });
 
       res.status(200).send({
         isError: false,
@@ -325,8 +382,10 @@ const orderController = {
       if (courier === "select a courier") throw { message: "Select a Courier" };
 
       const userAddressLatLong = await getLatLong(cities_id);
+
       const nearestWarehouse = await getWarehouseTerdekat2(userAddressLatLong);
       console.log(nearestWarehouse);
+
       const data = {
         userCity: cities_id.toString(),
         nearestWarehouse: nearestWarehouse.cities_id.toString(),
@@ -378,7 +437,7 @@ const orderController = {
       const { id } = req.tokens;
 
       const order = await orderByTransactionId(transaction_uid, id);
-
+      console.log(order);
       const orderDetails = await orderDetailsByTransactionId(
         transaction_uid,
         id
@@ -389,7 +448,330 @@ const orderController = {
         order: order,
         orderDetails: orderDetails,
       });
+    } catch (error) {
+      next(error);
+    }
+  },
+  cancelOrder: async (req, res, next) => {
+    try {
+      const { id } = req.tokens;
+      const { transaction_uid } = req.body;
+
+      const cancel = await cancelOrderByTransactionId(id, transaction_uid);
+
+      res.send({
+        isError: false,
+        message: "The Order Has been Canceled",
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  uploadPaymentAproval: async (req, res, next) => {
+    try {
+      const { transaction_uid } = JSON.parse(req.body.data);
+      const { id } = req.tokens;
+      const file = req.files.images;
+
+      // const status = await statusByTransactionId(transaction_uid, id);
+
+      // if (status.status === "Order Canceled") throw { message: "refresh" };
+
+      const uploadImage = await upload(id, transaction_uid, file);
+      const updateStatus = await updateStatusAfterUpload(id, transaction_uid);
+      console.log(transaction_uid);
+      console.log(id);
+
+      const dataOrder = await orderByTransactionId(transaction_uid, id);
+      console.log(dataOrder);
+      const warehouseId = dataOrder.dataValues.warehouses_id;
+      const adminSocket = req.adminSocket;
+
+      const admin = adminSocket.get(warehouseId);
+      const io = req.io;
+
+      if (admin) {
+        const result = admin.map((value) => {
+          return io.to(value).emit("upload", {
+            message: "New Payment Approval Available !",
+          });
+        });
+      }
+
+      res.send({
+        isError: false,
+        message: "Submit Payment Success",
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  statusOrder: async (req, res, next) => {
+    try {
+      const { id } = req.tokens;
+      const { transaction_uid } = req.body;
+
+      const status = await statusByTransactionId(transaction_uid, id);
+      res.status(200).send({
+        isError: false,
+        data: status,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  adminOrderAprroval: async (req, res, next) => {
+    try {
+      const { id } = req.tokens;
+      const adminData = await findAdminData(id);
+
+      console.log(adminData);
+      const orderApprovalData = await orderApproval(
+        adminData.dataValues.warehouses_id
+      );
+
+      res.status(200).send({
+        isError: false,
+        data: orderApprovalData,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  adminOrderAprrovalDetails: async (req, res, next) => {
+    try {
+      const { id } = req.tokens;
+      const { transaction_uid } = req.body;
+      const adminData = await findAdminData(id);
+
+      const adminOrdersApproval = await orders(
+        adminData.dataValues.warehouses_id,
+        transaction_uid
+      );
+      const adminOrdersApprovalDetails = await orderApprovalDetails(
+        adminData.dataValues.warehouses_id,
+        transaction_uid
+      );
+
+      res.status(200).send({
+        isError: false,
+        orders: adminOrdersApproval,
+        ordersDetails: adminOrdersApprovalDetails,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  rejectOrder: async (req, res, next) => {
+    try {
+      const { transaction_uid, users_id } = req.body;
+      const reject = await rejectOrder(transaction_uid, users_id);
+      const dataOrder = await orderByTransactionId(transaction_uid, users_id);
+
+      const io = req.io;
+      const customerSocket = req.customerSocket;
+
+      const userId = customerSocket.get(users_id);
+
+      if (userId) {
+        userId.map((value) => {
+          return io.to(value).emit("reject", {
+            message:
+              "Your order has been rejected. Please upload a new payment proof.",
+          });
+        });
+      }
+
+      res.status(200).send({
+        isError: false,
+        message: "Reject Order Success",
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  confirmOrderAdmin: async (req, res, next) => {
+    try {
+      const { users_id, products } = req.body;
+
+      const result = await sequelize.transaction(async (t) => {
+        const checkStock = products.map(async (value) => {
+          const updateStatus = await updateStatusAfterAccept(
+            value.transaction_uid,
+            users_id
+          );
+          let nearestWarehouse;
+          let count = null;
+          const ids = [];
+          const qty = value.product.products_stocks[0].stock - value.quantity;
+
+          if (qty >= 0) {
+            const updatedQty = await updateStock(
+              value.warehouses_id,
+              value.products_id,
+              value.quantity
+            );
+
+            const data = {
+              status: "Berkurang",
+              reference: value.transaction_uid,
+              products_id: value.products_id,
+              warehouses_id: value.warehouses_id,
+              quantity: value.quantity,
+            };
+            console.log(value);
+
+            const createStockHistories = await createHistory(data);
+            // const updateStatus = await updateStatusAfterAccept(
+            //   value.transaction_uid,
+            //   users_id
+            // );
+          } else {
+            while (true) {
+              const lat = await getLatLong(value.warehouses_id);
+
+              nearestWarehouse = await getWarehouseTerdekat3(lat, ids);
+
+              const warehouseData2 = await getWarehouseData(
+                nearestWarehouse.dataValues.id,
+                value.products_id
+              );
+
+              if (
+                warehouseData2.dataValues.products_stocks[0].stock -
+                  value.quantity >=
+                0
+              ) {
+                // warehouse yg ke 1
+                const updatedQty = await updateStock(
+                  ids[0],
+                  value.products_id,
+                  value.product.products_stocks[0].stock
+                );
+                let warehouse1;
+                let warehouse3;
+
+                if (ids.length > 0) {
+                  warehouse1 = {
+                    status: "Bertambah",
+                    reference: value.transaction_uid,
+                    products_id: value.products_id,
+                    warehouses_id: ids[0],
+                    quantity:
+                      value.quantity - value.product.products_stocks[0].stock,
+                  };
+                  warehouse3 = {
+                    status: "Berkurang",
+                    reference: value.transaction_uid,
+                    products_id: value.products_id,
+                    warehouses_id: ids[0],
+                    quantity: value.quantity,
+                  };
+                } else {
+                  warehouse1 = {
+                    status: "Bertambah",
+                    reference: value.transaction_uid,
+                    products_id: value.products_id,
+                    warehouses_id: value.warehouses_id,
+                    quantity:
+                      value.quantity - value.product.products_stocks[0].stock,
+                  };
+                  warehouse3 = {
+                    status: "Berkurang",
+                    reference: value.transaction_uid,
+                    products_id: value.products_id,
+                    warehouses_id: value.warehouses_id,
+                    quantity: value.quantity,
+                  };
+                }
+                //warehouse yg ke 2
+                const updatedNearestQty = await updateStock(
+                  warehouseData2.dataValues.id,
+                  value.products_id,
+                  qty * -1
+                );
+
+                const warehouse2 = {
+                  status: "Berkurang",
+                  reference: value.transaction_uid,
+                  products_id: value.products_id,
+                  warehouses_id: warehouseData2.dataValues.id,
+                  quantity:
+                    value.quantity - value.product.products_stocks[0].stock,
+                };
+                const berkurangWarehouse2 = await createHistory(warehouse2);
+                const bertambahWarehouse1 = await createHistory(warehouse1);
+                const berkurangStockWarehouse1 = await createHistory(
+                  warehouse3
+                );
+
+                // const updateStatus = await updateStatusAfterAccept(
+                //   value.transaction_uid,
+                //   users_id
+                // );
+
+                console.log(warehouseData2);
+                console.log(ids);
+
+                const data = {
+                  quantity:
+                    value.quantity - value.product.products_stocks[0].stock,
+                  status: "Approved",
+                  users_id: users_id,
+                  request_warehouses_id: ids[0],
+                  sender_warehouses_id: warehouseData2.dataValues.id,
+                };
+
+                const createMutation = await createStockMutation(data);
+                break;
+              }
+              ids.push(value.warehouses_id);
+              value.warehouses_id = nearestWarehouse.dataValues.id;
+            }
+          }
+        });
+        return { message: "success" };
+      });
+
+      const io = req.io;
+
+      const customerSocket = req.customerSocket;
+
+      const customerId = customerSocket.get(users_id);
+      console.log(customerId);
+      if (customerId) {
+        const id = customerId.map((value) => {
+          io.to(value).emit("accept", {
+            message: "Order Accepted",
+          });
+        });
+      }
+
+      res.send({
+        isError: false,
+        message: "Order Accept",
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  adminFilterOrders: async (req, res, next) => {
+    try {
+      const { id } = req.tokens;
+      const { role } = req.body;
+      const userData = await userRole(id);
+      console.log(userData.dataValues.warehouses_id);
+
+      const filterOrders = await filterAdminOrders(
+        req.query.status,
+        userData.dataValues.warehouses_id,
+        userData.dataValues.role
+      );
       
+      res.send({
+        isError: false,
+        data: filterOrders,
+      });
     } catch (error) {
       next(error);
     }

@@ -7,6 +7,8 @@ import { LuWarehouse } from "react-icons/lu";
 import { GoSignOut } from "react-icons/go";
 import { HiArrowLeft } from "react-icons/hi";
 import { useNavigate, Link, NavLink } from "react-router-dom";
+import { MdOutlineLibraryBooks } from "react-icons/md";
+
 const SidebarAdmin = ({ tabValue, setTabValue, currentPath }) => {
   const navigate = useNavigate();
   return (
@@ -66,7 +68,33 @@ const SidebarAdmin = ({ tabValue, setTabValue, currentPath }) => {
             <h1 className="text-[14px] ">Products</h1>
           </div>
         </Link>
+
+        <Link to={"/admin/orders"}>
+          <div
+            onClick={() => setTabValue(20)}
+            className={`flex items-center px-[26px] gap-3 h-[40px] text-[#5F6C72] cursor-pointer ${
+              tabValue === 20 || currentPath === "/admin/order" ? "bg-primaryOrange  text-white" : ""
+            }`}
+          >
+            <MdOutlineLibraryBooks className="text-[18px]" />
+            <h1 className="text-[14px] ">Orders List</h1>
+          </div>
+        </Link>
+        <Link to={"/admin/approval"}>
+          <div
+            onClick={() => setTabValue(10)}
+            className={`flex items-center px-[26px] gap-3 h-[40px] text-[#5F6C72] cursor-pointer ${
+              tabValue === 10 || currentPath === "/admin/approval" ? "bg-primaryOrange  text-white" : ""
+            }`}
+          >
+            <MdOutlineLibraryBooks className="text-[18px]" />
+            <h1 className="text-[14px] ">Orders Approval</h1>
+          </div>
+        </Link>
+        {/* <Link to={"/admin/report"}> */}
+
         <Link to={"/admin/category"}>
+
           <div
             onClick={() => setTabValue(5)}
             className={`flex items-center px-[26px] gap-3 h-[40px] text-[#5F6C72] cursor-pointer ${

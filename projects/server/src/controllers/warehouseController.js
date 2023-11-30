@@ -83,7 +83,9 @@ module.exports = {
   },
   updateWarehouse: async (req, res, next) => {
     try {
-      const cekNama = await db.warehouses.findOne({ where: { name : req.body.name } });
+      const cekNama = await db.warehouses.findOne({
+        where: { name: req.body.name },
+      });
       if (cekNama) {
         throw res.status(400).send({
           isError: "true",
@@ -101,7 +103,7 @@ module.exports = {
 
       const hasil = await warehouseService.updateWarehouse({
         ...datas,
-        ...req.params
+        ...req.params,
       });
       res.status(200).send({
         isError: "false",
@@ -135,11 +137,22 @@ module.exports = {
         if (cekStock.dataValues.stock === 0) {
           ids.push(data.dataValues.id);
         } else if (cekStock.dataValues.stock >= newQty) {
-          hasil.push({...data.dataValues, products_id, stock_berkurang : newQty });
+          hasil.push({
+            ...data.dataValues,
+            products_id,
+            stock_berkurang: newQty,
+          });
           break;
-        } else if (cekStock.dataValues.stock > 0 && cekStock.dataValues.stock < newQty){
+        } else if (
+          cekStock.dataValues.stock > 0 &&
+          cekStock.dataValues.stock < newQty
+        ) {
           ids.push(data.dataValues.id);
-          hasil.push({...data.dataValues, products_id, stock_berkurang : cekStock.dataValues.stock });
+          hasil.push({
+            ...data.dataValues,
+            products_id,
+            stock_berkurang: cekStock.dataValues.stock,
+          });
           newQty = newQty - cekStock.dataValues.stock;
         }
       }
@@ -152,16 +165,16 @@ module.exports = {
       next(error);
     }
   },
-  getWarehouseById : async (req, res, next) => {
+  getWarehouseById: async (req, res, next) => {
     try {
-      const hasil = await warehouseService.getById(req.params)
+      const hasil = await warehouseService.getById(req.params);
       res.status(200).send({
         isError: false,
         message: "Success",
-        data : hasil
+        data: hasil,
       });
     } catch (error) {
-      next(error)
+      next(error);
     }
-  }
+  },
 };

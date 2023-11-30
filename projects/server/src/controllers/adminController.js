@@ -1,5 +1,5 @@
-const AdminService = require("../services/adminService")
+const AdminService = require("../services/adminService");
 
-const adminController = {}
+const adminController = {};
 
-module.exports = adminController
+module.exports = adminController;

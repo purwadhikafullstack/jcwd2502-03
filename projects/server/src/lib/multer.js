@@ -40,6 +40,7 @@
 
 const multer = require('multer');
 const fs = require ('fs')
+// var public = require('.././public');
 
 const defaultPath = 'public' // ini diisi dengan folder tujuan dimana kita akan ngesave uploadan user
 const storage = multer.diskStorage({// Ini setup untuk storagenya, dimana letaknya kita akan menyimpan data

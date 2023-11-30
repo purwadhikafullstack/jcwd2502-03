@@ -112,7 +112,7 @@ const CardProduct = ({ data, addToCart }) => {
                   />
                   {/* </CardBody> */}
                   <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-                    <p className="text-tiny uppercase font-bold">
+                    <p className="text-tiny overflow-hidden uppercase font-bold">
                       {item.product_name}
                     </p>
                     <small className="text-default-500">
@@ -121,7 +121,7 @@ const CardProduct = ({ data, addToCart }) => {
                         currency: "IDR",
                       }).format(item.product_price)}
                     </small>
-                    <h4 className="font-bold text-large">TEST</h4>
+                    {/* <h4 className="font-bold text-large">TEST</h4> */}
                   </CardHeader>
                 </Link>
               </Card>

@@ -15,7 +15,7 @@ export default function Protected({
   const nav = useNavigate();
 
   useEffect(() => {
-    if (user === "Owner" && ownerPage)
+    if (user === "Owner" && adminPage)
       return (
         setTimeout(() => {
           setLoading(false);

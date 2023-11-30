@@ -21,14 +21,15 @@ const Nav = () => {
   const [cartDatas, setCartDatas] = useState([]);
   const navigate = useNavigate();
   const [user, setUser] = useState(Cookies.get("user_token"));
-  // console.log(user === true);
+const [admin, setAdmin] = useState(localStorage.getItem("role"))
+// console.log(admin);
   const [localId, setLocalId] = useState(null);
   const param = useLocation();
   const [text, setText] = useState(
     param.pathname
   );
   const [role, setRole] = useState(null);
-
+// console.log(role);
   const getUser = async () => {
     try {
       const data = await axiosInstance.get(
@@ -103,7 +104,7 @@ const Nav = () => {
 
   return (
     
-    <div className={`wrap-nav w-full bg-primaryBlue  fixed top-0 z-50 ${ClassName}`}>
+    <div className={admin === "Customer" ? `wrap-nav w-full bg-primaryBlue  fixed top-0 z-50 ` : `hidden`}>
       <div className=" my-7  h-full m-auto gap-2 sm:gap-10 flex items-center align-middle justify-between">
         <Link to={"/"}>
           <Logo />
