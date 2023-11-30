@@ -14,7 +14,7 @@ const UserBiodata = () => {
             <div className="flex flex-col items-center justify-center">
                 <img
                     className="border w-[250px] h-[250px] rounded-full mt-5"
-                    src={{ avatar }}
+                    src={`http://localhost:8000${avatar && avatar.substring(6)}`}
                     alt="/"
                 />
                 <div className="pt-5">

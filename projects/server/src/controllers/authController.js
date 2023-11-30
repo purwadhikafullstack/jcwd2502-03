@@ -187,12 +187,12 @@ const authController = {
 
     resetPassword: async (req, res) => {
         try {
-            const { userId, resetPasswordToken, password } = req.body;
+            const { userId, resetPasswordToken, newPassword } = req.body;
 
             const serviceResult = await AuthService.resetPassword(
                 userId,
                 resetPasswordToken,
-                password
+                newPassword
             );
 
             if (!serviceResult.success) throw serviceResult;
@@ -236,10 +236,35 @@ const authController = {
     getResetToken: async(req,res) => {
         try {
 
-            const { userId } = req.params;
+            const { userEmail } = req.params;
 
             const serviceResult = await AuthService.getResetToken(
-                userId
+                userEmail
+            );
+            
+            if (!serviceResult.success) throw serviceResult;
+
+            return res.status(serviceResult.statusCode || 200).json({
+                message: serviceResult.message,
+                result: serviceResult.data,
+                isError: serviceResult.isError,
+            });
+        } catch (error) {
+            console.log(error);
+            return res.status(error.statusCode || 500).json({
+                message: error.message,
+                isError: error.isError,
+            });
+        }
+    },
+
+    getUserDataByResetToken: async(req,res) => {
+        try {
+
+            const { reset_token } = req.params;
+
+            const serviceResult = await AuthService.getUserDataByResetToken(
+                reset_token
             );
             
             if (!serviceResult.success) throw serviceResult;
