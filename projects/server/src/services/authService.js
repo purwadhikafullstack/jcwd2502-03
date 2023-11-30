@@ -50,7 +50,7 @@ class AuthService extends Service {
                 users_id: createUser.id,
             });
 
-            const verifyUserLink = `http://localhost:3000/verification/${verifyAccountToken}`;
+            const verifyUserLink = `http://localhost:3000/verification`;
 
             const emailTemplate = fs
                 .readFileSync(__dirname + "/../templates/verifyAccount.html")
@@ -142,7 +142,7 @@ class AuthService extends Service {
 
             if (!verifyToken) {
                 return this.handleError({
-                    message: "Token is not valid!",
+                    message: "Token is invalid!",
                     statusCode: 401,
                 });
             }
@@ -225,7 +225,7 @@ class AuthService extends Service {
                 users_id: findUser.id,
             });
 
-            const verifyUserLink = `http://localhost:3000/verification/${verifyAccountToken}`;
+            const verifyUserLink = `http://localhost:3000/verification`;
 
             const emailTemplate = fs
                 .readFileSync(__dirname + "/../templates/verifyAccount.html")
@@ -404,16 +404,12 @@ class AuthService extends Service {
         }
     };
 
-    static resetPassword = async (userId, resetPasswordToken, password) => {
+    static resetPassword = async (userId, resetPasswordToken, newPassword) => {
         try {
             const validateToken = await db.reset_password_tokens.findOne({
                 where: {
-                    tokens: resetPasswordToken,
+                    token: resetPasswordToken,
                     is_valid: true,
-                    valid_until: {
-                        [Op.gt]: moment().utc(),
-                    },
-                    users_id: userId
                 },
             });
 
@@ -424,7 +420,7 @@ class AuthService extends Service {
                 });
             }
 
-            const newHashedPassword = bcrypt.hashSync(password, 5);
+            const newHashedPassword = bcrypt.hashSync(newPassword, 5);
 
             await db.users.update(
                 {
@@ -487,7 +483,7 @@ class AuthService extends Service {
                 users_id: findUser.id,
             });
 
-            const verifyUserLink = `http://localhost:3000/reset-password/${resetPasswordToken}`;
+            const resetPasswordLink = `http://localhost:3000/reset-password`;
 
             const emailTemplate = fs
                 .readFileSync(__dirname + "/../templates/resetPassword.html")
@@ -495,7 +491,7 @@ class AuthService extends Service {
 
             const renderedTemplate = mustache.render(emailTemplate, {
                 name: findUser.fullname,
-                verify_url: verifyUserLink,
+                reset_password_url: resetPasswordLink,
             });
 
             await transporter.sendMail({
@@ -517,11 +513,17 @@ class AuthService extends Service {
         }
     };
 
-    static getResetToken = async (userId) => {
+    static getResetToken = async (userEmail) => {
         try {
+            const user = await db.users.findOne({
+                where: {
+                    email: userEmail,
+                },
+            });
+
             const getToken = await db.reset_password_tokens.findAll({
                 where: {
-                    users_id: userId,
+                    users_id: user.dataValues.id,
                     is_valid: true,
                 },
             });
@@ -537,6 +539,29 @@ class AuthService extends Service {
                 statusCode: 201,
                 message: "Token is valid.",
                 data: getToken,
+            });
+        } catch (error) {
+            console.log(error);
+            return this.handleError({
+                statusCode: 500,
+                message: "Server Error",
+            });
+        }
+    };
+
+    static getUserDataByResetToken = async (reset_token) => {
+        try {
+            const userData = await db.reset_password_tokens.findOne({
+                where: {
+                    token: reset_token,
+                    is_valid: true,
+                },
+            });
+
+            return this.handleSuccess({
+                statusCode: 201,
+                message: "Success get user data!",
+                data: userData,
             });
         } catch (error) {
             console.log(error);

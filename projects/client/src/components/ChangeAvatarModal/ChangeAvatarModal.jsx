@@ -12,26 +12,37 @@ import { useSelector } from "react-redux";
 import axiosInstance from "../../config/api";
 import toast from "react-hot-toast";
 
-export default function EditUserModal() {
+export default function ChangeAvatarModal() {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
-    const [input, setInput] = useState({
-        fullname: "",
-    });
 
     const { id } = useSelector((state) => state.user);
 
-    const handleChangeFullname = (e) => {
-        const newInput = { ...input };
-        newInput[e.target.name] = e.target.value;
-        setInput(newInput);
+    const [images, setImages] = useState([]);
+
+    const onSelectImages = (event) => {
+        try {
+            const files = [...event.target.files];
+            files.forEach((value) => {
+                if (value.size > 10000000)
+                    throw {
+                        message: `${value.name} Size Harus Dibawah 1MB`,
+                    };
+                if (value.type.split("/")[0] !== "image") {
+                    throw {
+                        message: `${value.name} Harus Gambar`,
+                    };
+                }
+            });
+            setImages(files);
+        } catch (error) {
+            console.log(error);
+            alert(error.message);
+        }
     };
 
-    const changeName = async (e) => {
+    const changeAvatar = async (e) => {
         try {
-            const { fullname } = input;
-            const res = await axiosInstance.patch(`/user/user=${id}`, {
-                fullname,
-            });
+            const res = await axiosInstance;
 
             toast.success(res.data.message);
 
@@ -47,7 +58,7 @@ export default function EditUserModal() {
     return (
         <>
             <Button onPress={onOpen} color="primary">
-                Change Fullname
+                Change your avatar
             </Button>
             <Modal
                 isOpen={isOpen}
@@ -58,25 +69,28 @@ export default function EditUserModal() {
                     {(onClose) => (
                         <>
                             <ModalHeader className="flex flex-col gap-1">
-                                Change your Username
+                                Please select a file
                             </ModalHeader>
                             <ModalBody>
-                                <input
+                                {/* <input
                                     className="border rounded-xl"
                                     name="fullname"
                                     value={input.fullname}
                                     onChange={handleChangeFullname}
                                     type="text"
                                     placeholder="Enter your new fullname here..."
+                                /> */}
+                                <input
+                                    onChange={(e) => onSelectImages(e)}
+                                    type="file"
+                                    multiple="multiple"
+                                    placeholder="Product Image"
+                                    id=""
                                 />
                             </ModalBody>
                             <ModalFooter>
-                                <Button
-                                    color="primary"
-                                    onClick={changeName}
-                                    onPress={onClose}
-                                >
-                                    Change Full Name
+                                <Button color="primary" onPress={onClose} onClick={changeAvatar}>
+                                    Change your avatar
                                 </Button>
                             </ModalFooter>
                         </>

@@ -11,33 +11,41 @@ import {
 import { useSelector } from "react-redux";
 import axiosInstance from "../../config/api";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
-export default function EditUserModal() {
+export default function ChangePasswordModal() {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
-    const [input, setInput] = useState({
-        fullname: "",
-    });
+    const navigate = useNavigate()
 
     const { id } = useSelector((state) => state.user);
 
-    const handleChangeFullname = (e) => {
-        const newInput = { ...input };
-        newInput[e.target.name] = e.target.value;
-        setInput(newInput);
+    const [state, setState] = useState({
+        oldPassword: "",
+        newPassword: "",
+    });
+
+    const handleChange = (e) => {
+        const newState = { ...state };
+        newState[e.target.name] = e.target.value;
+        setState(newState);
     };
 
-    const changeName = async (e) => {
+    const changePassword = async (e) => {
         try {
-            const { fullname } = input;
-            const res = await axiosInstance.patch(`/user/user=${id}`, {
-                fullname,
+            const { oldPassword, newPassword } = state;
+
+            const res = await axiosInstance.post(`/auth/change-password`, {
+                userId: id,
+                oldPassword,
+                newPassword,
             });
 
             toast.success(res.data.message);
-
+            Cookies.remove("user_token");
             setTimeout(() => {
-                window.location.reload();
-            }, 1500);
+                navigate("/login");
+            }, 3000);
         } catch (error) {
             console.log(error);
             toast.error(error.response.data.message);
@@ -47,7 +55,7 @@ export default function EditUserModal() {
     return (
         <>
             <Button onPress={onOpen} color="primary">
-                Change Fullname
+                Change Password
             </Button>
             <Modal
                 isOpen={isOpen}
@@ -58,25 +66,33 @@ export default function EditUserModal() {
                     {(onClose) => (
                         <>
                             <ModalHeader className="flex flex-col gap-1">
-                                Change your Username
+                                Change your Password
                             </ModalHeader>
                             <ModalBody>
                                 <input
                                     className="border rounded-xl"
-                                    name="fullname"
-                                    value={input.fullname}
-                                    onChange={handleChangeFullname}
-                                    type="text"
-                                    placeholder="Enter your new fullname here..."
+                                    placeholder="Old Password"
+                                    type="password"
+                                    name="oldPassword"
+                                    value={state.oldPassword}
+                                    onChange={handleChange}
+                                />
+                                <input
+                                    className="border rounded-xl"
+                                    placeholder="New Password"
+                                    type="password"
+                                    name="newPassword"
+                                    value={state.newPassword}
+                                    onChange={handleChange}
                                 />
                             </ModalBody>
                             <ModalFooter>
                                 <Button
                                     color="primary"
-                                    onClick={changeName}
+                                    onClick={changePassword}
                                     onPress={onClose}
                                 >
-                                    Change Full Name
+                                    Change Password
                                 </Button>
                             </ModalFooter>
                         </>

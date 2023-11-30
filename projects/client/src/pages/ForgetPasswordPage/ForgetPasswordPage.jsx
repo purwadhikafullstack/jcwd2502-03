@@ -1,9 +1,10 @@
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import TabBar from "../../components/TabBar/TabBar";
 import { AiOutlineMail } from "react-icons/ai";
 import { useState } from "react";
 import axiosInstance from "../../config/api";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 const ForgetPasswordPage = () => {
     const navigate = useNavigate();
@@ -25,6 +26,10 @@ const ForgetPasswordPage = () => {
                 userEmail
             })
 
+            const resetToken = await axiosInstance.get(`/auth/reset/${userEmail}`)
+
+            Cookies.set("reset_token", resetToken.data.result[0].token)
+
             toast.success(res.data.message);
             setTimeout(() => {
                 navigate("/login");
@@ -37,7 +42,6 @@ const ForgetPasswordPage = () => {
 
     return (
         <div>
-            <Toaster />
             <TabBar />
             <div className="flex items-center justify-center">
                 <div className="flex flex-col pb-2 mt-8 w-[380px] sm:w-[550px] sm:h-[160px] xl:w-[600px] xl:h-[260px] rounded-xl place-items-center border-2">

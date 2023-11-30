@@ -13,7 +13,6 @@ import LoginRegisterPage from "../pages/LoginRegisterPage/LoginRegisterPage";
 import UserVerificationPage from "../pages/UserVerificationPage/UserVerificationPage";
 import ShopePage from "../pages/ShopPage/ShopePage";
 import DetailProduct from "../pages/DetailProduct/DetailProduct";
-import ChangePasswordPage from "../pages/ChangePasswordPage/ChangePasswordPage";
 import ForgetPasswordPage from "../pages/ForgetPasswordPage/ForgetPasswordPage";
 import ResetPasswordPage from "../pages/ResetPasswordPage/ResetPasswordPage";
 import OrderHistory from "../components/OrderHistory/OrderHistory";
@@ -40,6 +39,9 @@ import io from "socket.io-client";
 import audioNotif from "./../assets/audionotif.mp3";
 import UserBiodata from "../components/UserBiodata/UserBiodata";
 import AdminOrderList from "../components/AdminOrderList/AdminOrderList";
+import MyAddressPage from "../pages/MyAddressPage/MyAddressPage";
+import UserListPage from "../pages/UserListPage/UserListPage";
+// import ChangePasswordPage from "../pages/ChangePasswordPage"
 const userToken = Cookies.get("user_token");
 let socket;
 if (userToken) {
@@ -327,6 +329,9 @@ const routes = [
   // <Route path="/dashboard" element={<UserDashboardPage />} />,
   <Route path="/login" element={<LoginRegisterPage />} />,
   <Route path="/verification" element={<UserVerificationPage />} />,
+  <Route path="/product" element={<ShopePage />} />,
+  <Route path="/product/:idProduct" element={<DetailProduct />} />,
+  // <Route path="/change-password" element={<ChangePasswordPage />} />,
   <Route
     path="/product"
     element={
@@ -343,7 +348,7 @@ const routes = [
       </Protected>
     }
   />,
-  <Route path="/change-password" element={<ChangePasswordPage />} />,
+  // <Route path="/change-password" element={<ChangePasswordPage />} />,
   <Route path="/forget-password" element={<ForgetPasswordPage />} />,
   <Route path="/reset-password" element={<ResetPasswordPage />} />,
   // <Route path="/admin/warehouses" element={<WarehouseList />} />,
@@ -392,7 +397,9 @@ const routes = [
     path="/dashboard/addresses"
     element={
       <Protected customerPage={true}>
-        <SideBar>Addresses</SideBar>
+        <SideBar>
+    <MyAddressPage/>
+  </SideBar>
       </Protected>
     }
   />,
@@ -433,7 +440,7 @@ const routes = [
       <Protected ownerPage={true}>
         {" "}
         <SideBarAdmin>
-          <UsersAdmin />
+          <UserListPage />
         </SideBarAdmin>
       </Protected>
     }
