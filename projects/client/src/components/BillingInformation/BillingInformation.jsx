@@ -10,6 +10,8 @@ import ShippingOptions from "../ShippingOptions/ShippingOptions";
 import axiosInstance from "../../config/api";
 import toast, { Toaster } from "react-hot-toast";
 const BillingInformation = ({
+  paymentsOption,
+  setPaymentsOption,
   setModalIsOpen,
   modalIsOpen,
   handleConfirmChangeAddress,
@@ -26,19 +28,25 @@ const BillingInformation = ({
   getAddress,
   cartData,
   totalWeight,
+  setShippingPrice,
+  shippingPrice,
+  setShippingType,
+  courierValue,
+  setCourierValue,
+  nearestWarehouse,
+  setNearestWarehouse,
 }) => {
-  const [courierValue, setCourierValue] = useState("");
   const [shippingOptions, setShippingOptions] = useState([]);
   const [btnDisable, setBtnDisable] = useState(false);
-  const [paymentsOption, setPaymentsOption] = useState(false);
-
+  
   const confirmShippingOptions = async () => {
     try {
       setBtnDisable(true);
       if (!paymentsOption || paymentsOption === "Select a Payment") {
         return toast.error("Select a Payment");
       }
-      if (!courierValue) return toast.error("Select a Courier");
+      if (!courierValue || courierValue === "Select a Courier")
+        return toast.error("Select a Courier");
 
       const loading = toast.loading("loading");
 
@@ -50,6 +58,9 @@ const BillingInformation = ({
           courier: courierValue.toLocaleLowerCase(),
         }
       );
+
+      setShippingPrice("");
+      setNearestWarehouse(getShippingOptions.data.nearestWarehouse);
       setShippingOptions(getShippingOptions.data.data);
       toast.dismiss(loading);
     } catch (error) {
@@ -73,7 +84,10 @@ const BillingInformation = ({
           isOpen={modalIsOpen}
           onRequestClose={() => setModalIsOpen(false)}
           handleConfirmChangeAddress={handleConfirmChangeAddress}
-          closeModal={() => setModalIsOpen(false)}
+          closeModal={() => {
+            setOnClick(undefined);
+            setModalIsOpen(false);
+          }}
           addresses={addresses}
           setAddress={setAddress}
           setOnClick={setOnClick}
@@ -153,7 +167,7 @@ const BillingInformation = ({
             labelCSS="text-[14px]"
             labelName="Weight (gram)"
             type="number"
-            value={totalWeight}
+            value={totalWeight > 30000 ? 30000 : totalWeight}
             disabled="disabled"
           />
         </div>
@@ -170,7 +184,13 @@ const BillingInformation = ({
         </span>
       </div>
 
-      <ShippingOptions shippingOptions={shippingOptions} />
+      <ShippingOptions
+        shippingOptions={shippingOptions}
+        setShippingPrice={setShippingPrice}
+        shippingPrice={shippingPrice}
+        nearestWarehouse={nearestWarehouse}
+        setShippingType={setShippingType}
+      />
     </div>
   );
 };

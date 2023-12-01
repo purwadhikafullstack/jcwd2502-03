@@ -1,18 +1,16 @@
-const router = require("express").Router()
+const router = require("express").Router();
 const userController = require("../controllers/userController");
 const authorizeLoggedInUser = require("../middlewares/authMiddleware");
-const multerupload = require("../lib/multer");
+const upload1 = require("../middlewares/upload1");
 
-router.patch("/user=:userId", authorizeLoggedInUser, userController.editUser);
+router.patch("/user=:users_id", authorizeLoggedInUser, userController.editUser);
 
-// router.patch(
-//     "/:users_id",
-//     multerupload({
-//         destinationFolder: "avatar",
-//         fileType: "image",
-//         prefix: "AVATAR",
-//     }).single("avatar_image_file"),
-//     userController.editUserAvatar
-// );
+router.put("/address", authorizeLoggedInUser, userController.changePrimaryAddress);
 
-module.exports = router
+router.delete("/delete-address/:address_id", authorizeLoggedInUser, userController.deleteAddress);
+
+router.patch("/image/:users_id", upload1, userController.editUserAvatar);
+
+router.get("/address/user=:users_id", authorizeLoggedInUser, userController.getAddresses);
+
+module.exports = router;

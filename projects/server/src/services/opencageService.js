@@ -5,8 +5,11 @@ const apiKey = "ae3e97cbd5794c5a9110d1c04da85bda";
 module.exports = {
   getLatLong: async (cities_id) => {
     try {
-      const city = await db.tb_ro_cities.findByPk(cities_id)
-      const province = await db.tb_ro_provinces.findByPk(city?.dataValues.provinces_id)
+      console.log(cities_id);
+      const city = await db.tb_ro_cities.findByPk(cities_id);
+      const province = await db.tb_ro_provinces.findByPk(
+        city?.dataValues.provinces_id
+      );
       const url = `https://api.opencagedata.com/geocode/v1/json?q=${city?.dataValues.city_name},${province?.dataValues.province_name}&key=${apiKey}`;
       const data = await axios.get(url);
       return data.data.results[0].geometry;
@@ -14,9 +17,19 @@ module.exports = {
       return error;
     }
   },
-  getWarehouseTerdekat: async (datas) => {
+  getWarehouseTerdekat: async (datas, ids) => {
     try {
-      const data = await db.warehouses.findAll()
+      const data = await db.warehouses.findAll({
+        where: {
+          id: {
+            [db.Sequelize.Op.notIn]: ids,
+          },
+        },
+        attributes: {
+          exclude: ["createdAt", "updatedAt"],
+        },
+      });
+
       let nearestWarehouse = null;
       let nearestDistance = Infinity;
       function degToRad(deg) {
@@ -51,8 +64,8 @@ module.exports = {
           nearestWarehouse = warehouse;
         }
       });
-
-      return nearestWarehouse
+      // console.log("11");
+      return nearestWarehouse;
     } catch (error) {
       return error;
     }

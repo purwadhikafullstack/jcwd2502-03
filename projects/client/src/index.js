@@ -7,16 +7,19 @@ import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./redux/App/store";
 import { NextUIProvider } from "@nextui-org/react";
+import KeepLogin from "./providers/KeepLogin";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <Provider store={store}>
-    <BrowserRouter>
-      {/* <NextUIProvider> */}
-        <App />
-      {/* </NextUIProvider> */}
-    </BrowserRouter>
-  </Provider>
+    <Provider store={store}>
+        <BrowserRouter>
+            <KeepLogin>
+                <NextUIProvider>
+                    <App />
+                </NextUIProvider>
+            </KeepLogin>
+        </BrowserRouter>
+    </Provider>
 );
 
 // If you want to start measuring performance in your app, pass a function

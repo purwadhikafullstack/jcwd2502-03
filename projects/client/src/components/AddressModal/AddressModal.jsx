@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 //Components
 import Button from "../Button/Button";
@@ -29,6 +29,7 @@ const AddressModal = ({
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [value, setValue] = useState();
   const [isAddOpen, setIsAddOpen] = useState(false);
+
   const customStyle = {
     content: {
       width: "500px",
@@ -116,9 +117,10 @@ const AddressModal = ({
           />
         </div>
         <div className=" h-[380px] overflow-auto ">
-          {addresses.map((value) => {
+          {addresses.map((value, index) => {
             return (
               <div
+                key={index}
                 onClick={() => changeColor(value.id, value)}
                 className={`w-full hover:border-primaryOrange   ${
                   onClick === value.id ? "border-primaryOrange" : ""

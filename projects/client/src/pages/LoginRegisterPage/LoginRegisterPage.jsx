@@ -3,9 +3,9 @@ import TabBar from "../../components/TabBar/TabBar";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../config/api";
 import Cookies from "js-cookie";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
-import { login } from "../../redux/Reducer/auth";
+import { login } from "../../redux/Features/auth";
 
 const LoginRegisterPage = () => {
     const navigate = useNavigate();
@@ -47,9 +47,9 @@ const LoginRegisterPage = () => {
 
             setTimeout(() => {
                 if (res.data.result.user.role === "Owner") {
-                    navigate("/");
+                    navigate("/admin/dashboard");
                 } else if (res.data.result.user.role === "Warehouse Admin") {
-                    navigate("/");
+                    navigate("/admin/dashboard");
                 } else {
                     navigate("/");
                 }
@@ -70,6 +70,7 @@ const LoginRegisterPage = () => {
             });
             toast.success(res.data.message);
             Cookies.set("user_token", res.data.result.loginToken);
+            dispatch(login(res.data.result.user));
             setTimeout(() => {
                 navigate("/");
             }, 3000);
@@ -94,10 +95,9 @@ const LoginRegisterPage = () => {
     };
 
     return (
-        <div className="mt-[72px]">
-            <Toaster />
+        <div className="mt-[72px] px-[300px]">
             <TabBar />
-            <div className="border flex flex-col bg-white w-full h-screen place-items-center pt-4">
+            <div className=" flex flex-col bg-white w-full h-screen place-items-center pt-4">
                 <div className="flex flex-col pb-2 mt-8 w-[424px] h-[504px] border-2 rounded">
                     <div className="flex flex-row justify-between border-b">
                         <div

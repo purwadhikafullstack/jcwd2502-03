@@ -12,6 +12,9 @@ module.exports = {
       category: {
         type: Sequelize.STRING
       },
+      category_image: {
+        type: Sequelize.STRING
+      },
       category_status: {
         type: Sequelize.ENUM("Active", "Inactive")
       },

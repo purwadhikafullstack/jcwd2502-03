@@ -5,9 +5,9 @@ const { sequelize } = require("../models");
 module.exports = {
   addWarehouse: async (data) => {
     try {
-      console.log(data);
+      // console.log(data);
       const hasil = await db.warehouses.create(data);
-      console.log(hasil);
+      // console.log(hasil);
       return hasil;
     } catch (error) {
       return error;
@@ -53,11 +53,11 @@ module.exports = {
       return error;
     }
   },
-  updateWarehouse: async ({ id, name }) => {
+  updateWarehouse: async ({ id, name, cities_id, lng, lat  }) => {
     try {
       const data = await db.warehouses.findByPk(id);
       const newData = await db.warehouses.update(
-        { ...data, name },
+        { ...data, name, cities_id, lng, lat },
         { where: { id } }
       );
       return newData;
@@ -65,4 +65,12 @@ module.exports = {
       return error;
     }
   },
+  getById : async ({id}) => {
+    try {
+      const hasil = await db.warehouses.findByPk(id)
+      return hasil
+    } catch (error) {
+      next(error)
+    }
+  }
 };

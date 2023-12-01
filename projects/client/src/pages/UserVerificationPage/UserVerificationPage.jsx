@@ -2,29 +2,34 @@ import TabBar from "../../components/TabBar/TabBar";
 import axiosInstance from "../../config/api";
 import Cookies from "js-cookie";
 import toast, { Toaster } from "react-hot-toast";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const UserVerificationPage = () => {
     const navigate = useNavigate();
 
+    const { id } = useSelector((state) => state.user);
+
     const verifyButtonHandler = async () => {
         try {
             const loginToken = Cookies.get("user_token");
 
-            const userData = await axiosInstance.get(
-                `/auth/userdata/${loginToken}`
+            if (!loginToken) {
+                return toast.error("Please login!"), navigate("/login");
+            }
+
+            const verifyToken = await axiosInstance.get(
+                `/auth/verify/user-${id}`
             );
 
-            const verifyToken = await axiosInstance.get(`/auth/verify/user-${userData.data.result.id}`)
-
             await axiosInstance.post(`/auth/verify`, {
-                token: verifyToken,
-                users_id: userData.data.result.id,
+                users_id: id,
+                token: verifyToken.data.result[0].token,
             });
-            toast.success("Congratulations, you have been verified!");
+            toast.success("Verification Success!");
             Cookies.remove("user_token");
             setTimeout(() => {
-                navigate("/verification-success");
+                navigate("/login");
             }, 3000);
         } catch (error) {
             console.log(error);
@@ -33,7 +38,6 @@ const UserVerificationPage = () => {
 
     return (
         <div>
-            <Toaster />
             <TabBar />
             <div className="border flex flex-col bg-white w-full h-screen place-items-center pt-4">
                 <div className="flex flex-col pb-2 mt-32 w-[724px] h-[170px] border-2 rounded">
