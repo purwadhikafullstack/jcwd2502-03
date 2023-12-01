@@ -40,6 +40,8 @@ import UserBiodata from "../components/UserBiodata/UserBiodata";
 import AdminOrderList from "../components/AdminOrderList/AdminOrderList";
 import MyAddressPage from "../pages/MyAddressPage/MyAddressPage";
 import UserListPage from "../pages/UserListPage/UserListPage";
+import HistoryAdmin from "../components/AdminDashboard/ReportAdmin";
+import HistoryAdmin2 from "../components/HistoryAdmin/HistoryAdmin2";
 const userToken = Cookies.get("user_token");
 let socket;
 if (userToken) {
@@ -290,7 +292,7 @@ const routes = [
     path="/admin/dashboard"
     element={
       <SideBarAdmin>
-        <DashboardAdmin />
+        <></>
       </SideBarAdmin>
     }
   />,
@@ -342,6 +344,14 @@ const routes = [
       </SideBarAdmin>
     }
   />,
+  <Route
+  path="/admin/history"
+  element={
+    <SideBarAdmin>
+      <HistoryAdmin2 />
+    </SideBarAdmin>
+  }
+/>,
 ];
 
 export default routes;

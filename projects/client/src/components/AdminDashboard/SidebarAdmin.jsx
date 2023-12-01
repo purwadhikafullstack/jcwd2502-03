@@ -2,19 +2,29 @@ import React from "react";
 import { GoStack } from "react-icons/go";
 import { FaUsers } from "react-icons/fa";
 import { SlEarphones } from "react-icons/sl";
-import { TbReport } from "react-icons/tb";
+import { TbReport, TbHistory } from "react-icons/tb";
 import { LuWarehouse } from "react-icons/lu";
 import { GoSignOut } from "react-icons/go";
 import { HiArrowLeft } from "react-icons/hi";
 import { useNavigate, Link, NavLink } from "react-router-dom";
 import { MdOutlineLibraryBooks } from "react-icons/md";
+import { useDispatch } from "react-redux";
+import { logout } from "../../redux/Features/auth";
+import Cookies from "js-cookie";
 
 const SidebarAdmin = ({ tabValue, setTabValue, currentPath }) => {
     const navigate = useNavigate();
+    const dispatch = useDispatch()
+
+    const logoutButtonHandler = () => {
+        Cookies.remove("user_token")
+        dispatch(logout())
+        navigate("/login")
+    }
     return (
         <>
             <div className="left w-[264px] h-full border-[1px]  shadow-2xl rounded-[4px] py-[16px]">
-                <Link to={"/admin/dashboard"}>
+                {/* <Link to={"/admin/dashboard"}>
                     <div
                         onClick={() => {
                             setTabValue(1);
@@ -28,7 +38,7 @@ const SidebarAdmin = ({ tabValue, setTabValue, currentPath }) => {
                         <GoStack className="text-[18px]" />
                         <h1 className="text-[14px] ">Dashboard</h1>
                     </div>
-                </Link>
+                </Link> */}
                 <Link to={"/admin/users"}>
                     <div
                         onClick={() => setTabValue(2)}
@@ -95,7 +105,7 @@ const SidebarAdmin = ({ tabValue, setTabValue, currentPath }) => {
                         <h1 className="text-[14px] ">Orders Approval</h1>
                     </div>
                 </Link>
-                <Link to={"/admin/report"}></Link>
+                {/* <Link to={"/admin/report"}></Link> */}
                 <Link to={"/admin/category"}>
                     <div
                         onClick={() => setTabValue(5)}
@@ -120,14 +130,25 @@ const SidebarAdmin = ({ tabValue, setTabValue, currentPath }) => {
                         <h1 className="text-[14px] ">Report</h1>
                     </div>
                 </Link>
+                <Link to={"/admin/history"}>
+                    <div
+                        onClick={() => setTabValue(7)}
+                        className={`flex items-center px-[26px] gap-3 h-[40px] text-[#5F6C72] cursor-pointer ${
+                            tabValue === 7 ? "bg-primaryOrange  text-white" : ""
+                        }`}
+                    >
+                        <TbHistory className="text-[18px]" />
+                        <h1 className="text-[14px] ">History</h1>
+                    </div>
+                </Link>
                 <div
-                    onClick={() => setTabValue(7)}
+                    onClick={() => setTabValue(8)}
                     className={`flex items-center px-[26px] gap-3 h-[40px] text-[#5F6C72] cursor-pointer ${
-                        tabValue === 7 ? "bg-primaryOrange  text-white" : ""
+                        tabValue === 8 ? "bg-primaryOrange  text-white" : ""
                     }`}
                 >
                     <GoSignOut className="text-[18px]" />
-                    <h1 className="text-[14px] ">Logout</h1>
+                    <button className="text-[14px]" onClick={logoutButtonHandler}>Logout</button>
                 </div>
             </div>
         </>
