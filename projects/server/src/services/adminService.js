@@ -149,6 +149,33 @@ class AdminService extends Service {
             });
         }
     };
+
+    static getStockHistories = async () => {
+        try {
+            const userData = await db.products_stocks_histories.findAll({
+                include: [
+                    {
+                        model: db.products,
+                    },
+                    {
+                        model: db.warehouses,
+                    },
+                ],
+            });
+
+            return this.handleSuccess({
+                statusCode: 201,
+                message: "Success get histories!",
+                data: userData,
+            });
+        } catch (error) {
+            console.log(error);
+            return this.handleError({
+                statusCode: 500,
+                message: "Server Error",
+            });
+        }
+    };
 }
 
 module.exports = AdminService;
