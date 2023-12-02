@@ -41,6 +41,8 @@ const {
   createStockMutation,
   userRole,
   filterAdminOrders,
+  warehouses,
+  completeOrder
 } = require("./../services/orderService");
 
 const { Op } = require("sequelize");
@@ -433,14 +435,14 @@ const orderController = {
   },
   OrderDetailsByTransactionId: async (req, res, next) => {
     try {
-      const { transaction_uid } = req.body;
+      const { transaction_uid, users_id } = req.body;
       const { id } = req.tokens;
 
-      const order = await orderByTransactionId(transaction_uid, id);
-      console.log(order);
+      const userId = users_id ? users_id : id;
+      const order = await orderByTransactionId(transaction_uid, userId);
       const orderDetails = await orderDetailsByTransactionId(
         transaction_uid,
-        id
+        userId
       );
 
       res.status(200).send({
@@ -509,9 +511,11 @@ const orderController = {
   statusOrder: async (req, res, next) => {
     try {
       const { id } = req.tokens;
-      const { transaction_uid } = req.body;
+      const { transaction_uid, users_id } = req.body;
 
-      const status = await statusByTransactionId(transaction_uid, id);
+      const userId = users_id ? users_id : id;
+
+      const status = await statusByTransactionId(transaction_uid, userId);
       res.status(200).send({
         isError: false,
         data: status,
@@ -758,20 +762,66 @@ const orderController = {
   adminFilterOrders: async (req, res, next) => {
     try {
       const { id } = req.tokens;
-      const { role } = req.body;
+      const { role, page } = req.body;
+
       const userData = await userRole(id);
-      console.log(userData.dataValues.warehouses_id);
 
       const filterOrders = await filterAdminOrders(
         req.query.status,
         userData.dataValues.warehouses_id,
-        userData.dataValues.role
+        userData.dataValues.role,
+        page,
+        req.query.warehouses_id
       );
-      
+
+      console.log(filterOrders);
+
       res.send({
         isError: false,
-        data: filterOrders,
+        data: filterOrders.data,
+        maxPages: filterOrders.maxPages,
       });
+    } catch (error) {
+      next(error);
+    }
+  },
+  warehouseData: async (req, res, next) => {
+    try {
+      const warehouseData = await warehouses();
+
+      res.send({
+        isError: false,
+        data: warehouseData,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  role: async (req, res, next) => {
+    try {
+      const { id } = req.tokens;
+
+      const role = await userRole(id);
+
+      res.send({
+        isError: false,
+        data: role.dataValues.role,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  handleOrderComplete: async (req, res, next) => {
+    try {
+      const { id } = req.tokens;
+      const { transaction_uid } = req.body;
+
+      const handleCompleOrder = await completeOrder(transaction_uid, id);
+      console.log(handleCompleOrder);
+      res.send({
+        isError: false, 
+        message: "Order Completed"
+      })
     } catch (error) {
       next(error);
     }

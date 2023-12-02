@@ -121,7 +121,7 @@ const SideBar = ({ children }) => {
         />
         <div
           className={`${
-            currentPath === "/dashboard/orders/details" ? "h-auto" : "h-[718px]"
+            currentPath === "/dashboard/orders/details" || "/dashboard/orders/details" ? "h-auto" : "h-[718px]"
           } right w-full  rounded-[4px] border-[1px] shadow-xl `}
         >
           {React.isValidElement(children) &&
@@ -140,6 +140,7 @@ const SideBarAdmin = ({ children }) => {
   const [tabValue, setTabValue] = useState(1);
   const location = useLocation();
   const currentPath = location.pathname;
+  console.log(currentPath);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const refreshOrders = async () => {
@@ -212,7 +213,7 @@ const SideBarAdmin = ({ children }) => {
         />
         <div
           className={`${
-            currentPath === "/dashboard/orders/details" ? "h-auto" : "h-[718px]"
+            currentPath === "/admin/orders/details" ||  currentPath === "/admin/orders/details"  ? "h-auto" : "h-[718px]"
           } right w-full  rounded-[4px] border-[1px] shadow-xl `}
         >
           {React.cloneElement(children, {
@@ -260,6 +261,14 @@ const routes = [
       <SideBar>
         <OrderViewDetails />
       </SideBar>
+    }
+  />,
+  <Route
+    path="/admin/orders/details"
+    element={
+      <SideBarAdmin>
+        <OrderViewDetails />
+      </SideBarAdmin>
     }
   />,
   <Route

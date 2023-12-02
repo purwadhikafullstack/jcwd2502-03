@@ -15,15 +15,18 @@ import { AiOutlineMinus } from "react-icons/ai";
 import { AiOutlinePlus } from "react-icons/ai";
 import Cookies from "js-cookie";
 import axiosInstance from "../../config/api";
+import { useDispatch, useSelector } from "react-redux";
+import { getCartAsync } from "./../../redux/Features/order";
 const DetailProduct = () => {
   const { idProduct } = useParams();
   const [quantity, setQuantity] = useState(1);
   const [user, setUser] = useState(Cookies.get("user_token"));
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const handleIncrement = () => {
     setQuantity(quantity + 1);
   };
 
+  const dispatch = useDispatch();
 
   const handleDecrement = () => {
     if (quantity > 1) {
@@ -31,18 +34,18 @@ const DetailProduct = () => {
     }
   };
 
-  const cartData = async () => {
-    try {
-      const res = await axiosInstance.post("/order/cartdata");
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const cartData = async () => {
+  //   try {
+  //     const res = await axiosInstance.post("/order/cartdata");
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const addToCart = async (id) => {
     try {
       if (!user) {
-        toast.error("Please log in to add items to your cart.")
+        toast.error("Please log in to add items to your cart.");
         navigate("/login");
       }
       const res = await axiosInstance.post("/order/cart", {
@@ -50,15 +53,15 @@ const DetailProduct = () => {
         quantity: quantity,
       });
       toast.success(res.data.message);
-      cartData();
+      dispatch(getCartAsync());
     } catch (error) {
       console.log(error);
     }
   };
 
-  useEffect(() => {
-    cartData();
-  }, []);
+  // useEffect(() => {
+  //   cartData();
+  // }, []);
 
   return (
     <div className="mt-[154px] px-[300px]  rounded-sm flex justify-center mb-[100px]">

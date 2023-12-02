@@ -72,7 +72,7 @@ const SidebarAdmin = ({ tabValue, setTabValue, currentPath }) => {
           <div
             onClick={() => setTabValue(20)}
             className={`flex items-center px-[26px] gap-3 h-[40px] text-[#5F6C72] cursor-pointer ${
-              tabValue === 20 || currentPath === "/admin/order" ? "bg-primaryOrange  text-white" : ""
+              tabValue === 20 || currentPath === "/admin/orders" || currentPath === "/admin/orders/details" ? "bg-primaryOrange  text-white" : ""
             }`}
           >
             <MdOutlineLibraryBooks className="text-[18px]" />

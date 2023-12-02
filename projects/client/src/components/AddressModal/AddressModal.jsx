@@ -27,9 +27,9 @@ const AddressModal = ({
   setModalIsOpen,
 }) => {
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
-  const [value, setValue] = useState();
+  const [value, setValue] = useState(null);
   const [isAddOpen, setIsAddOpen] = useState(false);
-
+  console.log(value);
   const customStyle = {
     content: {
       width: "500px",
@@ -44,6 +44,7 @@ const AddressModal = ({
       z: "50",
     },
   };
+
   const changeColor = (id, value) => {
     setOnClick(id);
     setValue(value);
@@ -64,6 +65,7 @@ const AddressModal = ({
     } finally {
     }
   };
+  
   const confirmEditAddress = async (id, address, city) => {
     try {
       const editAddress = await axiosInstance.post("/order/edit-address", {

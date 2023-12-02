@@ -17,6 +17,7 @@ import { useDebouncedCallback, useDebounce } from "use-debounce";
 import Cookies from "js-cookie";
 import axiosInstance from "../../config/api";
 
+import { getCartAsync } from "./../../redux/Features/order";
 const CartPage = () => {
   const [cartDatas, setCartDatas] = useState([]);
   const [quantity, setQuantity] = useState();
@@ -39,7 +40,7 @@ const CartPage = () => {
           productId: id,
           quantity: newQuantity,
         });
-        dataCart();
+        dispatch(getCartAsync());
       } catch (error) {
         console.log(error);
       }
@@ -88,7 +89,7 @@ const CartPage = () => {
       const deleteCart = await axiosInstance.post("/order/delete-cart", {
         productId: id,
       });
-      dataCart();
+
       toast.success(deleteCart.data.message);
     } catch (error) {
       console.log(error);
@@ -97,6 +98,11 @@ const CartPage = () => {
 
   useEffect(() => {
     dataCart();
+    if (cartDatas.length === 0) {
+      toast.error("Your Cart Empty ");
+      navigate("/");
+      return;
+    }
   }, []);
 
   return (
@@ -173,7 +179,6 @@ const CartPage = () => {
           </div>
         </div>
       </div>
-
     </div>
   );
 };
