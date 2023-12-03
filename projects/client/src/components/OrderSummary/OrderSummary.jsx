@@ -55,7 +55,7 @@ const OrderSummary = ({
       <div className="flex justify-between font-bold   border-t-2 text-[14px] pt-[20px] mb-[32px]">
         <h1 className="text-[#191C1F] text-[16px]">Total</h1>
         <h1
-          value={subTotal + Number(shippingPrice) + tax}
+          value={Math.ceil(subTotal + Number(shippingPrice) + tax)}
           onChange={(e) => setTotalPrice(e.target.value)}
           className="text-[#191C1F]  text-[16px]"
         >{`${Number(

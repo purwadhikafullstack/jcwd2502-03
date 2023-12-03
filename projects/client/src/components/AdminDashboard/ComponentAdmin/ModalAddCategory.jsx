@@ -43,7 +43,6 @@ const ModalAddCategory = ({ isOpen, setModalIsOpen }) => {
           };
         }
       });
-
       setImages(files);
     } catch (error) {
       console.log(error);
@@ -84,7 +83,7 @@ const ModalAddCategory = ({ isOpen, setModalIsOpen }) => {
         }, 2000);
         localStorage.removeItem("kategori");
       } else {
-        console.log("lala");
+        // console.log("lala");
         const res = await axiosInstance.put(`/category/${idKategori}`, input);
         setTimeout(() => {
           toast.success(res.data.message);

@@ -1,22 +1,26 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import { login } from "../redux/Reducer/auth";
+import { login } from "../redux/Features/auth";
 import { useEffect } from "react";
+import axiosInstance from "../config/api";
 
 const KeepLogin = ({ children }) => {
-    const userSelector = useSelector((state) => state.auth);
+    const userSelector = useSelector((state) => state.user);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const refresh = () => {
-        const userData = Cookies.get("user_data");
+    const refresh = async () => {
+        const loginToken = Cookies.get("user_token");
+
+        const userData = await axiosInstance.get(
+            `/auth/userdata/${loginToken}`
+        );
 
         if (userData) {
-            const parsedUserData = JSON.parse(userData);
-            dispatch(login(parsedUserData));
+            dispatch(login(userData.data.result));
         } else {
-            navigate("/");
+            navigate("/login");
         }
     };
 

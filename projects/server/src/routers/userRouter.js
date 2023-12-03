@@ -3,8 +3,14 @@ const userController = require("../controllers/userController");
 const authorizeLoggedInUser = require("../middlewares/authMiddleware");
 const upload1 = require("../middlewares/upload1");
 
-router.patch("/user=:userId", authorizeLoggedInUser, userController.editUser);
+router.patch("/user=:users_id", authorizeLoggedInUser, userController.editUser);
 
-router.patch("/image/:id", upload1, userController.editUserAvatar);
+router.put("/address", authorizeLoggedInUser, userController.changePrimaryAddress);
+
+router.delete("/delete-address/:address_id", authorizeLoggedInUser, userController.deleteAddress);
+
+router.patch("/image/:users_id", upload1, userController.editUserAvatar);
+
+router.get("/address/user=:users_id", authorizeLoggedInUser, userController.getAddresses);
 
 module.exports = router;
