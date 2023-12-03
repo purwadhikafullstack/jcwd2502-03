@@ -19,7 +19,6 @@ const OrderViewDetails = ({ setTabValue }) => {
 
   const currentPath = location.pathname;
 
-
   const [order, setOrder] = useState({});
   const [orderDetails, setOrderDetails] = useState([]);
   const [orderStatus, setOrderStatus] = useState({});
@@ -37,7 +36,8 @@ const OrderViewDetails = ({ setTabValue }) => {
       });
 
       const status = await axiosInstance.post("/order/status", {
-        transaction_uid: transactionUid, users_id: users_id
+        transaction_uid: transactionUid,
+        users_id: users_id,
       });
       setOrderStatus(status.data.data.status);
       setOrder(res.data.order);
@@ -110,7 +110,8 @@ const OrderViewDetails = ({ setTabValue }) => {
             ></div>
             {orderStatus === "Order Process" ||
             orderStatus === "Package Sent" ||
-            orderStatus === "Package Arrived" ? (
+            orderStatus === "Package Arrived" ||
+            orderStatus === "Order Completed" ? (
               <AiFillCheckCircle
                 className={` bg-white text-[32px] text-primaryOrange `}
               />
@@ -126,7 +127,8 @@ const OrderViewDetails = ({ setTabValue }) => {
               } w-[200px] h-[8px] `}
             ></div>
             {orderStatus === "Package Sent" ||
-            orderStatus === "Package Arrived" ? (
+            orderStatus === "Package Arrived" ||
+            orderStatus === "Order Completed" ? (
               <AiFillCheckCircle
                 className={` bg-white text-[32px] text-primaryOrange `}
               />
@@ -142,7 +144,8 @@ const OrderViewDetails = ({ setTabValue }) => {
                   : "bg-primaryOrange"
               } w-[200px] h-[8px] `}
             ></div>
-            {orderStatus === "Package Arrived" ? (
+            {orderStatus === "Package Arrived" ||
+            orderStatus === "Order Completed" ? (
               <AiFillCheckCircle
                 className={` bg-white text-[32px] text-primaryOrange `}
               />

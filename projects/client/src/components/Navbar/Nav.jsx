@@ -67,7 +67,7 @@ const Nav = () => {
   };
   const handleCheckoutNow = () => {
     if (cart.length === 0) {
-     return  toast.error("Your Cart Empty");
+      return toast.error("Your Cart is Empty. Please add items to your cart before proceeding.");
     }
     navigate("/checkout");
     setCartDrop(!cartDrop);
@@ -82,8 +82,8 @@ const Nav = () => {
       const deleteCart = await axiosInstance.post("/order/delete-cart", {
         productId: id,
       });
-
       toast.success(deleteCart.data.message);
+      dispatch(getCartAsync());
     } catch (error) {
       console.log(error);
     }

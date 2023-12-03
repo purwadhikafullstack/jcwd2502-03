@@ -1,0 +1,8 @@
+@media (max-width: 1000px) {
+  .wrap-admin {
+    gap: 10px;
+  }
+  .col-date {
+    display: none;
+  }
+}

@@ -39,6 +39,7 @@ import io from "socket.io-client";
 import audioNotif from "./../assets/audionotif.mp3";
 import UserBiodata from "../components/UserBiodata/UserBiodata";
 import AdminOrderList from "../components/AdminOrderList/AdminOrderList";
+import "./sidebaradmin.css"
 const userToken = Cookies.get("user_token");
 let socket;
 if (userToken) {
@@ -121,7 +122,10 @@ const SideBar = ({ children }) => {
         />
         <div
           className={`${
-            currentPath === "/dashboard/orders/details" || "/dashboard/orders/details" ? "h-auto" : "h-[718px]"
+            currentPath === "/dashboard/orders/details" ||
+            "/dashboard/orders/details"
+              ? "h-auto"
+              : "h-[718px]"
           } right w-full  rounded-[4px] border-[1px] shadow-xl `}
         >
           {React.isValidElement(children) &&
@@ -181,6 +185,30 @@ const SideBarAdmin = ({ children }) => {
 
   useEffect(() => {
     if (userToken) {
+      socket.on("order complete", (message) => {
+        try {
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: `Transaction ID: ${message.transaction_uid} ${message.message}`,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          const audio = new Audio(audioNotif);
+          audio.play();
+        } catch (error) {
+          alert(error);
+        }
+      });
+
+      return () => {
+        socket.disconnect();
+      };
+    }
+  }, []);
+
+  useEffect(() => {
+    if (userToken) {
       socket.on("upload", (message) => {
         try {
           Swal.fire({
@@ -205,7 +233,7 @@ const SideBarAdmin = ({ children }) => {
   return (
     <div className={`max-w-[1280px] m-auto my-[70px]`}>
       {/* <TabBar /> */}
-      <div className=" flex gap-[72px] h-full mb-[32px] relative">
+      <div className="flex wrap-admin gap-[72px] h-full mb-[32px] relative">
         <SidebarAdmin
           tabValue={tabValue}
           setTabValue={setTabValue}
@@ -213,7 +241,10 @@ const SideBarAdmin = ({ children }) => {
         />
         <div
           className={`${
-            currentPath === "/admin/orders/details" ||  currentPath === "/admin/orders/details"  ? "h-auto" : "h-[718px]"
+            currentPath === "/admin/orders/details" ||
+            currentPath === "/admin/orders/details"
+              ? "h-auto"
+              : "h-[718px]"
           } right w-full  rounded-[4px] border-[1px] shadow-xl `}
         >
           {React.cloneElement(children, {

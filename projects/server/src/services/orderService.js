@@ -788,9 +788,8 @@ module.exports = {
           group: ["transaction_uid"],
           order: [["createdAt", "DESC"]],
         });
-        return { data: filterPaymentStatusOrder, maxPages: maxPages };
+        return { data: filterPaymentStatusOrder };
       } else {
-        console.log("tai");
         const filterPaymentStatusOrder = await db.orders_details.findAll({
           attributes: [
             "id",
@@ -840,7 +839,7 @@ module.exports = {
           where: { transaction_uid: transaction_uid, users_id: id },
         }
       );
-      return res
+      return res;
     } catch (error) {
       return error;
     }

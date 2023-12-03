@@ -119,7 +119,7 @@ const AdminOrderList = ({ setIsRefreshing, isRefreshing, refreshOrders }) => {
               <tr className="w-full  text-[12px] text-[#475156]">
                 <th className="w-[20%] text-start pl-[24px]">ORDER ID</th>
                 <th className="w-[20%] text-start">STATUS</th>
-                <th className="w-[20%] text-start">DATE</th>
+                <th className="w-[20%] col-date text-start">DATE</th>
                 <th className="w-[20%] text-start">Warehouse</th>
                 <th className="w-[20%]  text-start pr-[24px]">ACTION</th>
               </tr>
@@ -136,7 +136,7 @@ const AdminOrderList = ({ setIsRefreshing, isRefreshing, refreshOrders }) => {
                         value={value.transaction_uid}
                         className="w-full h-[64px]  text-[14px] "
                       >
-                        <td className="w-[20%] text-start pl-[24px] text-[#191C1F] ">
+                        <td className="min-w-[500px] w-full text-start pl-[24px] text-[#191C1F] ">
                           {value.transaction_uid}
                         </td>
                         <td
@@ -160,7 +160,7 @@ const AdminOrderList = ({ setIsRefreshing, isRefreshing, refreshOrders }) => {
                         >
                           {value.status}
                         </td>
-                        <td className="w-[20%] text-start text-[#5F6C72]">
+                        <td className="w-[20%] col-date text-start text-[#5F6C72]">
                           {moment(value.createdAt).format(
                             "YYYY-MM-DD HH:mm:ss"
                           )}
@@ -170,7 +170,7 @@ const AdminOrderList = ({ setIsRefreshing, isRefreshing, refreshOrders }) => {
                         </td>
 
                         <td className="w-[20%]   h-full ">
-                          {value.status !== "Payment Pending" ? (
+                          {value.status !== "Payment " ? (
                             <div className="flex justify-center px-[10px]">
                               <button
                                 onClick={() => {

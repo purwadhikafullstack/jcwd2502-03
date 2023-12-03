@@ -31,8 +31,6 @@ const CheckoutPage = () => {
   const [nearestWarehouse, setNearestWarehouse] = useState();
   const [totalPrice, setTotalPrice] = useState();
 
-  console.log(address);
-  console.log(addresses);
   const navigate = useNavigate();
   const handleConfirmChangeAddress = (value) => {
     if (!value) return toast.error("Please Select an Address");
@@ -49,6 +47,7 @@ const CheckoutPage = () => {
       console.log(error);
     }
   };
+  useEffect(() => {}, []);
 
   const getData = async () => {
     try {
@@ -63,6 +62,7 @@ const CheckoutPage = () => {
       const getROProvinces = await axiosInstance.get(
         "/order/raja-ongkir-cities"
       );
+
       setUserData(getUserData.data.data);
 
       setTotalWeight(getCart.data.totalWeight);
@@ -75,6 +75,10 @@ const CheckoutPage = () => {
       console.log(error);
     }
   };
+  useEffect(() => {
+    getAddress();
+    getData();
+  }, []);
 
   const handlePlaceOrder = async () => {
     try {
@@ -93,7 +97,7 @@ const CheckoutPage = () => {
         address_detail: address.address,
         warehouses_id: nearestWarehouse.id,
         total_price: totalPrice,
-        city_id: address.cities_id
+        city_id: address.cities_id,
       });
 
       toast.success(placementOrder.data.message);
@@ -103,22 +107,15 @@ const CheckoutPage = () => {
     }
   };
 
-  useEffect(() => {
-    getData();
-    getAddress();
-  }, []);
-
   if (couriers.length === 0) return <div>Loading</div>;
   if (payments.length === 0) return <div>Loading</div>;
 
-
-
   return (
-    <div className="checkout max-w-[1280px] m-auto lg:px-[100px] md:px-[50px] ">
+    <div className="checkout max-w-[1280px] m-auto px-4 sm:px-6 lg:px-8 ">
       <TabBar />
 
-      <div className="wrapper-checkout flex sm:flex-col md:flex-col   xl:flex-row gap-5 h-full mb-[24px] md:items-center xl:items-start">
-        {address   ? (
+      <div className="wrapper-checkout flex flex-col sm:flex-col md:flex-row xl:flex-row gap-5 h-full mb-8 md:items-center xl:items-start">
+        {address ? (
           <BillingInformation
             address={address}
             setModalIsOpen={setModalIsOpen}
@@ -146,14 +143,14 @@ const CheckoutPage = () => {
             nearestWarehouse={nearestWarehouse}
             setNearestWarehouse={setNearestWarehouse}
           />
-        )  :   (
-          <div className="left-side  xl:w-[70%]  md:w-[100%] h-[400px] flex flex-col justify-center items-center gap-5">
+        ) : (
+          <div className="left-side w-full md:w-[70%] xl:w-[70%] h-[400px] flex flex-col justify-center items-center gap-5">
             <p className="text-[24px] text-center font-semibold">
               No primary address found. Please add or select an address.
             </p>
             <Button
               btnCSS="text-white h-[44px]  px-[100px] rounded-[4px]"
-              btnName="Add Address"
+              btnName="Add or select address"
               onClick={() => setModalIsOpen(true)}
             />
             <AddressModal

@@ -113,7 +113,7 @@ const checkAndUpdateOrders = async () => {
     //   group: ["transaction_uid"],
     // });
 
-    // console.log(`Canceled ${affectedRows} orders.`);
+    console.log(`Canceled ${affectedRows} orders.`);
 
     // if (dataWithinOneSecond.length > 0) {
     //   dataWithinOneSecond.forEach((order) => {

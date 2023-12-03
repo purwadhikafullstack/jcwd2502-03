@@ -16,7 +16,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useDebouncedCallback, useDebounce } from "use-debounce";
 import Cookies from "js-cookie";
 import axiosInstance from "../../config/api";
-
+import "./cartpage.css";
 import { getCartAsync } from "./../../redux/Features/order";
 const CartPage = () => {
   const [cartDatas, setCartDatas] = useState([]);
@@ -33,6 +33,8 @@ const CartPage = () => {
     }
   };
 
+  const cart = useSelector((state) => state.order.cart);
+
   const debouncedUpdateQuantity = useDebouncedCallback(
     async (id, newQuantity) => {
       try {
@@ -41,6 +43,7 @@ const CartPage = () => {
           quantity: newQuantity,
         });
         dispatch(getCartAsync());
+        dataCart();
       } catch (error) {
         console.log(error);
       }
@@ -69,20 +72,28 @@ const CartPage = () => {
   const handleDecreaseQuantity = async (id, index) => {
     try {
       const updateQuantity = [...cartDatas];
-      updateQuantity[index].quantity--;
 
-      debouncedUpdateQuantity(id, updateQuantity[index].quantity);
+      if (updateQuantity[index].quantity > 0) {
+        updateQuantity[index].quantity--;
 
-      if (updateQuantity[index].quantity <= 0) {
-        const deleteCart = await axiosInstance.post("/order/delete-cart", {
-          productId: id,
-        });
+        debouncedUpdateQuantity(id, updateQuantity[index].quantity);
+
+        if (updateQuantity[index].quantity === 0) {
+          const deleteCart = await axiosInstance.post("/order/delete-cart", {
+            productId: id,
+          });
+          // dataCart();
+          dispatch(getCartAsync());
+        }
+        setCartDatas(updateQuantity);
       }
-      setCartDatas(updateQuantity);
     } catch (error) {
       console.log(error);
     }
   };
+  useEffect(() => {
+    dataCart();
+  }, []);
 
   const handleDeleteCart = async (id) => {
     try {
@@ -91,34 +102,36 @@ const CartPage = () => {
       });
 
       toast.success(deleteCart.data.message);
+      dataCart();
+      dispatch(getCartAsync());
     } catch (error) {
       console.log(error);
     }
   };
 
-  useEffect(() => {
-    dataCart();
-    if (cartDatas.length === 0) {
-      toast.error("Your Cart Empty ");
-      navigate("/");
-      return;
-    }
-  }, []);
-
   return (
     <div className="max-w-[1280px] m-auto ">
       <TabBar />
 
-      <div className=" flex gap-5 mb-[150px]">
-        <div className="left-side relative w-[70%] h-auto border-[#E4E7E9] border-2  ">
+      <div className="wrap-cart flex flex-col md:flex-col lg:flex-row gap-5 mb-[150px]">
+        <div className="left-side left-table relative w-[70%] h-auto border-[#E4E7E9] border-2  ">
           <h1 className="text-[18px] px-[24px] py-[20px]">Shopping Cart</h1>
           <div className="mb-[100px]">
-            <CartTableList
-              cartDatas={cartDatas}
-              handleIncreaseQuantity={handleIncreaseQuantity}
-              handleDecreaseQuantity={handleDecreaseQuantity}
-              handleDeleteCart={handleDeleteCart}
-            />
+            {cartDatas.length === 0 ? (
+              <div className="w-full h-full  flex justify-center items-center text-center ">
+                <h1 className="text-center font-bold mt-[100px]">
+                  Your Cart is Empty. Please add items to your cart before
+                  proceeding.
+                </h1>
+              </div>
+            ) : (
+              <CartTableList
+                cartDatas={cartDatas}
+                handleIncreaseQuantity={handleIncreaseQuantity}
+                handleDecreaseQuantity={handleDecreaseQuantity}
+                handleDeleteCart={handleDeleteCart}
+              />
+            )}
             <div className=" absolute bottom-0 w-full flex  justify-end px-[24px] py-[24px]  ">
               <Link to={"/product"}>
                 <button className="cursor-pointer px-[24px] h-[48px] border-2 border-[#2DA5F3] bg-white rounded-none text-[#2DA5F3] flex items-center gap-2">
@@ -132,7 +145,7 @@ const CartPage = () => {
             </div>
           </div>
         </div>
-        <div className="right-side h-full w-[30%] border-[#E4E7E9] border-2 font-medium">
+        <div className="right-side right-cart h-full w-[30%] border-[#E4E7E9] border-2 font-medium">
           <h1 className="px-[24px] pt-[20px] text-[18px] font-semibold ">
             Cart Totals
           </h1>
@@ -169,6 +182,11 @@ const CartPage = () => {
           </div>
           <div
             onClick={() => {
+              if (cartDatas.length === 0) {
+                return toast.error(
+                  "Your Cart is Empty. Please add items to your cart before proceeding."
+                );
+              }
               navigate("/checkout");
             }}
             className="w-full h-[56px] px-[24px] mb-[24px]"

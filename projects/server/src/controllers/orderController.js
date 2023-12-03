@@ -42,7 +42,7 @@ const {
   userRole,
   filterAdminOrders,
   warehouses,
-  completeOrder
+  completeOrder,
 } = require("./../services/orderService");
 
 const { Op } = require("sequelize");
@@ -281,6 +281,7 @@ const orderController = {
         id: id,
         primary: primary,
       });
+      console.log(getAddress);
 
       res.status(200).send({
         isError: false,
@@ -475,17 +476,17 @@ const orderController = {
       const { id } = req.tokens;
       const file = req.files.images;
 
-      // const status = await statusByTransactionId(transaction_uid, id);
+      const status = await statusByTransactionId(transaction_uid, id);
 
-      // if (status.status === "Order Canceled") throw { message: "refresh" };
+      if (status.dataValues.status === "Order Canceled") {
+        throw { message: "Order Has Been Canceled" };
+      }
 
       const uploadImage = await upload(id, transaction_uid, file);
       const updateStatus = await updateStatusAfterUpload(id, transaction_uid);
-      console.log(transaction_uid);
-      console.log(id);
 
       const dataOrder = await orderByTransactionId(transaction_uid, id);
-      console.log(dataOrder);
+
       const warehouseId = dataOrder.dataValues.warehouses_id;
       const adminSocket = req.adminSocket;
 
@@ -505,7 +506,10 @@ const orderController = {
         message: "Submit Payment Success",
       });
     } catch (error) {
-      next(error);
+      res.status(400).send({
+        isError: true,
+        message: error.message,
+      });
     }
   },
   statusOrder: async (req, res, next) => {
@@ -818,10 +822,26 @@ const orderController = {
 
       const handleCompleOrder = await completeOrder(transaction_uid, id);
       console.log(handleCompleOrder);
+
+      const dataOrder = await orderByTransactionId(transaction_uid, id);
+      const adminSocket = req.adminSocket;
+      const warehouseId = dataOrder.dataValues.warehouses_id;
+      const admin = adminSocket.get(warehouseId);
+      const io = req.io;
+
+      if (admin) {
+        const result = admin.map((value) => {
+          return io.to(value).emit("order complete", {
+            message: "Order Has Been Completed",
+            transaction_uid: transaction_uid,
+          });
+        });
+      }
+
       res.send({
-        isError: false, 
-        message: "Order Completed"
-      })
+        isError: false,
+        message: "Order Completed",
+      });
     } catch (error) {
       next(error);
     }
