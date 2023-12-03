@@ -7,6 +7,8 @@ import { AiOutlineMinus } from "react-icons/ai";
 import { AiOutlinePlus } from "react-icons/ai";
 import Cookies from "js-cookie";
 import axiosInstance from "../../config/api";
+import { useDispatch, useSelector } from "react-redux";
+import { getCartAsync } from "./../../redux/Features/order";
 const DetailProduct = () => {
   const { idProduct } = useParams();
   const [product, setProduct] = useState(null);
@@ -16,6 +18,8 @@ const DetailProduct = () => {
   const handleIncrement = () => {
     setQuantity(quantity + 1);
   };
+
+  const dispatch = useDispatch();
 
   const handleDecrement = () => {
     if (quantity > 1) {
@@ -42,12 +46,16 @@ const DetailProduct = () => {
         quantity: quantity,
       });
       toast.success(res.data.message);
-      cartData();
+      dispatch(getCartAsync());
     } catch (error) {
       console.log(error);
+      toast.error(error.response.data.message);
     }
   };
 
+  // useEffect(() => {
+  //   cartData();
+  // }, []);
   const getProduct = async () => {
     try {
       const res = await axiosInstance.get(`/product/${idProduct}`);
@@ -56,7 +64,7 @@ const DetailProduct = () => {
       console.log(error.response.data.message);
     }
   };
-  console.log(product);
+  
   useEffect(() => {
     cartData();
     getProduct();
@@ -97,7 +105,8 @@ const DetailProduct = () => {
                 </h1>
                 <span className="text-[14px] font-semibold mt-[32px] border-b-2 border-b-primaryOrange">
                   DESCRIPTION
-                </span> <br />
+                </span>{" "}
+                <br />
                 {item.product_description.split("\n").map((line, index) => (
                   <React.Fragment key={index}>
                     {line}

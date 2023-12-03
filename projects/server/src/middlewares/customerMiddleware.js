@@ -26,7 +26,7 @@ module.exports = {
 
       const userRole = user.role;
 
-      if (userRole === "Customer") {
+      if (userRole === "Customer" ) {
         next();
       } else {
         return res.status(401).json({ message: "Access denied." });

@@ -25,7 +25,11 @@ const ProductTableViewDetails = ({ orderDetails }) => {
                 <td className="flex items-center pl-[24px] gap-4 py-[20px]">
                   <img
                     className="w-[72px] h-[72px]"
-                    src="https://media.discordapp.net/attachments/922883965667393579/1162416550112927884/Image.png?ex=653bdbc6&is=652966c6&hm=96102a8c73caa2871b949198b8749ef98e5e26bc1afcb8f2f2493d65f7dab1f0&="
+                    src={`${
+                      process.env.REACT_APP_IMAGE_SERVER_URL
+                    }${value?.product?.products_images[0]?.image?.substring(
+                      6
+                    )}`}
                     alt=""
                   />
                   <h1 className="PRODUCTS ">{value.product.product_name}</h1>
@@ -45,7 +49,6 @@ const ProductTableViewDetails = ({ orderDetails }) => {
                     currency: "IDR",
                   })}`}
                 </td>
-                
               </tr>
             );
           })}

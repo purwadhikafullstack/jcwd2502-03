@@ -32,6 +32,12 @@ const OrderHistory = ({
   const [order, setOrder] = useState({});
   const [orderStatus, setOrderStatus] = useState("");
   const navigate = useNavigate();
+  const handleOrderComplete = () => {
+    try {
+    } catch (error) {
+      alert(alert);
+    }
+  };
 
   useEffect(() => {
     const getOrderDetails = async () => {
@@ -46,6 +52,34 @@ const OrderHistory = ({
     };
     getOrderDetails();
   }, [transaction_uid]);
+
+  const handleConfirmOrderComplete = async (transaction_uid) => {
+    try {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Complete it!",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: "Order Completed!",
+            text: "Your Order has been Completed.",
+            icon: "success",
+          });
+          await debouncedSearchValue();
+        }
+        const res = await axiosInstance.put("/order/order-complete", {
+          transaction_uid: transaction_uid,
+        });
+      });
+    } catch (error) {
+      alert(error);
+    }
+  };
 
   const debouncedSearchValue = useDebouncedCallback(async (search) => {
     try {
@@ -92,7 +126,7 @@ const OrderHistory = ({
     debouncedSearchValue();
   }, [searchValue, statusValue]);
 
-  useEffect(() => {    
+  useEffect(() => {
     if (isRefreshingOrderHistory === true) {
       debouncedSearchValue();
     }
@@ -101,6 +135,7 @@ const OrderHistory = ({
   useEffect(() => {
     debouncedSearchValue();
   }, []);
+
   const cancel = () =>
     Swal.fire({
       title: "Are you sure?",
@@ -162,6 +197,7 @@ const OrderHistory = ({
           <table className="w-full">
             <tbody className=" w-full ">
               {orderHistory.map((value, index) => {
+                console.log(value);
                 return (
                   <tr
                     key={index}
@@ -182,7 +218,7 @@ const OrderHistory = ({
                           : value.status === "Package Sent"
                           ? "text-[#008000]"
                           : value.status === "Package Arrived"
-                          ? "text-[#008000]"
+                          ? "text-[#4CAF50]"
                           : value.status === "Order Completed"
                           ? "text-[#008000]"
                           : value.status === "Order Canceled"
@@ -202,7 +238,19 @@ const OrderHistory = ({
                       })}`}
                     </td>
                     <td className="w-[20%]   h-full ">
-                      {value.status !== "Payment Pending" ? (
+                      {value.status === "Package Arrived" ? (
+                        <div className="flex justify-center px-[10px]">
+                          <button
+                            onClick={() =>
+                              handleConfirmOrderComplete(value.transaction_uid)
+                            }
+                            className="flex w-full  rounded-xl justify-center gap-2 items-center cursor-pointer  bg-[#4CAF50] text-white "
+                          >
+                            Complete Order
+                          </button>
+                        </div>
+                      ) : value.status !== "Payment Pending" &&
+                        value.status !== "Package Arrived" ? (
                         <div className="flex justify-center px-[10px]">
                           <button
                             onClick={() => {
@@ -213,7 +261,6 @@ const OrderHistory = ({
                             className="flex w-full  rounded-xl justify-center gap-2 items-center cursor-pointer  bg-[#2DA5F3] text-white "
                           >
                             View Details{" "}
-                            {/* <HiArrowRight className="text-[14px] text-white" /> */}
                           </button>
                         </div>
                       ) : (
