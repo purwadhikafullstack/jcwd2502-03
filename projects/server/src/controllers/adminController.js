@@ -1,9 +1,6 @@
 const AdminService = require("../services/adminService");
 
-<<<<<<< HEAD
-const adminController = {};
-
-=======
+// const adminController = {};
 const adminController = {
     getAllUsers: async (req, res) => {
         try {
@@ -115,5 +112,5 @@ const adminController = {
     },
 };
 
->>>>>>> main
+
 module.exports = adminController;

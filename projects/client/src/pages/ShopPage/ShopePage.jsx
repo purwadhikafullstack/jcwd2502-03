@@ -79,10 +79,10 @@ const ShopePage = () => {
     getProduct();
   }, [currentCategory, filter, filter]);
   return (
-    <div className="max-w-[1280px] px-1 sm:px-3 m-auto">
+    <div className="max-w-[1280px] m-auto">
       <TabBar />
 
-      <div className="flex  flex-col flex-wrap gap-[24px] my-[40px] ">
+      <div className="flex flex-col flex-wrap gap-[24px] my-[40px] ">
         {/* sidebar filter start */}
         <div className="flex flex-col  justify-center md:flex-row flex-wrap gap-5 m-auto md:justify-between w-full">
           <div className="">
@@ -134,7 +134,7 @@ const ShopePage = () => {
         {/* sidebar filter end */}
 
         {/* main shop start */}
-        <div className="w-full  m-auto">
+        <div className="w-full m-auto">
           <CardProduct data={datas}  />
         </div>
         {/* main shop end */}

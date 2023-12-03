@@ -30,7 +30,7 @@ function App() {
     <>
       <Provider store={store}>
         <Nav />
-        {is_verified === false && <VerificationTab />}
+        {/* {is_verified === false && <VerificationTab />} */}
         <Routes>{routes.map((value) => value)}</Routes>
         <Footer />
         <Toaster position="top-center" />

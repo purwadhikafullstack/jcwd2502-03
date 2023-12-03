@@ -116,9 +116,8 @@ export default function ProductsAdmin() {
       case "product_name":
         // user.products_images[0]
         return (
-
           <User
-          className=""
+            className=""
             avatarProps={{
               radius: "lg",
               src: `http://localhost:8000${user.products_images[0].image.substring(
@@ -126,7 +125,6 @@ export default function ProductsAdmin() {
               )}`,
             }}
             description={user.products_category.category}
-            
             name={cellValue}
           >
             {user.products_category.category}
@@ -136,7 +134,7 @@ export default function ProductsAdmin() {
         return (
           <div className="flex flex-col">
             <p className={`text-bold text-sm capitalize`}>
-              {cellValue ? cellValue : "-"}
+              {cellValue ? cellValue : "0"}
             </p>
             {/* <p className="text-bold text-sm capitalize text-default-400">{user.team}</p> */}
           </div>

@@ -14,6 +14,12 @@ module.exports = {
           message: "Nama gudang sudah tersedia",
         });
       }
+      if (name === "" || cities_id === "") {
+        throw res.status(400).send({
+          isError: "true",
+          message: "Data tidak Boleh Kosong",
+        });
+      }
       const loc = await opencageService.getLatLong(cities_id);
       const data = {
         name: req.body.name,

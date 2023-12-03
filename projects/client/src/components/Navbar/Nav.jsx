@@ -21,8 +21,8 @@ const Nav = () => {
   const [cartDatas, setCartDatas] = useState([]);
   const navigate = useNavigate();
   const [user, setUser] = useState(Cookies.get("user_token"));
-const [admin, setAdmin] = useState(localStorage.getItem("role"))
-// console.log(admin);
+const [admin, setAdmin] = useState()
+// console.log(user);
   const [localId, setLocalId] = useState(null);
   const param = useLocation();
   const [text, setText] = useState(
@@ -104,7 +104,7 @@ const [admin, setAdmin] = useState(localStorage.getItem("role"))
 
   return (
     
-    <div className={admin === "Customer" ? `wrap-nav w-full bg-primaryBlue  fixed top-0 z-50 ` : `hidden`}>
+    <div className={role === "Customer" ? `wrap-nav w-full bg-primaryBlue  fixed top-0 z-50 ` : `hidden`}>
       <div className=" my-7  h-full m-auto gap-2 sm:gap-10 flex items-center align-middle justify-between">
         <Link to={"/"}>
           <Logo />

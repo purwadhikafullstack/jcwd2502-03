@@ -5,7 +5,7 @@ const KEY = process.env.JWT_SECRET_KEY;
 const generateToken = (payload) => {
   try {
     const tokens = jwt.sign(payload, "SECRET_KEY", { expiresIn: "12h" });
-    // console.log(tokens);
+    console.log(tokens);
     return tokens;
   } catch (error) {
     return error;

@@ -120,10 +120,21 @@ const SidebarAdmin = ({ tabValue, setTabValue, currentPath }) => {
                         <h1 className="text-[14px] ">Report</h1>
                     </div>
                 </Link>
+                <Link to={"/admin/stock"}>
+                    <div
+                        onClick={() => setTabValue(7)}
+                        className={`flex items-center px-[26px] gap-3 h-[40px] text-[#5F6C72] cursor-pointer ${
+                            tabValue === 7 ? "bg-primaryOrange  text-white" : ""
+                        }`}
+                    >
+                        <TbReport className="text-[18px]" />
+                        <h1 className="text-[14px] ">Manage Stock</h1>
+                    </div>
+                </Link>
                 <div
-                    onClick={() => setTabValue(7)}
+                    onClick={() => setTabValue(8)}
                     className={`flex items-center px-[26px] gap-3 h-[40px] text-[#5F6C72] cursor-pointer ${
-                        tabValue === 7 ? "bg-primaryOrange  text-white" : ""
+                        tabValue === 8 ? "bg-primaryOrange  text-white" : ""
                     }`}
                 >
                     <GoSignOut className="text-[18px]" />

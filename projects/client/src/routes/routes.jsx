@@ -41,6 +41,7 @@ import UserBiodata from "../components/UserBiodata/UserBiodata";
 import AdminOrderList from "../components/AdminOrderList/AdminOrderList";
 import MyAddressPage from "../pages/MyAddressPage/MyAddressPage";
 import UserListPage from "../pages/UserListPage/UserListPage";
+import StockWarehouses from "../components/AdminDashboard/StockWarehouses";
 // import ChangePasswordPage from "../pages/ChangePasswordPage"
 const userToken = Cookies.get("user_token");
 let socket;
@@ -491,6 +492,16 @@ const routes = [
       <Protected ownerPage={true}>
         <SideBarAdmin>
           <ReportAdmin />
+        </SideBarAdmin>
+      </Protected>
+    }
+  />,
+  <Route
+    path="/admin/stock"
+    element={
+      <Protected ownerPage={true}>
+        <SideBarAdmin>
+          <StockWarehouses />
         </SideBarAdmin>
       </Protected>
     }
