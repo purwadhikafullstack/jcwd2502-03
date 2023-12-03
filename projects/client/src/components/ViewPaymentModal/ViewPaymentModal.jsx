@@ -73,12 +73,7 @@ const ViewPaymentModal = ({
       }, 1000);
     }
   };
-  console.log(
-    `${process.env.REACT_APP_IMAGE_SERVER_URL}${order?.payment_proof?.substring(
-      6
-    )}`
-  );
-
+ 
   return (
     <Modal
       style={customStyle}

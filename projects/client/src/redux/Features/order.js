@@ -1,31 +1,29 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axiosInstance from "../../config/api";
 const initialState = {
-  counter: 0,
   cart: [],
 };
 
 export const orderSlice = createSlice({
-  name: "order",
+  name: "cart",
   initialState,
   reducers: {
-    increment: (state) => {
-      state.counter += 1;
-    },
     setCart: (state, action) => {
       state.cart = action.payload;
     },
   },
 });
 
-const getCart = async () => {
+export const getCartAsync = (data) => async (dispatch) => {
   try {
-
+    const res = await axiosInstance.post("/order/cartdata");
+    console.log(res);
+    dispatch(setCart(res.data.data));
   } catch (error) {
     console.log(error);
   }
 };
 
-export const { increment, setCart } = orderSlice.actions; 
+export const { setCart } = orderSlice.actions;
 
-export const orderSliceReducer = orderSlice.reducer;
+export default orderSlice.reducer;

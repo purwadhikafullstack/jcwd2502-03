@@ -146,6 +146,7 @@ const WarehouseList = () => {
     getWarehouse();
     getCities();
   }, [data, setDatas]);
+  
   return (
     <div className="flex justify-center gap-5 max-w-[1280px] m-auto">
       {/* <NavAdmin /> */}

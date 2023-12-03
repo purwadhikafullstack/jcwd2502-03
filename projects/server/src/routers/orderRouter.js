@@ -22,10 +22,12 @@ router.post("/edit-address",authorizeLoggedInUser, orderController.editAddress);
 router.post("/shipping-method", orderController.getShippingMethod);
 router.post("/user-data",authorizeLoggedInUser,  orderController.getUserData);
 router.post("/filter-order",authorizeLoggedInUser,  orderController.filterOrder);
-router.post("/order-details",authorizeLoggedInUser , customerMiddleware,  orderController.OrderDetailsByTransactionId);
-router.post("/status",authorizeLoggedInUser , customerMiddleware,  orderController.statusOrder);
+router.post("/order-details",authorizeLoggedInUser ,  orderController.OrderDetailsByTransactionId);
+router.post("/status",authorizeLoggedInUser ,  orderController.statusOrder);
 router.post("/cancel-order",authorizeLoggedInUser , customerMiddleware,  orderController.cancelOrder);
 router.put("/upload",  authorizeLoggedInUser ,upload1, customerMiddleware,  orderController.uploadPaymentAproval);
+router.get("/role",  authorizeLoggedInUser ,  orderController.role);
+router.put("/order-complete",  authorizeLoggedInUser , customerMiddleware,  orderController.handleOrderComplete);
 
 //ADMIN ROUTER 
 router.post("/order-approval",authorizeLoggedInUser ,adminMiddleware, orderController.adminOrderAprroval);
@@ -33,5 +35,6 @@ router.post("/approval-details",authorizeLoggedInUser ,adminMiddleware, orderCon
 router.put("/reject",authorizeLoggedInUser ,adminMiddleware, orderController.rejectOrder);
 router.put("/confirm",authorizeLoggedInUser ,adminMiddleware, orderController.confirmOrderAdmin);
 router.post("/admin-orders",authorizeLoggedInUser ,adminMiddleware, orderController.adminFilterOrders);
+router.get("/warehouses",authorizeLoggedInUser ,adminMiddleware, orderController.warehouseData);
 
 module.exports = router;

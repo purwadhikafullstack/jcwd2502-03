@@ -41,6 +41,9 @@ const {
   createStockMutation,
   userRole,
   filterAdminOrders,
+  warehouses,
+  completeOrder,
+  productAllStock,
 } = require("./../services/orderService");
 
 const { Op } = require("sequelize");
@@ -57,6 +60,14 @@ const orderController = {
 
       const { id } = req.tokens;
 
+      const userData = await getUserData(id);
+
+      if (userData.dataValues.is_verified === false) {
+        throw {
+          message: "Please verify your account to add items to the cart. ",
+        };
+      }
+
       const dataCart = await getCartByProductId({
         productId: productId,
         userId: id,
@@ -64,6 +75,7 @@ const orderController = {
 
       const getProductId = await getProductById(productId);
       let totalStock;
+
       if (getProductId) {
         totalStock = getProductId.dataValues.products_stocks.reduce(
           (acc, productStock) => acc + productStock.stock,
@@ -73,7 +85,7 @@ const orderController = {
       }
       if (quantity > totalStock) {
         throw {
-          message: "Quantity exceeds total stock",
+          message: "Out of Stock / Quantity exceeds total stock",
         };
       }
 
@@ -177,17 +189,32 @@ const orderController = {
       if (cartProducts.length === 0) throw { message: "Please add an item " };
 
       const result = await sequelize.transaction(async (t) => {
-        const maps = cartProducts.map((value) => {
-          console.log(value);
-          return {
-            quantity: value.quantity,
-            product_price: value.total,
-            transaction_uid: null,
-            users_id: id,
-            warehouses_id: warehouses_id,
-            products_id: value.products_id,
-          };
-        });
+        const maps = await Promise.all(
+          cartProducts.map(async (value) => {
+            try {
+              const checkStock = await productAllStock(value.products_id);
+
+              if (checkStock.dataValues.totalStock < value.quantity) {
+                throw {
+                  message: `Sorry, the item "${value.product.product_name}" is out of stock`,
+                };
+              }
+
+              console.log(checkStock);
+
+              return {
+                quantity: value.quantity,
+                product_price: value.total,
+                transaction_uid: null,
+                users_id: id,
+                warehouses_id: warehouses_id,
+                products_id: value.products_id,
+              };
+            } catch (error) {
+              throw error;
+            }
+          })
+        );
 
         const placeOrder = await placementOrder(maps, { transaction: t });
 
@@ -279,6 +306,7 @@ const orderController = {
         id: id,
         primary: primary,
       });
+      console.log(getAddress);
 
       res.status(200).send({
         isError: false,
@@ -433,14 +461,14 @@ const orderController = {
   },
   OrderDetailsByTransactionId: async (req, res, next) => {
     try {
-      const { transaction_uid } = req.body;
+      const { transaction_uid, users_id } = req.body;
       const { id } = req.tokens;
 
-      const order = await orderByTransactionId(transaction_uid, id);
-      console.log(order);
+      const userId = users_id ? users_id : id;
+      const order = await orderByTransactionId(transaction_uid, userId);
       const orderDetails = await orderDetailsByTransactionId(
         transaction_uid,
-        id
+        userId
       );
 
       res.status(200).send({
@@ -473,17 +501,17 @@ const orderController = {
       const { id } = req.tokens;
       const file = req.files.images;
 
-      // const status = await statusByTransactionId(transaction_uid, id);
+      const status = await statusByTransactionId(transaction_uid, id);
 
-      // if (status.status === "Order Canceled") throw { message: "refresh" };
+      if (status.dataValues.status === "Order Canceled") {
+        throw { message: "Order Has Been Canceled" };
+      }
 
       const uploadImage = await upload(id, transaction_uid, file);
       const updateStatus = await updateStatusAfterUpload(id, transaction_uid);
-      console.log(transaction_uid);
-      console.log(id);
 
       const dataOrder = await orderByTransactionId(transaction_uid, id);
-      console.log(dataOrder);
+
       const warehouseId = dataOrder.dataValues.warehouses_id;
       const adminSocket = req.adminSocket;
 
@@ -503,15 +531,20 @@ const orderController = {
         message: "Submit Payment Success",
       });
     } catch (error) {
-      next(error);
+      res.status(400).send({
+        isError: true,
+        message: error.message,
+      });
     }
   },
   statusOrder: async (req, res, next) => {
     try {
       const { id } = req.tokens;
-      const { transaction_uid } = req.body;
+      const { transaction_uid, users_id } = req.body;
 
-      const status = await statusByTransactionId(transaction_uid, id);
+      const userId = users_id ? users_id : id;
+
+      const status = await statusByTransactionId(transaction_uid, userId);
       res.status(200).send({
         isError: false,
         data: status,
@@ -758,19 +791,81 @@ const orderController = {
   adminFilterOrders: async (req, res, next) => {
     try {
       const { id } = req.tokens;
-      const { role } = req.body;
+      const { role, page } = req.body;
+
       const userData = await userRole(id);
-      console.log(userData.dataValues.warehouses_id);
 
       const filterOrders = await filterAdminOrders(
         req.query.status,
         userData.dataValues.warehouses_id,
-        userData.dataValues.role
+        userData.dataValues.role,
+        page,
+        req.query.warehouses_id
       );
-      
+
+      console.log(filterOrders);
+
       res.send({
         isError: false,
-        data: filterOrders,
+        data: filterOrders.data,
+        maxPages: filterOrders.maxPages,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  warehouseData: async (req, res, next) => {
+    try {
+      const warehouseData = await warehouses();
+
+      res.send({
+        isError: false,
+        data: warehouseData,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  role: async (req, res, next) => {
+    try {
+      const { id } = req.tokens;
+
+      const role = await userRole(id);
+
+      res.send({
+        isError: false,
+        data: role.dataValues.role,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  handleOrderComplete: async (req, res, next) => {
+    try {
+      const { id } = req.tokens;
+      const { transaction_uid } = req.body;
+
+      const handleCompleOrder = await completeOrder(transaction_uid, id);
+      console.log(handleCompleOrder);
+
+      const dataOrder = await orderByTransactionId(transaction_uid, id);
+      const adminSocket = req.adminSocket;
+      const warehouseId = dataOrder.dataValues.warehouses_id;
+      const admin = adminSocket.get(warehouseId);
+      const io = req.io;
+
+      if (admin) {
+        const result = admin.map((value) => {
+          return io.to(value).emit("order complete", {
+            message: "Order Has Been Completed",
+            transaction_uid: transaction_uid,
+          });
+        });
+      }
+
+      res.send({
+        isError: false,
+        message: "Order Completed",
       });
     } catch (error) {
       next(error);
