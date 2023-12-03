@@ -90,6 +90,7 @@ export default function StockWarehouses() {
     products_id: null,
     search: null,
   });
+  // console.log("lala");
   const getData = async () => {
     try {
       const res = await axiosInstance.get(
