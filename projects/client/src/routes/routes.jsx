@@ -39,7 +39,7 @@ import io from "socket.io-client";
 import audioNotif from "./../assets/audionotif.mp3";
 import UserBiodata from "../components/UserBiodata/UserBiodata";
 import AdminOrderList from "../components/AdminOrderList/AdminOrderList";
-import "./sidebaradmin.css"
+import "./sidebaradmin.css";
 const userToken = Cookies.get("user_token");
 let socket;
 if (userToken) {
@@ -245,7 +245,7 @@ const SideBarAdmin = ({ children }) => {
             currentPath === "/admin/orders/details"
               ? "h-auto"
               : "h-[718px]"
-          } right w-full  rounded-[4px] border-[1px] shadow-xl `}
+          } right w-full   rounded-[4px] border-[1px] shadow-xl `}
         >
           {React.cloneElement(children, {
             refreshOrders,

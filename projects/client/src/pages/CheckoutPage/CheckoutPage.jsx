@@ -81,6 +81,7 @@ const CheckoutPage = () => {
   }, []);
 
   const handlePlaceOrder = async () => {
+    const loading = toast.loading("loading");
     try {
       if (!shippingPrice)
         return toast.error(
@@ -100,10 +101,16 @@ const CheckoutPage = () => {
         city_id: address.cities_id,
       });
 
+      toast.dismiss(loading);
       toast.success(placementOrder.data.message);
       navigate("/success");
     } catch (error) {
       console.log(error);
+      toast.dismiss(loading);
+      toast.error(error.response.data.message);
+      if (error.response.data.isError === true) {
+        navigate("/product");
+      }
     }
   };
 

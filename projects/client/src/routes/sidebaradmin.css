@@ -5,4 +5,15 @@
   .col-date {
     display: none;
   }
+  .col-order{
+    width: 30%;
+  }
+}
+@media (max-width: 450px) {
+  .wrap-admin {
+    flex-direction: column;
+  }
+ .left-admin {
+    width: 100%;
+ }
 }

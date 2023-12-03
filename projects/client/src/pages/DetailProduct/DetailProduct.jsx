@@ -56,6 +56,7 @@ const DetailProduct = () => {
       dispatch(getCartAsync());
     } catch (error) {
       console.log(error);
+      toast.error(error.response.data.message)
     }
   };
 

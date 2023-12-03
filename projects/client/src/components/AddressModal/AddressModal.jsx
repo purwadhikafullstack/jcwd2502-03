@@ -25,6 +25,7 @@ const AddressModal = ({
   setRajaOngkir,
   getAddress,
   setModalIsOpen,
+  setShippingOptions,
 }) => {
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [value, setValue] = useState(null);
@@ -65,7 +66,7 @@ const AddressModal = ({
     } finally {
     }
   };
-  
+
   const confirmEditAddress = async (id, address, city) => {
     try {
       const editAddress = await axiosInstance.post("/order/edit-address", {
@@ -175,7 +176,10 @@ const AddressModal = ({
             <Button
               btnName="Confirm"
               btnCSS="w-full text-white rounded-[16px] h-[42px]"
-              onClick={() => handleConfirmChangeAddress(value)}
+              onClick={() => {
+                handleConfirmChangeAddress(value);
+                setShippingOptions([]);
+              }}
             />
           </div>
         </div>

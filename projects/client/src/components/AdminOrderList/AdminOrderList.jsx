@@ -7,6 +7,7 @@ import Button from "../Button/Button";
 import toast, { Toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import OptionWarehouse from "../OptionWarehouse/OptionWarehouse";
+import "./adminorderlist.css";
 const AdminOrderList = ({ setIsRefreshing, isRefreshing, refreshOrders }) => {
   const user = "Warehouse Admin";
   const navigate = useNavigate();
@@ -87,8 +88,8 @@ const AdminOrderList = ({ setIsRefreshing, isRefreshing, refreshOrders }) => {
     <>
       {user === "Warehouse Admin" ? (
         <>
-          <div className="w-full py-[16px] px-[24px] flex justify-between items-center">
-            <h1 className="text-[16px]  font-medium">ORDER LIST</h1>
+          <div className="w-full overflow-auto py-[16px] px-[24px] flex justify-between items-center">
+            <h1 className="text-[16px]  col-date  font-medium">ORDER LIST</h1>
             {role === "Owner" ? (
               <OptionWarehouse
                 onChange={(e) => setWarehouse2(e.target.value)}
@@ -117,7 +118,9 @@ const AdminOrderList = ({ setIsRefreshing, isRefreshing, refreshOrders }) => {
           <table className="w-full  ">
             <thead className="h-[38px] w-full  bg-[#F2F4F5]">
               <tr className="w-full  text-[12px] text-[#475156]">
-                <th className="w-[20%] text-start pl-[24px]">ORDER ID</th>
+                <th className="w-[20%] col-order text-start pl-[24px]">
+                  ORDER ID
+                </th>
                 <th className="w-[20%] text-start">STATUS</th>
                 <th className="w-[20%] col-date text-start">DATE</th>
                 <th className="w-[20%] text-start">Warehouse</th>
@@ -136,7 +139,7 @@ const AdminOrderList = ({ setIsRefreshing, isRefreshing, refreshOrders }) => {
                         value={value.transaction_uid}
                         className="w-full h-[64px]  text-[14px] "
                       >
-                        <td className="min-w-[500px] w-full text-start pl-[24px] text-[#191C1F] ">
+                        <td className="w-[20%] col-order text-start pl-[24px] text-[#191C1F] ">
                           {value.transaction_uid}
                         </td>
                         <td

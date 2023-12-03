@@ -844,4 +844,26 @@ module.exports = {
       return error;
     }
   },
+  productAllStock: async (id) => {
+    try {
+      const getProduct = await db.products.findOne({
+        attributes: [
+          [
+            sequelize.fn("SUM", sequelize.literal("`products_stocks`.`stock`")),
+            "totalStock",
+          ],
+        ],
+        where: { id: id },
+        include: [
+          {
+            model: db.products_stocks,
+            attributes: ["stock"],
+          },
+        ],
+      });
+      return getProduct;
+    } catch (error) {
+      return error;
+    }
+  },
 };

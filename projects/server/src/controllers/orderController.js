@@ -43,6 +43,7 @@ const {
   filterAdminOrders,
   warehouses,
   completeOrder,
+  productAllStock,
 } = require("./../services/orderService");
 
 const { Op } = require("sequelize");
@@ -59,6 +60,14 @@ const orderController = {
 
       const { id } = req.tokens;
 
+      const userData = await getUserData(id);
+
+      if (userData.dataValues.is_verified === false) {
+        throw {
+          message: "Please verify your account to add items to the cart. ",
+        };
+      }
+
       const dataCart = await getCartByProductId({
         productId: productId,
         userId: id,
@@ -66,6 +75,7 @@ const orderController = {
 
       const getProductId = await getProductById(productId);
       let totalStock;
+
       if (getProductId) {
         totalStock = getProductId.dataValues.products_stocks.reduce(
           (acc, productStock) => acc + productStock.stock,
@@ -75,7 +85,7 @@ const orderController = {
       }
       if (quantity > totalStock) {
         throw {
-          message: "Quantity exceeds total stock",
+          message: "Out of Stock / Quantity exceeds total stock",
         };
       }
 
@@ -179,17 +189,32 @@ const orderController = {
       if (cartProducts.length === 0) throw { message: "Please add an item " };
 
       const result = await sequelize.transaction(async (t) => {
-        const maps = cartProducts.map((value) => {
-          console.log(value);
-          return {
-            quantity: value.quantity,
-            product_price: value.total,
-            transaction_uid: null,
-            users_id: id,
-            warehouses_id: warehouses_id,
-            products_id: value.products_id,
-          };
-        });
+        const maps = await Promise.all(
+          cartProducts.map(async (value) => {
+            try {
+              const checkStock = await productAllStock(value.products_id);
+
+              if (checkStock.dataValues.totalStock < value.quantity) {
+                throw {
+                  message: `Sorry, the item "${value.product.product_name}" is out of stock`,
+                };
+              }
+
+              console.log(checkStock);
+
+              return {
+                quantity: value.quantity,
+                product_price: value.total,
+                transaction_uid: null,
+                users_id: id,
+                warehouses_id: warehouses_id,
+                products_id: value.products_id,
+              };
+            } catch (error) {
+              throw error;
+            }
+          })
+        );
 
         const placeOrder = await placementOrder(maps, { transaction: t });
 
