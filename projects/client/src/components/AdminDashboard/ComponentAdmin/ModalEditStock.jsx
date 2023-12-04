@@ -14,10 +14,10 @@ const ModalEditStock = ({ onPress }) => {
     <>
                     <>
                 <ModalHeader className="flex flex-col gap-1">
-                  Modal Title
+                  Total Stock
                 </ModalHeader>
                 <ModalBody>
-                    
+
                 </ModalBody>
                 <ModalFooter>
                   <Button color="danger" variant="light" onPress={onPress}>

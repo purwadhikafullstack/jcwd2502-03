@@ -29,6 +29,8 @@ const CardProduct = ({ data, addToCart }) => {
     }
   };
 
+  console.log(process.env.REACT_APP_IMAGE_SERVER_URL_IMAGE);
+
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = currentPage * itemsPerPage;
   const currentData = datas?.slice(startIndex, endIndex);
@@ -44,6 +46,7 @@ const CardProduct = ({ data, addToCart }) => {
       setCurrentPage(currentPage - 1);
     }
   };
+  // console.log(datas);
   return (
     <>
       <div
@@ -65,7 +68,7 @@ const CardProduct = ({ data, addToCart }) => {
                 <Link className="" to={`/product/${item.id}`}>
                   <Image
                     alt="Card background"
-                    className=" rounded-xl max-h-[230px] object-cover bg-slate-400 w-full gambar"
+                    className=" rounded-xl h-[230px] object-cover bg-slate-400 w-full gambar"
                     src={`${process.env.REACT_APP_IMAGE_SERVER_URL_IMAGE}${item.products_images[0].image.substring(
                       6
                     )}`}

@@ -135,7 +135,7 @@ const SideBar = ({ children }) => {
               : "h-[718px]"
           } right w-full  rounded-[4px] border-[1px] shadow-xl `}
         >
-          {children}
+          {/* {children} */}
           {React.isValidElement(children) &&
             React.cloneElement(children, {
               isRefreshingOrderHistory,
@@ -410,14 +410,7 @@ const routes = [
       </Protected>
     }
   />,
-  <Route
-    path="/admin/orders/details"
-    element={
-      <SideBarAdmin>
-        <OrderViewDetails />
-      </SideBarAdmin>
-    }
-  />,
+
   <Route
     path="/dashboard/profile"
     element={
@@ -441,8 +434,8 @@ const routes = [
     element={
       <Protected customerPage={true}>
         <SideBar>
-    <MyAddressPage/>
-  </SideBar>
+          <MyAddressPage />
+        </SideBar>
       </Protected>
     }
   />,
@@ -549,13 +542,13 @@ const routes = [
     }
   />,
   <Route
-  path="/admin/history"
-  element={
-    <SideBarAdmin>
-      <HistoryAdmin2 />
-    </SideBarAdmin>
-  }
-/>,
+    path="/admin/history"
+    element={
+      <SideBarAdmin>
+        <HistoryAdmin2 />
+      </SideBarAdmin>
+    }
+  />,
 ];
 
 export default routes;

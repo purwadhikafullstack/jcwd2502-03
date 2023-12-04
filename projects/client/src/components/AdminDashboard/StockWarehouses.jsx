@@ -19,6 +19,7 @@ import {
   Button,
   useDisclosure,
 } from "@nextui-org/react";
+import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
 import { FaRegEdit } from "react-icons/fa";
 import axiosInstance from "../../config/api";
 import ModalEditStock from "./ComponentAdmin/ModalEditStock";
@@ -41,7 +42,7 @@ export default function StockWarehouses() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [warehouse, setWarehouses] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 5;
   const [data, setData] = useState([]);
   const [filter, setFilter] = useState({
     warehouses_id: 58,
@@ -52,7 +53,7 @@ export default function StockWarehouses() {
   const getData = async () => {
     try {
       const res = await axiosInstance.get(
-        `/stock?warehouses_id=${filter.warehouses_id}&products_id=${filter.products_id}&search=${filter.search}`
+        `/stock?warehouses_id=${filter.warehouses_id}`
       );
       // console.log(res.data);
       setData(res.data.data);
@@ -64,20 +65,20 @@ export default function StockWarehouses() {
   const endIndex = currentPage * itemsPerPage;
   const currentData = data?.slice(startIndex, endIndex);
   // console.log(currentData);
-  // if (currentData.length === 0) {
-  //   <div>sabar</div>;
-  // }
-  // const nextPage = () => {
-  //   if (endIndex < data.length) {
-  //     setCurrentPage(currentPage + 1);
-  //   }
-  // };
+  if (currentData.length === 0) {
+    <div>wait</div>;
+  }
+  const nextPage = () => {
+    if (endIndex < data.length) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
-  // const prevPage = () => {
-  //   if (startIndex > 0) {
-  //     setCurrentPage(currentPage - 1);
-  //   }
-  // };
+  const prevPage = () => {
+    if (startIndex > 0) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   // console.log(warehouse);
   const getWarehouse = async () => {
@@ -136,11 +137,12 @@ export default function StockWarehouses() {
           </h1>
         );
       case "actions":
-        const onEdit = async (id) => {
+        const onEdit = async (id, product_id) => {
           try {
-            const hasil = await axiosInstance.get(`/product/${id}`);
-            localStorage.setItem("product", JSON.stringify(hasil.data));
-            console.log(hasil.data);
+            console.log(id);
+            const hasil = await axiosInstance.get(`/stock?warehouses_id=${id}&products_id=${product_id}`);
+            localStorage.setItem("stock", JSON.stringify(hasil.data));
+            // console.log(hasil.data);
             onOpen();
           } catch (error) {
             console.log(error);
@@ -156,7 +158,7 @@ export default function StockWarehouses() {
             <Tooltip content="Edit user">
               <span
                 // onPress={onOpen}
-                onClick={() => onEdit(user.id)}
+                onClick={() => onEdit(user.warehouse.id, user.product.id)}
                 className="text-lg text-default-400 cursor-pointer active:opacity-50"
               >
                 <FaRegEdit />
@@ -212,6 +214,42 @@ export default function StockWarehouses() {
           )}
         </TableBody>
       </Table>
+      {data && data.length > itemsPerPage - 1 ? (
+        <div className="mt-7 flex flex-wrap justify-center gap-3 mb-4 w-full">
+          <button
+            className=" text-primaryOrange flex justify-center items-center p-2 w-[40px] h-[40px]  border-2 border-primaryOrange rounded-full "
+            onClick={prevPage}
+            disabled={currentPage === 1}
+          >
+            <BsArrowLeft className="font-extrabold " />
+          </button>
+          <div className="flex flex-wrap gap-2">
+            {Array.from(
+              { length: Math.ceil(data.length / itemsPerPage) },
+              (_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentPage(i + 1)}
+                  className={`w-[40px] h-[40px] flex items-center justify-center border-2 rounded ${
+                    currentPage === i + 1 ? "bg-primaryOrange text-white" : ""
+                  }`}
+                >
+                  {i + 1}
+                </button>
+              )
+            )}
+          </div>
+          <button
+            className=" text-primaryOrange flex justify-center items-center p-2 w-[40px] h-[40px]  border-2 border-primaryOrange rounded-full "
+            onClick={nextPage}
+            disabled={endIndex >= data.length}
+          >
+            <BsArrowRight className="font-extrabold " />
+          </button>
+        </div>
+      ) : (
+        <></>
+      )}
     </div>
   );
 }
