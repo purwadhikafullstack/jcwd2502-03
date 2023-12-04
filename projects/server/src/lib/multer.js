@@ -49,8 +49,7 @@ const storage = multer.diskStorage({// Ini setup untuk storagenya, dimana letakn
 
         if(!isDirectoryExist){ //Kondisi jika directory belum dibuat atau gak ada, ini bakalan membuat directory baru
             await fs.promises.mkdir(defaultPath, {recursive: true})
-        } 
-        // console.log(file)
+        }
         cb(null, `${defaultPath}`)
     },
     filename: function (req, file, cb) {

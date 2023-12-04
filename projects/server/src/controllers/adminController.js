@@ -1,5 +1,6 @@
 const AdminService = require("../services/adminService");
 
+// const adminController = {};
 const adminController = {
     getAllUsers: async (req, res) => {
         try {
@@ -128,5 +129,6 @@ const adminController = {
         }
     },
 };
+
 
 module.exports = adminController;

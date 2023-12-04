@@ -76,7 +76,7 @@ module.exports = {
           "product_price",
           "product_weight",
           "product_status",
-          [sequelize.col("stock"), "stock"],
+          [sequelize.fn("SUM", sequelize.col("stock")), "totalStock"],
         ],
         include: [
           {

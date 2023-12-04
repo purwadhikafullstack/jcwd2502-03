@@ -21,38 +21,51 @@ module.exports = {
 
   getAllStock: async ({ warehouses_id, products_id, search }) => {
     try {
+      console.log(warehouses_id);
       const where = {
         product: {},
         warehouses: {},
       };
-      if (warehouses_id) where.warehouses = warehouses_id;
-      if (products_id) where.product.products_id = products_id;
+      if (warehouses_id) where.warehouses.warehouses_id = Number(warehouses_id);
+      if (products_id) where.product.products_id = Number(products_id);
       if (search) {
         where.product.product_name = {
           [db.Sequelize.Op.like]: `%${search}%`,
         };
       }
-      //   console.log(warehouses_id);
+      console.log(where);
       const allProduct = await db.products_stocks.findAll({
         attributes: [
           "id",
           "stock",
-          // [sequelize.col("product_name"), "product_name"],
+          [sequelize.col("product_name"), "product_name"],
           // [sequelize.col("product_description"), "product_description"],
-          // [sequelize.col("product_price"), "product_price"],
+          [sequelize.col("product_price"), "product_price"],
           // [sequelize.col("product_weight"), "product_weight"],
           [sequelize.col("name"), "warehouses_name"],
           [sequelize.col("city_name"), "city_name"],
+          [sequelize.col("category"), "category"],
+          [sequelize.col("image"), "image"],
         ],
         include: [
           {
             model: db.products,
             attributes: [
-              "id",
-              "product_weight",
-              "product_price",
-              "product_description",
-              "product_name",
+              // "id",
+              // "product_weight",
+              // "product_price",
+              // "product_description",
+              // "product_name",
+            ],
+            include: [
+              {
+                model: db.products_images,
+                attributes: [],
+              },
+              {
+                model: db.products_categories,
+                attributes: [],
+              },
             ],
           },
           {
@@ -64,10 +77,11 @@ module.exports = {
                 attributes: [],
               },
             ],
-            where: where.warehouses,
+            // where: where.warehouses,
           },
         ],
-        where: where.product,
+        // where: where.product,
+        where: where.warehouses,
       });
       const totalStock = {};
 
@@ -80,7 +94,8 @@ module.exports = {
           totalStock["total_stock"] = stock;
         }
       });
-      allProduct.unshift(totalStock);
+      // allProduct.unshift(totalStock);
+      // console.log(allProduct);
       return allProduct;
     } catch (error) {
       return error;
@@ -124,38 +139,81 @@ module.exports = {
     }
   },
 
-  kurangiStock : async ({warehouses_id, products_id, quantity}) => {
+  kurangiStock: async ({ warehouses_id, products_id, quantity }) => {
     try {
-        const dataStock = await db.products_stocks.findOne({where : {warehouses_id, products_id}})
-        const editStock = await db.products_stocks.update(
-            {
-                ...dataStock.dataValues, stock : dataStock.dataValues.stock - quantity
-            }, 
-            {
-                where : {id : dataStock.dataValues.id}
-            }
-        )
-        return editStock
+      const dataStock = await db.products_stocks.findOne({
+        where: { warehouses_id, products_id },
+      });
+      const editStock = await db.products_stocks.update(
+        {
+          ...dataStock.dataValues,
+          stock: dataStock.dataValues.stock - quantity,
+        },
+        {
+          where: { id: dataStock.dataValues.id },
+        }
+      );
+      return editStock;
     } catch (error) {
-        return(error)
+      return error;
     }
   },
 
-  tambahStock : async ({warehouses_id, products_id, quantity}) => {
+  tambahStock: async ({ warehouses_id, products_id, quantity }) => {
     try {
-        const dataStock = await db.products_stocks.findOne({where : {warehouses_id, products_id}})
-        const editStock = await db.products_stocks.update(
-            {
-                ...dataStock.dataValues, stock : dataStock.dataValues.stock + quantity
-            }, 
-            {
-                where : {id : dataStock.dataValues.id}
-            }
-        )
-        return editStock
+      const dataStock = await db.products_stocks.findOne({
+        where: { warehouses_id, products_id },
+      });
+      const editStock = await db.products_stocks.update(
+        {
+          ...dataStock.dataValues,
+          stock: dataStock.dataValues.stock + quantity,
+        },
+        {
+          where: { id: dataStock.dataValues.id },
+        }
+      );
+      // console.log(editStock);
+      const stockHistory = await db.products_stocks_histories.create({
+        status: "Bertambah",
+        quantity: quantity,
+        reference: "Manual",
+        products_id: products_id,
+        warehouses_id: warehouses_id,
+      });
+      console.log(stockHistory);
+      return editStock;
     } catch (error) {
-        return(error)
+      return error;
     }
   },
 
+  kurangStock: async ({ warehouses_id, products_id, quantity }) => {
+    try {
+      const dataStock = await db.products_stocks.findOne({
+        where: { warehouses_id, products_id },
+      });
+      const editStock = await db.products_stocks.update(
+        {
+          ...dataStock.dataValues,
+          stock: dataStock.dataValues.stock - quantity,
+        },
+        {
+          where: { id: dataStock.dataValues.id },
+        }
+      );
+      // console.log(editStock);
+      const stockHistory = await db.products_stocks_histories.create({
+        status: "Berkurang",
+        quantity: quantity,
+        reference: "Manual",
+        products_id: products_id,
+        warehouses_id: warehouses_id,
+      });
+      // console.log(stockHistory);
+      return editStock;
+    } catch (error) {
+      return error;
+    }
+  },
 };

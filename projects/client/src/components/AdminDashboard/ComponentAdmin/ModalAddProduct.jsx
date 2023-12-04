@@ -60,8 +60,8 @@ const ModalAddProduct = ({ onPress }) => {
         images.forEach((value) => {
           fd.append("images", value);
         });
-        console.log(fd.get("data"));
-        console.log(fd.get("images"));
+        // console.log(fd.get("data"));
+        // console.log(fd.get("images"));
         const res = await axiosInstance.post(`/product`, fd);
         setTimeout(() => {
           toast.success(res.data.message);
