@@ -99,7 +99,7 @@ const AdminOrderApproval = ({
         {orderApprovalList.length !== 0 && isRefreshing === false ? (
           <table className="w-full">
             <tbody className=" w-full ">
-              {orderApprovalList.map((value, index) => {
+              {orderApprovalList && orderApprovalList.map((value, index) => {
                 return (
                   <tr
                     key={index}

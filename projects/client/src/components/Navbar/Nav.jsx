@@ -23,12 +23,15 @@ const Nav = () => {
 
   const navigate = useNavigate();
   const [user, setUser] = useState(Cookies.get("user_token"));
+const [admin, setAdmin] = useState()
+// console.log(user);
   const dispatch = useDispatch();
   const [localId, setLocalId] = useState(null);
   const param = useLocation();
   const [text, setText] = useState(param.pathname);
 
   const [role, setRole] = useState(null);
+// console.log(role);
 
   // console.log(dispatch(getCartAsync()));
 
@@ -98,9 +101,8 @@ const Nav = () => {
   };
 
   return (
-    <div
-      className={`wrap-nav w-full bg-primaryBlue  fixed top-0 z-50 ${ClassName}`}
-    >
+    
+    <div className={role === "Customer" || role === null ? `wrap-nav w-full bg-primaryBlue  fixed top-0 z-50 ` : `hidden`}>
       <div className=" my-7  h-full m-auto gap-2 sm:gap-10 flex items-center align-middle justify-between">
         <Link to={"/"}>
           <Logo />

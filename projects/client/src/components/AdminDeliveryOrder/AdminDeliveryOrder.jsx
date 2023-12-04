@@ -75,7 +75,7 @@ const AdminDeliveryOrder = ({ isRefreshing, refreshOrders }) => {
   return (
     <>
       <div className="w-full overflow-auto py-[16px] px-[24px] flex justify-between items-center">
-        <h1 className="text-[16px]  col-date  font-medium">
+        <h1 className="text-[16px]    font-medium">
           DELIVERY ORDER LIST
         </h1>
         <div className="h-[38px] px-[24px] flex  justify-end items-center">

@@ -86,8 +86,8 @@ const DetailProduct = () => {
                     <h1 className="text-[14px] text-[#5F6C72]">
                       Availability :
                     </h1>
-                    <h1 className="text-[#2DB224] text-[14px]  font-semibold">
-                      {item.stock === 0 ? "stock habis" : "stock ada"}
+                    <h1 className={item.totalStock == "0" ? `text-red-500 text-[14px]  font-semibold`: `text-[#2DB224] text-[14px]  font-semibold`}>
+                      {item.totalStock == "0" ? "Out Of Stock : 0" : `In Stock : ${item.totalStock}`}
                     </h1>
                   </div>
                 </div>
