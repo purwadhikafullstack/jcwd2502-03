@@ -97,6 +97,7 @@ const BillingInformation = ({
           setRajaOngkir={setRajaOngkir}
           getAddress={getAddress}
           setModalIsOpen={setModalIsOpen}
+          setShippingOptions={setShippingOptions}
         />
       </div>
       <div className="inputs flex lg:flex-row  gap-5 w-full mb-[16px]">

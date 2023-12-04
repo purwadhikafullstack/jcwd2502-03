@@ -13,7 +13,7 @@ import ModalShowProduct from "../ModalShowProduct/ModalShowProduct";
 import Button from "../Button/Button";
 import { Link } from "react-router-dom";
 import { Card, CardHeader, Image, CardBody } from "@nextui-org/react";
-export const IMAGE = process.env.IMAGE;
+console.log(process.env.REACT_APP_IMAGE_SERVER_URL_IMAGE);
 
 const CardProduct = ({ data, addToCart }) => {
   const datas = data;
@@ -28,6 +28,8 @@ const CardProduct = ({ data, addToCart }) => {
       setModalIsOpen(false);
     }
   };
+
+  console.log(process.env.REACT_APP_IMAGE_SERVER_URL_IMAGE);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = currentPage * itemsPerPage;
@@ -44,69 +46,30 @@ const CardProduct = ({ data, addToCart }) => {
       setCurrentPage(currentPage - 1);
     }
   };
+  // console.log(datas);
   return (
     <>
       <div
         className={
           datas && datas.length > 0
-            ? `gap-2 flex sm:grid sm:grid-cols-4 md:grid-cols-5 flex-wrap md:gap-2 justify-between galeri sm:justify-start`
+            ? `gap-2 w-full flex sm:grid sm:grid-cols-4 md:grid-cols-6 md:gap-10 flex-wrap justify-items-start items-stretch galeri sm:justify-start`
             : `flex justify-center align-middle galeri items-center gap-5`
         }
       >
         {datas && datas.length > 0 ? (
           currentData.map((item, index) => {
             return (
-              // <div
-              //   key={index}
-              //   className="w-[160px]    sm:w-[200px] lg:w-[278px] min-w-[150px] rounded   border-2 cursor-pointer hover:shadow-lg "
-              // >
-              //   <div className="p-[16px]">
-              //     <div className="cardd">
-              //       <div className="relative ">
-              //         <AiOutlineHeart
-              //           onClick={(e) => {
-              //             alert("Wishlist Added");
-              //           }}
-              //           className="text-black hover:text-primaryOrange absolute z-10   top-0 right-0 h-[32px] w-[32px] cursor-pointer "
-              //           style={{ backgroundClip: "text" }}
-              //         />
 
-              //         <img src={product1} className="w-full" alt="" />
-              //       </div>
-              //     </div>
-              //     <div className="">
-              //       <Link className="" to={`/product/${item.id}`}>
-              //         <div className="h-[40px]  hover:underline  font-semibold overflow-hidden text-ellipsis text-sm">
-              //           {item.product_name}
-              //         </div>
-              //       </Link>
-              //       <div className="mt-[4px] text-[#2DA5F3] font-semibold">
-              //         {new Intl.NumberFormat("id-ID", {
-              //           style: "currency",
-              //           currency: "IDR",
-              //           // minimumFractionDigits: 2
-              //         }).format(item.product_price)}
-              //       </div>
-              //     </div>
-              //     {/* add to cart */}
-              //     {/* <div className="">
-              //       <Button
-              //         btnName={"Add To Cart"}
-              //         btnCSS={" w-full rounded-md mt-2"}
-              //       />
-              //     </div> */}
-              //   </div>
-              // </div>
               <Card
-                className="pb-4 w-[40%] sm:w-[30%] md:w-[25%] lg:w-[20%] xl:w-[20%]"
+                className="pb-4 w-[40%] sm:w-[23%] md:w-[23%] lg:w-[20%] xl:w-[17%]"
                 isPressable
               >
                 {/* <CardBody className=" overflow-visible py-2"> */}
                 <Link className="" to={`/product/${item.id}`}>
                   <Image
                     alt="Card background"
-                    className=" rounded-xl max-h-[200px] w-full gambar"
-                    src={`http://localhost:8000${item.products_images[0].image.substring(
+                    className=" rounded-xl h-[230px] object-cover bg-slate-400 w-full gambar"
+                    src={`${process.env.REACT_APP_IMAGE_SERVER_URL_IMAGE}${item.products_images[0].image.substring(
                       6
                     )}`}
                   />

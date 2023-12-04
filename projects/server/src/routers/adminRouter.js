@@ -7,5 +7,6 @@ router.get("/warehouses/:warehouses_id", ownerMiddleware, adminController.getWar
 router.patch("/edit-users", ownerMiddleware, adminController.editAllUser);
 router.delete("/delete-user/:users_id", ownerMiddleware, adminController.deleteUser);
 router.get("/user/:users_id", ownerMiddleware, adminController.getUserData);
+router.get("/histories", ownerMiddleware, adminController.getStockHistories);
 
 module.exports = router;

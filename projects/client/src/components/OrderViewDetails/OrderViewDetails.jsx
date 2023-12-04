@@ -13,20 +13,31 @@ import moment from "moment";
 const OrderViewDetails = ({ setTabValue }) => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
+
   const transactionUid = queryParams.get("transaction_uid");
   const status = queryParams.get("status");
+
+  const currentPath = location.pathname;
 
   const [order, setOrder] = useState({});
   const [orderDetails, setOrderDetails] = useState([]);
   const [orderStatus, setOrderStatus] = useState({});
 
+  let users_id;
+  if (currentPath === "/admin/orders/details") {
+    users_id = queryParams.get("ID");
+  }
+
   const getOrderDetails = async () => {
     try {
       const res = await axiosInstance.post("/order/order-details", {
         transaction_uid: transactionUid,
+        users_id: users_id,
       });
+
       const status = await axiosInstance.post("/order/status", {
         transaction_uid: transactionUid,
+        users_id: users_id,
       });
       setOrderStatus(status.data.data.status);
       setOrder(res.data.order);
@@ -35,6 +46,7 @@ const OrderViewDetails = ({ setTabValue }) => {
       console.log(error);
     }
   };
+
   useEffect(() => {
     getOrderDetails();
   }, []);
@@ -47,7 +59,13 @@ const OrderViewDetails = ({ setTabValue }) => {
 
   return (
     <>
-      <Link to={"/dashboard/orders"}>
+      <Link
+        to={`${
+          currentPath === "/admin/orders/details"
+            ? "/admin/orders"
+            : "/dashboard/orders"
+        }`}
+      >
         <div
           onClick={() => setTabValue(2)}
           className="cursor-pointer px-[24px] py-[16px] flex mb-[24px]  items-center gap-3 border-b-2"
@@ -77,88 +95,114 @@ const OrderViewDetails = ({ setTabValue }) => {
           "DD MMM, YYYY [at] h:mm A"
         )} - ${orderExpected2.format("DD MMM, YYYY [at] h:mm A")}`}</h1>
       </div>
-      {
-        orderStatus 
-        !== "Order Canceled" 
-        ?<div className=" px-[24px] flex justify-center flex-col  border-b-2">
-        <div className="flex  justify-center items-center mb-[32px]">
-          <AiFillCheckCircle
-            className={` bg-white text-[32px] text-primaryOrange `}
-          />
-          <div
-            className={`${
-              orderStatus === "Waiting for Payment Approval"
-                ? "bg-[#FFE7D6]"
-                : "bg-primaryOrange"
-            } w-[200px] h-[8px] `}
-          ></div>
-          {orderStatus === "Order Process" ||
-          orderStatus === "Package Sent" ||
-          orderStatus === "Package Arrived" ? (
+      {orderStatus !== "Order Canceled" ? (
+        <div className=" px-[24px] flex justify-center flex-col  border-b-2">
+          <div className="flex  justify-center items-center mb-[32px]">
             <AiFillCheckCircle
               className={` bg-white text-[32px] text-primaryOrange `}
             />
-          ) : (
-            <div className="w-[28px] h-[28px] rounded-[50%] bg-white border-2 border-primaryOrange"></div>
-          )}
-          <div
-            className={`${
-              orderStatus === "Order Process" ||
-              orderStatus === "Waiting for Payment Approval"
-                ? "bg-[#FFE7D6]"
-                : "bg-primaryOrange"
-            } w-[200px] h-[8px] `}
-          ></div>
-          {orderStatus === "Package Sent" ||
-          orderStatus === "Package Arrived" ? (
-            <AiFillCheckCircle
-              className={` bg-white text-[32px] text-primaryOrange `}
-            />
-          ) : (
-            <div className="w-[28px] h-[28px] rounded-[50%] bg-white border-2 border-primaryOrange"></div>
-          )}
-          <div
-            className={`${
-              orderStatus === "Order Process" ||
-              orderStatus === "Waiting for Payment Approval" ||
-              orderStatus === "Package Sent"
-                ? "bg-[#FFE7D6]"
-                : "bg-primaryOrange"
-            } w-[200px] h-[8px] `}
-          ></div>
-          {orderStatus === "Package Arrived" ? (
-            <AiFillCheckCircle
-              className={` bg-white text-[32px] text-primaryOrange `}
-            />
-          ) : (
-            <div className="w-[28px] h-[28px] rounded-[50%] bg-white border-2 border-primaryOrange"></div>
-          )}
-        </div>
+            <div
+              className={`${
+                orderStatus === "Waiting for Payment Approval"
+                  ? "bg-[#FFE7D6]"
+                  : "bg-primaryOrange"
+              } w-[200px] h-[8px] `}
+            ></div>
+            {orderStatus === "Order Process" ||
+            orderStatus === "Package Sent" ||
+            orderStatus === "Package Arrived" ||
+            orderStatus === "Order Completed" ? (
+              <AiFillCheckCircle
+                className={` bg-white text-[32px] text-primaryOrange `}
+              />
+            ) : (
+              <div className="w-[28px] h-[28px] rounded-[50%] bg-white border-2 border-primaryOrange"></div>
+            )}
+            <div
+              className={`${
+                orderStatus === "Order Process" ||
+                orderStatus === "Waiting for Payment Approval"
+                  ? "bg-[#FFE7D6]"
+                  : "bg-primaryOrange"
+              } w-[200px] h-[8px] `}
+            ></div>
+            {orderStatus === "Package Sent" ||
+            orderStatus === "Package Arrived" ||
+            orderStatus === "Order Completed" ? (
+              <AiFillCheckCircle
+                className={` bg-white text-[32px] text-primaryOrange `}
+              />
+            ) : (
+              <div className="w-[28px] h-[28px] rounded-[50%] bg-white border-2 border-primaryOrange"></div>
+            )}
+            <div
+              className={`${
+                orderStatus === "Order Process" ||
+                orderStatus === "Waiting for Payment Approval" ||
+                orderStatus === "Package Sent"
+                  ? "bg-[#FFE7D6]"
+                  : "bg-primaryOrange"
+              } w-[200px] h-[8px] `}
+            ></div>
+            {orderStatus === "Package Arrived" ||
+            orderStatus === "Order Completed" ? (
+              <AiFillCheckCircle
+                className={` bg-white text-[32px] text-primaryOrange `}
+              />
+            ) : (
+              <div className="w-[28px] h-[28px] rounded-[50%] bg-white border-2 border-primaryOrange"></div>
+            )}
+          </div>
 
-        <div className="flex px-[24px]  justify-center gap-[110px] mb-[24px]">
-          <div className="flex w-[120px] h-auto  flex-col items-center gap-3">
-            <PiNotebookDuotone className={`${orderStatus === "Waiting for Payment Approval" ? "text-[#2DB224]" :  "text-primaryOrange"} text-[32px] text-[#2DB224]`} />
-            <h1>Order Placed</h1>
-          </div>
-          <div className="flex w-[120px] h-auto flex-col items-center gap-3">
-            <TfiPackage className={`${orderStatus === "Order Process" ? "text-[#2DB224]" :  "text-primaryOrange"} text-[32px] text-[#2DB224]`} />
-            <h1>Packaging</h1>
-          </div>
-          <div className="flex w-[120px] h-auto flex-col items-center gap-3">
-            <TbTruck className={`${orderStatus === "Package Sent" ? "text-[#2DB224]" :  "text-primaryOrange"} text-[32px] text-[#2DB224]`} />
-            <h1>On The Road</h1>
-          </div>
-          <div className="flex w-[120px] h-auto flex-col items-center gap-3">
-            <FaRegHandshake className={`${orderStatus === "Package Arrived" ? "text-[#2DB224]" :  "text-primaryOrange"} text-[32px] text-[#2DB224]`} />
-            <h1>Delivered</h1>
+          <div className="flex px-[24px]  justify-center gap-[110px] mb-[24px]">
+            <div className="flex w-[120px] h-auto  flex-col items-center gap-3">
+              <PiNotebookDuotone
+                className={`${
+                  orderStatus === "Waiting for Payment Approval"
+                    ? "text-[#2DB224]"
+                    : "text-primaryOrange"
+                } text-[32px] text-[#2DB224]`}
+              />
+              <h1>Order Placed</h1>
+            </div>
+            <div className="flex w-[120px] h-auto flex-col items-center gap-3">
+              <TfiPackage
+                className={`${
+                  orderStatus === "Order Process"
+                    ? "text-[#2DB224]"
+                    : "text-primaryOrange"
+                } text-[32px] text-[#2DB224]`}
+              />
+              <h1>Packaging</h1>
+            </div>
+            <div className="flex w-[120px] h-auto flex-col items-center gap-3">
+              <TbTruck
+                className={`${
+                  orderStatus === "Package Sent"
+                    ? "text-[#2DB224]"
+                    : "text-primaryOrange"
+                } text-[32px] text-[#2DB224]`}
+              />
+              <h1>On The Road</h1>
+            </div>
+            <div className="flex w-[120px] h-auto flex-col items-center gap-3">
+              <FaRegHandshake
+                className={`${
+                  orderStatus === "Package Arrived"
+                    ? "text-[#2DB224]"
+                    : "text-primaryOrange"
+                } text-[32px] text-[#2DB224]`}
+              />
+              <h1>Delivered</h1>
+            </div>
           </div>
         </div>
-      </div> : 
-      <div className="flex justify-center items-center ">
-        <h1 className="text-3xl text-red-500 font-bold">ORDER CANCELED</h1>
-      </div>
-      }
-      
+      ) : (
+        <div className="flex justify-center items-center ">
+          <h1 className="text-3xl text-red-500 font-bold">ORDER CANCELED</h1>
+        </div>
+      )}
+
       <div className="py-[32px]  px-[24px] w-full  border-b-2">
         <h1 className="text-[18px] mb-[24px]">Order Activity</h1>
         <div className="flex gap-[16px] h-full mb-[16px]">

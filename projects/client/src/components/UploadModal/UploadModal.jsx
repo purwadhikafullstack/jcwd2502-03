@@ -4,10 +4,17 @@ import QRCode from "react-qr-code";
 import { HiOutlineArrowSmLeft } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../config/api";
-import Swal from 'sweetalert2'
-const UploadModal = ({ isOpen, setIsModalOpen, order, debouncedSearchValue , orderStatus}) => {
+import Swal from "sweetalert2";
+import { toast } from "react-hot-toast";
+const UploadModal = ({
+  isOpen,
+  setIsModalOpen,
+  order,
+  debouncedSearchValue,
+  orderStatus,
+}) => {
   const [images, setImages] = useState(null);
-    console.log(orderStatus);
+  console.log(orderStatus);
   const customStyle = {
     content: {
       width: "700px",
@@ -53,19 +60,30 @@ const UploadModal = ({ isOpen, setIsModalOpen, order, debouncedSearchValue , ord
       fd.append("data", JSON.stringify(objTransaction_uid));
       fd.append("images", images);
 
-      const res = await axiosInstance.put("/order/upload", fd)
+      const res = await axiosInstance.put("/order/upload", fd);
       console.log(res);
-      setIsModalOpen(false)
+
+      setIsModalOpen(false);
       Swal.fire({
         position: "center",
         icon: "success",
         title: "Payment Proof Uploaded Successfully",
         showConfirmButton: false,
-        timer: 2000
+        timer: 2000,
       });
-      debouncedSearchValue()
+      debouncedSearchValue();
     } catch (error) {
-      alert(error.message);
+      if (error.response.data.message === "Order Has Been Canceled") {
+        setIsModalOpen(false);
+        Swal.fire({
+          position: "center",
+          icon: "warning",
+          title: error.response.data.message,
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        debouncedSearchValue();
+      }
     }
   };
   return (
@@ -130,7 +148,10 @@ const UploadModal = ({ isOpen, setIsModalOpen, order, debouncedSearchValue , ord
           />
         </div>
         <div className=" mt-[24px]  flex justify-center items-center">
-          <button onClick={handleSubmit} className="w-[100%]  bg-primaryOrange h-[38px] rounded-xl text-white">
+          <button
+            onClick={() => handleSubmit()}
+            className="w-[100%]  bg-primaryOrange h-[38px] rounded-xl text-white"
+          >
             Submit
           </button>
         </div>

@@ -16,20 +16,32 @@ import axiosInstance from "../../config/api";
 import { Dropdown } from "flowbite-react";
 import { GoSignOut, GoStack } from "react-icons/go";
 import Cookies from "js-cookie";
+import { getCartAsync } from "./../../redux/Features/order";
+import { useDispatch, useSelector } from "react-redux";
 const Nav = () => {
   const [cartDrop, setCartDrop] = useState(0);
-  const [cartDatas, setCartDatas] = useState([]);
+
   const navigate = useNavigate();
   const [user, setUser] = useState(Cookies.get("user_token"));
-const [admin, setAdmin] = useState(localStorage.getItem("role"))
-// console.log(admin);
+const [admin, setAdmin] = useState()
+// console.log(user);
+  const dispatch = useDispatch();
   const [localId, setLocalId] = useState(null);
   const param = useLocation();
-  const [text, setText] = useState(
-    param.pathname
-  );
+  const [text, setText] = useState(param.pathname);
+
   const [role, setRole] = useState(null);
 // console.log(role);
+
+  // console.log(dispatch(getCartAsync()));
+
+  const cart = useSelector((state) => state.order.cart);
+  console.log(cart);
+
+  useEffect(() => {
+    dispatch(getCartAsync());
+  }, [dispatch]);
+
   const getUser = async () => {
     try {
       const data = await axiosInstance.get(
@@ -53,10 +65,13 @@ const [admin, setAdmin] = useState(localStorage.getItem("role"))
   }, [localId, setLocalId]);
 
   const handleCartDropDown = () => {
-    if(!user) return navigate("/login")
+    if (!user) return navigate("/login");
     setCartDrop(!cartDrop);
   };
   const handleCheckoutNow = () => {
+    if (cart.length === 0) {
+      return toast.error("Your Cart is Empty. Please add items to your cart before proceeding.");
+    }
     navigate("/checkout");
     setCartDrop(!cartDrop);
   };
@@ -65,36 +80,19 @@ const [admin, setAdmin] = useState(localStorage.getItem("role"))
     setCartDrop(!cartDrop);
   };
 
-  const dataCart = async () => {
-    try {
-      const res = await axiosInstance.post("/order/cartdata");
-
-      setCartDatas(res.data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const handleDeleteCart = async (id) => {
-    // console.log(id);
     try {
       const deleteCart = await axiosInstance.post("/order/delete-cart", {
         productId: id,
       });
-      dataCart();
       toast.success(deleteCart.data.message);
+      dispatch(getCartAsync());
     } catch (error) {
       console.log(error);
     }
   };
 
-  useEffect(() => {
-    dataCart();
-  }, []);
-
-  useEffect(() => {}, [cartDatas]);
-
-  const subTotal = cartDatas.reduce((item, current) => {
+  const subTotal = cart?.reduce((item, current) => {
     return Number(item) + Number(current.total);
   }, 0);
 
@@ -104,7 +102,7 @@ const [admin, setAdmin] = useState(localStorage.getItem("role"))
 
   return (
     
-    <div className={admin === "Customer" ? `wrap-nav w-full bg-primaryBlue  fixed top-0 z-50 ` : `hidden`}>
+    <div className={role === "Customer"|| role === null ? `wrap-nav w-full bg-primaryBlue  fixed top-0 z-50 ` : `hidden`}>
       <div className=" my-7  h-full m-auto gap-2 sm:gap-10 flex items-center align-middle justify-between">
         <Link to={"/"}>
           <Logo />
@@ -124,7 +122,7 @@ const [admin, setAdmin] = useState(localStorage.getItem("role"))
             <div className="sm:flex gap-5 hidden">
               <ul className="relative ">
                 <span className="absolute right-[-10px] px-[8px] py-[2px] top-[-5px] text-primaryBlue text-xs rounded-full bg-white ">
-                  {cartDatas.length}
+                  {cart?.length}
                 </span>
                 <AiOutlineShoppingCart
                   onClick={handleCartDropDown}
@@ -139,14 +137,26 @@ const [admin, setAdmin] = useState(localStorage.getItem("role"))
                 >
                   <h1 className="py-[16px] px-[24px]  ">Shopping Cart</h1>
                   <div className="px-[24px] h-[220px] overflow-auto py-[20px] border-y-[2px] ">
-                    {cartDatas.map((value, index) => {
+                    {cart?.map((value, index) => {
+                      console.log(value);
                       return (
-                        <div key={index} className="flex items-center gap-2 mb-[16px]">
+                        <div
+                          key={index}
+                          className="flex items-center gap-2 mb-[16px]"
+                        >
                           <div>
-                            <img className="w-[80px] h-[80px] " src="" alt="" />
+                            <img
+                              className="w-[80px] h-[80px] "
+                              src={`${
+                                process.env.REACT_APP_IMAGE_SERVER_URL
+                              }${value.product?.products_images[0]?.image?.substring(
+                                6
+                              )}`}
+                              alt=""
+                            />
                           </div>
                           <div className=" w-full flex justify-between items-center">
-                            <div  className="flex flex-col h-full ">
+                            <div className="flex flex-col h-full ">
                               <h1 className="text-[14px]">
                                 {value.product.product_name}
                               </h1>

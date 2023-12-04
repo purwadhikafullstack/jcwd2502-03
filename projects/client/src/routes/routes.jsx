@@ -39,9 +39,14 @@ import io from "socket.io-client";
 import audioNotif from "./../assets/audionotif.mp3";
 import UserBiodata from "../components/UserBiodata/UserBiodata";
 import AdminOrderList from "../components/AdminOrderList/AdminOrderList";
+import "./sidebaradmin.css";
 import MyAddressPage from "../pages/MyAddressPage/MyAddressPage";
 import UserListPage from "../pages/UserListPage/UserListPage";
+import StockWarehouses from "../components/AdminDashboard/StockWarehouses";
 // import ChangePasswordPage from "../pages/ChangePasswordPage"
+import HistoryAdmin from "../components/AdminDashboard/ReportAdmin";
+import HistoryAdmin2 from "../components/HistoryAdmin/HistoryAdmin2";
+import AdminDeliveryOrder from "../components/AdminDeliveryOrder/AdminDeliveryOrder";
 const userToken = Cookies.get("user_token");
 let socket;
 if (userToken) {
@@ -94,6 +99,50 @@ const SideBar = ({ children }) => {
 
   useEffect(() => {
     if (userToken) {
+      socket.on("Package Sent", (message) => {
+        console.log(message);
+        Swal.fire({
+          position: "top-end",
+          icon: "warning",
+          title: `Order ${message.transaction_uid} ${message.message}`,
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        const audio = new Audio(audioNotif);
+        audio.play();
+        refreshOrdersHistory();
+      });
+
+      return () => {
+        socket.disconnect();
+      };
+    }
+  }, []);
+
+  useEffect(() => {
+    if (userToken) {
+      socket.on("Package Arrived", (message) => {
+        console.log(message);
+        Swal.fire({
+          position: "top-end",
+          icon: "warning",
+          title: message.message,
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        const audio = new Audio(audioNotif);
+        audio.play();
+        refreshOrdersHistory();
+      });
+
+      return () => {
+        socket.disconnect();
+      };
+    }
+  }, []);
+
+  useEffect(() => {
+    if (userToken) {
       socket.on("accept", (message) => {
         console.log(message);
         Swal.fire({
@@ -117,7 +166,7 @@ const SideBar = ({ children }) => {
   return (
     <div className={`max-w-[1280px] m-auto `}>
       <TabBar />
-      <div className=" flex gap-[72px] h-full mb-[32px] relative">
+      <div className=" wrap-admin flex gap-[72px] h-full mb-[32px] relative">
         <SideBarDashboard
           tabValue={tabValue}
           setTabValue={setTabValue}
@@ -125,10 +174,12 @@ const SideBar = ({ children }) => {
         />
         <div
           className={`${
-            currentPath === "/dashboard/orders/details" ? "h-auto" : "h-[718px]"
+            currentPath === "/dashboard/orders/details" ||
+            "/dashboard/orders/details"
+              ? "h-auto"
+              : "h-[718px]"
           } right w-full  rounded-[4px] border-[1px] shadow-xl `}
         >
-          {children}
           {React.isValidElement(children) &&
             React.cloneElement(children, {
               isRefreshingOrderHistory,
@@ -145,6 +196,7 @@ const SideBarAdmin = ({ children }) => {
   const [tabValue, setTabValue] = useState(1);
   const location = useLocation();
   const currentPath = location.pathname;
+  console.log(tabValue, "TAB");
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const refreshOrders = async () => {
@@ -185,7 +237,32 @@ const SideBarAdmin = ({ children }) => {
 
   useEffect(() => {
     if (userToken) {
+      socket.on("order complete", (message) => {
+        try {
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: `Transaction ID: ${message.transaction_uid} ${message.message}`,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          const audio = new Audio(audioNotif);
+          audio.play();
+        } catch (error) {
+          alert(error);
+        }
+      });
+
+      return () => {
+        socket.disconnect();
+      };
+    }
+  }, []);
+
+  useEffect(() => {
+    if (userToken) {
       socket.on("upload", (message) => {
+        console.log(message);
         try {
           Swal.fire({
             position: "top-end",
@@ -209,7 +286,7 @@ const SideBarAdmin = ({ children }) => {
   return (
     <div className={`max-w-[1280px] m-auto my-[70px]`}>
       {/* <TabBar /> */}
-      <div className=" flex gap-[72px] h-full mb-[32px] relative">
+      <div className="flex wrap-admin gap-[72px] h-full mb-[32px] relative">
         <SidebarAdmin
           tabValue={tabValue}
           setTabValue={setTabValue}
@@ -217,8 +294,11 @@ const SideBarAdmin = ({ children }) => {
         />
         <div
           className={`${
-            currentPath === "/dashboard/orders/details" ? "h-auto" : "h-[718px]"
-          } right w-full  rounded-[4px] border-[1px] shadow-xl `}
+            currentPath === "/admin/orders/details" ||
+            currentPath === "/admin/orders/details"
+              ? "h-auto"
+              : "h-[718px]"
+          } right w-full   rounded-[4px] border-[1px] shadow-xl `}
         >
           {/* {children} */}
           {React.cloneElement(children, {
@@ -375,6 +455,7 @@ const routes = [
       </Protected>
     }
   />,
+
   <Route
     path="/dashboard/profile"
     element={
@@ -398,8 +479,8 @@ const routes = [
     element={
       <Protected customerPage={true}>
         <SideBar>
-    <MyAddressPage/>
-  </SideBar>
+          <MyAddressPage />
+        </SideBar>
       </Protected>
     }
   />,
@@ -476,6 +557,16 @@ const routes = [
     }
   />,
   <Route
+    path="/admin/orders/details"
+    element={
+      <Protected ownerPage={true}>
+        <SideBarAdmin>
+          <OrderViewDetails />
+        </SideBarAdmin>
+      </Protected>
+    }
+  />,
+  <Route
     path="/admin/approval"
     element={
       <Protected ownerPage={true}>
@@ -485,6 +576,18 @@ const routes = [
       </Protected>
     }
   />,
+
+  <Route
+    path="/admin/delivery"
+    element={
+      <Protected ownerPage={true}>
+        <SideBarAdmin>
+          <AdminDeliveryOrder />
+        </SideBarAdmin>
+      </Protected>
+    }
+  />,
+
   <Route
     path="/admin/report"
     element={
@@ -493,6 +596,24 @@ const routes = [
           <ReportAdmin />
         </SideBarAdmin>
       </Protected>
+    }
+  />,
+  <Route
+    path="/admin/stock"
+    element={
+      <Protected ownerPage={true}>
+        <SideBarAdmin>
+          <StockWarehouses />
+        </SideBarAdmin>
+      </Protected>
+    }
+  />,
+  <Route
+    path="/admin/history"
+    element={
+      <SideBarAdmin>
+        <HistoryAdmin2 />
+      </SideBarAdmin>
     }
   />,
 ];

@@ -32,6 +32,12 @@ const OrderHistory = ({
   const [order, setOrder] = useState({});
   const [orderStatus, setOrderStatus] = useState("");
   const navigate = useNavigate();
+  const handleOrderComplete = () => {
+    try {
+    } catch (error) {
+      alert(alert);
+    }
+  };
 
   useEffect(() => {
     const getOrderDetails = async () => {
@@ -46,6 +52,34 @@ const OrderHistory = ({
     };
     getOrderDetails();
   }, [transaction_uid]);
+
+  const handleConfirmOrderComplete = async (transaction_uid) => {
+    try {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Complete it!",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: "Order Completed!",
+            text: "Your Order has been Completed.",
+            icon: "success",
+          });
+          await debouncedSearchValue();
+        }
+        const res = await axiosInstance.put("/order/order-complete", {
+          transaction_uid: transaction_uid,
+        });
+      });
+    } catch (error) {
+      alert(error);
+    }
+  };
 
   const debouncedSearchValue = useDebouncedCallback(async (search) => {
     try {
@@ -92,7 +126,7 @@ const OrderHistory = ({
     debouncedSearchValue();
   }, [searchValue, statusValue]);
 
-  useEffect(() => {    
+  useEffect(() => {
     if (isRefreshingOrderHistory === true) {
       debouncedSearchValue();
     }
@@ -101,6 +135,7 @@ const OrderHistory = ({
   useEffect(() => {
     debouncedSearchValue();
   }, []);
+
   const cancel = () =>
     Swal.fire({
       title: "Are you sure?",
@@ -125,7 +160,7 @@ const OrderHistory = ({
   return (
     <>
       <div className="w-full py-[16px] px-[24px] flex justify-between items-center">
-        <h1 className="text-[16px]  font-medium">ORDER HISTORY</h1>
+        <h1 className="text-[16px] col-date  font-medium">ORDER HISTORY</h1>
         <div className="w-[50%]">
           <Search onChange={(e) => filterSearch(e)} />
         </div>
@@ -134,10 +169,10 @@ const OrderHistory = ({
       <table className="w-full  ">
         <thead className="h-[38px] w-full  bg-[#F2F4F5]">
           <tr className="w-full  text-[12px] text-[#475156]">
-            <th className="w-[20%] text-start pl-[24px]">ORDER ID</th>
+            <th className="w-[20%] col-order text-start pl-[24px]">ORDER ID</th>
             <th className="w-[20%] text-start">STATUS</th>
-            <th className="w-[20%] text-start">DATE</th>
-            <th className="w-[20%] text-start">SUB TOTAL</th>
+            <th className="w-[20%] col-date  text-start">DATE</th>
+            <th className="w-[20%] col-total text-start">SUB TOTAL</th>
             <th className="w-[20%]  text-start pr-[24px]">ACTION</th>
           </tr>
         </thead>
@@ -162,13 +197,14 @@ const OrderHistory = ({
           <table className="w-full">
             <tbody className=" w-full ">
               {orderHistory.map((value, index) => {
+                console.log(value);
                 return (
                   <tr
                     key={index}
                     value={value.transaction_uid}
                     className="w-full h-[44px] text-[14px]  "
                   >
-                    <td className="w-[20%] text-start pl-[24px] text-[#191C1F] ">
+                    <td className="w-[20%] col-order text-start pl-[24px] text-[#191C1F] ">
                       {value.transaction_uid}
                     </td>
                     <td
@@ -182,7 +218,7 @@ const OrderHistory = ({
                           : value.status === "Package Sent"
                           ? "text-[#008000]"
                           : value.status === "Package Arrived"
-                          ? "text-[#008000]"
+                          ? "text-[#4CAF50]"
                           : value.status === "Order Completed"
                           ? "text-[#008000]"
                           : value.status === "Order Canceled"
@@ -192,17 +228,29 @@ const OrderHistory = ({
                     >
                       {value.status}
                     </td>
-                    <td className="w-[20%] text-start text-[#5F6C72]">
+                    <td className="w-[20%] col-date  text-start text-[#5F6C72]">
                       {moment(value.createdAt).format("YYYY-MM-DD HH:mm:ss")}
                     </td>
-                    <td className="w-[20%] text-start text-[#475156] ">
+                    <td className="w-[20%] col-total text-start text-[#475156] ">
                       {`${Number(value.total_price).toLocaleString("id-ID", {
                         style: "currency",
                         currency: "IDR",
                       })}`}
                     </td>
                     <td className="w-[20%]   h-full ">
-                      {value.status !== "Payment Pending" ? (
+                      {value.status === "Package Arrived" ? (
+                        <div className="flex justify-center px-[10px]">
+                          <button
+                            onClick={() =>
+                              handleConfirmOrderComplete(value.transaction_uid)
+                            }
+                            className="flex w-full  rounded-xl justify-center gap-2 items-center cursor-pointer  bg-[#4CAF50] text-white "
+                          >
+                            Complete Order
+                          </button>
+                        </div>
+                      ) : value.status !== "Payment Pending" &&
+                        value.status !== "Package Arrived" ? (
                         <div className="flex justify-center px-[10px]">
                           <button
                             onClick={() => {
@@ -213,7 +261,6 @@ const OrderHistory = ({
                             className="flex w-full  rounded-xl justify-center gap-2 items-center cursor-pointer  bg-[#2DA5F3] text-white "
                           >
                             View Details{" "}
-                            {/* <HiArrowRight className="text-[14px] text-white" /> */}
                           </button>
                         </div>
                       ) : (
@@ -258,7 +305,7 @@ const OrderHistory = ({
           </div>
         ) : (
           <div className="flex justify-center items-center h-full">
-            <h1 className="text-[px]">
+            <h1 className="text-[px] text-center">
               Oops! It seems there are no orders that match your search
               criteria.
             </h1>

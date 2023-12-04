@@ -11,7 +11,7 @@ const SideBarDashboard = ({ tabValue, setTabValue, currentPath }) => {
   const navigate = useNavigate();
   return (
     <>
-      <div className="left w-[264px] h-full border-[1px]  shadow-2xl rounded-[4px] py-[16px]">
+      <div className="left-admin w-[264px] h-full border-[1px]  shadow-2xl rounded-[4px] py-[16px]">
         <Link to={"/dashboard/profile"}>
           <div
             onClick={() => {
