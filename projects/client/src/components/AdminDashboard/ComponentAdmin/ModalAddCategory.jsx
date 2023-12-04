@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react";
-import Modal from "react-modal";
-import Input from "../../Input/Input";
-import Button from "../../Button/Button";
-import axiosInstance from "../../../config/api";
-import toast from "react-hot-toast";
+// import Button from "../../Button/Button";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-const ModalAddCategory = ({ isOpen, setModalIsOpen }) => {
+import { ModalBody, Select, SelectItem, Input } from "@nextui-org/react";
+import axiosInstance from "../../../config/api";
+import { ModalHeader, ModalFooter, Button } from "@nextui-org/react";
+import toast from "react-hot-toast";
+const ModalAddCategory = ({ onPress }) => {
   const [input, setInput] = useState({
     category: "",
   });
   const [dataKategori, setDataKategori] = useState({
     category: "",
   });
+  // const [idEdit, setIdEdit] = useState(null);
   const [idKategori, setIdKategory] = useState(null);
   const [images, setImages] = useState([]);
   const nav = useNavigate();
@@ -58,13 +59,14 @@ const ModalAddCategory = ({ isOpen, setModalIsOpen }) => {
 
   const handleClose = () => {
     localStorage.removeItem("kategori");
-    isOpen = false;
-    setModalIsOpen(false);
+    // isOpen = false;
+    // setModalIsOpen(false);
   };
 
   const handleSubmit = async () => {
     try {
-      if (!idKategori) {
+      // if (!idKategori) {
+
         const fd = new FormData();
         fd.append("data", JSON.stringify(input));
         images.forEach((value) => {
@@ -81,95 +83,69 @@ const ModalAddCategory = ({ isOpen, setModalIsOpen }) => {
           window.location.reload();
           // nav("/admin/category")
         }, 2000);
-        localStorage.removeItem("kategori");
-      } else {
-        // console.log("lala");
-        const res = await axiosInstance.put(`/category/${idKategori}`, input);
-        setTimeout(() => {
-          toast.success(res.data.message);
-        }, 500);
-        //   handleClose();
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
-        localStorage.removeItem("kategori");
-      }
+        // localStorage.removeItem("kategori");
+      // } else {
+      //   // console.log("lala");
+      //   const res = await axiosInstance.put(`/category/${idKategori}`, input);
+      //   setTimeout(() => {
+      //     toast.success(res.data.message);
+      //   }, 500);
+      //   //   handleClose();
+      //   setTimeout(() => {
+      //     window.location.reload();
+      //   }, 1000);
+      //   localStorage.removeItem("kategori");
+      // }
     } catch (error) {
       toast.error(error.response.data.message);
     }
   };
 
-  const customStyle = {
-    content: {
-      //   width: "800px",
-      //   height: "600px",
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-50%",
-      transform: "translate(-50%, -50%)",
-      borderRadius: "8px",
-      z: "50",
-    },
-  };
 
   useEffect(() => {
     getKategori();
-  }, [setModalIsOpen, isOpen]);
+    // if (dataKategori) {
+    //   setData(product[0]);
+    //   setIdEdit(product[0].id);
+    //   localStorage.removeItem("product");
+    // }
+  }, []);
 
   return (
-    <Modal
-      style={customStyle}
-      overlayClassName={
-        "fixed w-full h-screen top-0 left-0 z-[900] backdrop-blur-sm flex justify-center items-center"
-      }
-      isOpen={isOpen}
-    >
-      <div className="relative h-full">
-        <div className="w-full flex flex-col justify-center items-center">
-          {idKategori ? (
-            <span className="mb-3">Update Nama Kategori</span>
-          ) : (
-            <span className="mb-3">Membuat Kategori Baru</span>
-          )}
-          <div className="form grid gap-4 items-center justify-center">
-            <div>
-              <label>Nama Kategori</label>
-              <Input
-                onChange={handleChange}
-                name={"category"}
-                value={input.category}
-                type={"text"}
-                placeholder={"Nama Kategori..."}
-              />
-            </div>
-            {!idKategori && (
-              <div>
-                <label>Gambar Kategori</label>
-                <Input
-                  multiple="multiple"
-                  onChange={(e) => onSelectImages(e)}
-                  type={"file"}
-                  placeholder={"Nama Kategori..."}
-                />
-              </div>
-            )}
-
-            <Button
-              onClick={handleSubmit}
-              btnName={"Submit"}
-              btnCSS={"rounded-md max-w-[100px]"}
+    <>
+      <ModalHeader className="flex flex-col gap-1">Tambah Product</ModalHeader>
+      <ModalBody>
+        <form action="" className="grid gap-4">
+          <input
+            onChange={handleChange}
+            value={input.category}
+            name="category"
+            type="text"
+            placeholder="Nama category"
+            className="input input-bordered w-full max-w-xs"
+            id="nama_product"
+          />
+          {(
+            <input
+              onChange={(e) => onSelectImages(e)}
+              type="file"
+              multiple="multiple"
+              placeholder="Product Image"
+              id=""
             />
-          </div>
-        </div>
-        <div className="flex justify-end mt-4">
-          <button onClick={handleClose} className="bg-gray-400">
-            Tutup
-          </button>
-        </div>
-      </div>
-    </Modal>
+          )}
+
+        </form>
+      </ModalBody>
+      <ModalFooter>
+        <Button color="danger" variant="light" onPress={onPress}>
+          Close
+        </Button>
+        <Button color="primary" onClick={handleSubmit} onPress={onPress}>
+          Simpan
+        </Button>
+      </ModalFooter>
+    </>
   );
 };
 

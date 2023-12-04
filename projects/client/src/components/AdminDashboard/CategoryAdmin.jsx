@@ -187,6 +187,7 @@ import { MdDelete } from "react-icons/md";
 import ModalAddProduct from "./ComponentAdmin/ModalAddProduct";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
+import ModalAddCategory from "./ComponentAdmin/ModalAddCategory";
 
 const statusColorMap = {
   active: "success",
@@ -209,12 +210,13 @@ export default function ProductsAdmin() {
 
   const getKategori = async () => {
         try {
-          const data = await axiosInstance.get(`/category`); // data kategori
-          const res = await axiosInstance.get(`/product`); // data product , product punya kategori_id
+          const data = await axiosInstance.get(`/category?category_status=Active`); // data kategori
+          const res = await axiosInstance.get(`/product?product_status=Active`); // data product , product punya kategori_id
+          console.log(res.data);
           const categoryCounts = {};
-    // console.log(res.data);
           for (const product of res.data) {
-            const categoryId = product.products_category.id; //2
+            const categoryId = product.products_category.id && product.products_category.id; //2
+            console.log(categoryId);
             if (categoryCounts[categoryId]) {
               categoryCounts[categoryId]++;
             } else {
@@ -225,7 +227,7 @@ export default function ProductsAdmin() {
             const categoryId = product.products_category.id;
             product.total_product = categoryCounts[categoryId];
           }
-    
+    console.log(categoryCounts);
           const categoryMap = new Map();
           data.data.forEach((category) => {
             categoryMap.set(category.id, category);
@@ -245,7 +247,7 @@ export default function ProductsAdmin() {
           console.log(error);
         }
       };
-
+console.log(categories);
   useEffect(() => {
     getKategori();
   }, []);
@@ -320,9 +322,9 @@ export default function ProductsAdmin() {
       case "actions":
         const onEdit = async (id) => {
           try {
-            // const hasil = await axiosInstance.get(`/product/${id}`)
-            // localStorage.setItem("product", JSON.stringify(hasil.data))
-            console.log("lala");
+            const hasil = await axiosInstance.get(`/product/${id}`)
+            localStorage.setItem("kategori", JSON.stringify(hasil.data))
+            // console.log("lala");
             onOpen()
           } catch (error) {
             console.log(error);
@@ -364,7 +366,7 @@ export default function ProductsAdmin() {
             <ModalContent>
               {(onClose) => (
                 <>
-                  <ModalAddProduct onPress={onClose} />
+                  <ModalAddCategory onPress={onClose} />
                 </>
               )}
             </ModalContent>
@@ -395,4 +397,3 @@ export default function ProductsAdmin() {
     </div>
   );
 }
-

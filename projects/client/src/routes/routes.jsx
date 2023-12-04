@@ -22,6 +22,7 @@ import SideBarDashboard from "../components/SideBarDashboard/SideBarDashboard";
 import { useEffect, useState } from "react";
 import OrderViewDetails from "../components/OrderViewDetails/OrderViewDetails";
 import { useLocation } from "react-router-dom";
+import Protected from "./protected";
 import AdminOrderApproval from "../components/AdminOrderApproval/AdminOrderApproval";
 import { HiChartPie, HiShoppingBag, HiUser } from "react-icons/hi";
 import { TbBuildingWarehouse } from "react-icons/tb";
@@ -41,15 +42,18 @@ import AdminOrderList from "../components/AdminOrderList/AdminOrderList";
 import "./sidebaradmin.css";
 import MyAddressPage from "../pages/MyAddressPage/MyAddressPage";
 import UserListPage from "../pages/UserListPage/UserListPage";
+import StockWarehouses from "../components/AdminDashboard/StockWarehouses";
+// import ChangePasswordPage from "../pages/ChangePasswordPage"
 import HistoryAdmin from "../components/AdminDashboard/ReportAdmin";
 import HistoryAdmin2 from "../components/HistoryAdmin/HistoryAdmin2";
 const userToken = Cookies.get("user_token");
 let socket;
 if (userToken) {
-  socket = io("http://localhost:8000", {
+  socket = io("http://localhost:8000/", {
     query: { userToken },
   });
 }
+// import Protected from "./Protected";
 
 const SideBar = ({ children }) => {
   const [tabValue, setTabValue] = useState(1);
@@ -131,6 +135,7 @@ const SideBar = ({ children }) => {
               : "h-[718px]"
           } right w-full  rounded-[4px] border-[1px] shadow-xl `}
         >
+          {children}
           {React.isValidElement(children) &&
             React.cloneElement(children, {
               isRefreshingOrderHistory,
@@ -250,6 +255,7 @@ const SideBarAdmin = ({ children }) => {
               : "h-[718px]"
           } right w-full   rounded-[4px] border-[1px] shadow-xl `}
         >
+          {/* {children} */}
           {React.cloneElement(children, {
             refreshOrders,
             setIsRefreshing,
@@ -261,19 +267,122 @@ const SideBarAdmin = ({ children }) => {
   );
 };
 
+// ownerPage, adminPage, customerPage
+
 const routes = [
-  <Route path="/cart" element={<CartPage />} />,
-  <Route path="/" element={<Homepage />} />,
-  <Route path="/c" element={<CardCategory />} />,
-  <Route path="/checkout" element={<CheckoutPage />} />,
-  <Route path="/test" element={<CheckoutPage />} />,
-  <Route path="/success" element={<CheckoutSuccessPage />} />,
+  <Route
+    path="/cart"
+    element={
+      <Protected customerPage={true}>
+        <CartPage />
+      </Protected>
+    }
+  />,
+  <Route
+    path="/"
+    element={
+      <Protected customerPage={true}>
+        <Homepage />
+      </Protected>
+    }
+  />,
+  <Route
+    path="/success"
+    element={
+      <Protected customerPage={true}>
+        <CheckoutSuccessPage />
+      </Protected>
+    }
+  />,
+  <Route path="*" element={<NotFoundPage />} />,
+  <Route
+    path="/dashboard"
+    element={
+      <Protected customerPage={true}>
+        <UserDashboardPage />
+      </Protected>
+    }
+  />,
+  <Route path="/login" element={<LoginRegisterPage />} />,
+  <Route
+    path="/verification"
+    element={
+      <Protected customerPage={true}>
+        <UserVerificationPage />
+      </Protected>
+    }
+  />,
+  <Route
+    path="/product"
+    element={
+      <Protected customerPage={true}>
+        <ShopePage />
+      </Protected>
+    }
+  />,
+  <Route
+    path="/product/:idProduct"
+    element={
+      <Protected customerPage={true}>
+        <DetailProduct />
+      </Protected>
+    }
+  />,
+  <Route
+    path="/"
+    element={
+      <Protected customerPage={true}>
+        <Homepage />
+      </Protected>
+    }
+  />,
+  <Route
+    path="/checkout"
+    element={
+      <Protected customerPage={true}>
+        <CheckoutPage />
+      </Protected>
+    }
+  />,
+  <Route
+    path="/test"
+    element={
+      <Protected customerPage={true}>
+        <CheckoutPage />
+      </Protected>
+    }
+  />,
+  <Route
+    path="/success"
+    element={
+      <Protected customerPage={true}>
+        <CheckoutSuccessPage />
+      </Protected>
+    }
+  />,
   <Route path="*" element={<NotFoundPage />} />,
   // <Route path="/dashboard" element={<UserDashboardPage />} />,
   <Route path="/login" element={<LoginRegisterPage />} />,
   <Route path="/verification" element={<UserVerificationPage />} />,
   <Route path="/product" element={<ShopePage />} />,
   <Route path="/product/:idProduct" element={<DetailProduct />} />,
+  // <Route path="/change-password" element={<ChangePasswordPage />} />,
+  <Route
+    path="/product"
+    element={
+      <Protected customerPage={true}>
+        <ShopePage />
+      </Protected>
+    }
+  />,
+  <Route
+    path="/product/:idProduct"
+    element={
+      <Protected customerPage={true}>
+        <DetailProduct />
+      </Protected>
+    }
+  />,
   // <Route path="/change-password" element={<ChangePasswordPage />} />,
   <Route path="/forget-password" element={<ForgetPasswordPage />} />,
   <Route path="/reset-password" element={<ResetPasswordPage />} />,
@@ -284,17 +393,21 @@ const routes = [
   <Route
     path="/dashboard/orders"
     element={
-      <SideBar>
-        <OrderHistory />
-      </SideBar>
+      <Protected customerPage={true}>
+        <SideBar>
+          <OrderHistory />
+        </SideBar>
+      </Protected>
     }
   />,
   <Route
     path="/dashboard/orders/details"
     element={
-      <SideBar>
-        <OrderViewDetails />
-      </SideBar>
+      <Protected customerPage={true}>
+        <SideBar>
+          <OrderViewDetails />
+        </SideBar>
+      </Protected>
     }
   />,
   <Route
@@ -308,80 +421,131 @@ const routes = [
   <Route
     path="/dashboard/profile"
     element={
-      <SideBar>
-        <UserBiodata />
-      </SideBar>
+      <Protected customerPage={true}>
+        <SideBar>
+          <UserBiodata />
+        </SideBar>
+      </Protected>
     }
   />,
-  <Route path="/dashboard/wishlist" element={<SideBar>Wishlist</SideBar>} />,
-  <Route path="/dashboard/addresses" element={<SideBar>
+  <Route
+    path="/dashboard/wishlist"
+    element={
+      <Protected customerPage={true}>
+        <SideBar>Wishlist</SideBar>
+      </Protected>
+    }
+  />,
+  <Route
+    path="/dashboard/addresses"
+    element={
+      <Protected customerPage={true}>
+        <SideBar>
     <MyAddressPage/>
-  </SideBar>} />,
-  <Route path="/dashboard/settings" element={<SideBar>settings</SideBar>} />,
+  </SideBar>
+      </Protected>
+    }
+  />,
+  <Route
+    path="/dashboard/settings"
+    element={
+      <Protected customerPage={true}>
+        <SideBar>settings</SideBar>
+      </Protected>
+    }
+  />,
 
   // Admin Dashboard
   <Route
     path="/admin/warehouses"
     element={
-      <SideBarAdmin>
-        <WarehouseList />
-      </SideBarAdmin>
+      <Protected ownerPage={true}>
+        <SideBarAdmin>
+          <WarehouseList />
+        </SideBarAdmin>
+      </Protected>
     }
   />,
   <Route
     path="/admin/dashboard"
     element={
-      <SideBarAdmin>
-        <></>
-      </SideBarAdmin>
+      <Protected ownerPage={true}>
+        {" "}
+        <SideBarAdmin>
+          <DashboardAdmin />
+        </SideBarAdmin>
+      </Protected>
     }
   />,
   <Route
     path="/admin/users"
     element={
-      <SideBarAdmin>
-        <UserListPage />
-      </SideBarAdmin>
+      <Protected ownerPage={true}>
+        {" "}
+        <SideBarAdmin>
+          <UserListPage />
+        </SideBarAdmin>
+      </Protected>
     }
   />,
   <Route
     path="/admin/products"
     element={
-      <SideBarAdmin>
-        <ProductsAdmin />
-      </SideBarAdmin>
+      <Protected ownerPage={true}>
+        <SideBarAdmin>
+          <ProductsAdmin />
+        </SideBarAdmin>
+      </Protected>
     }
   />,
   <Route
     path="/admin/category"
     element={
-      <SideBarAdmin>
-        <CategoryAdmin />
-      </SideBarAdmin>
+      <Protected ownerPage={true}>
+        <SideBarAdmin>
+          <CategoryAdmin />
+        </SideBarAdmin>
+      </Protected>
     }
   />,
   <Route
     path="/admin/orders"
     element={
-      <SideBarAdmin>
-        <AdminOrderList />
-      </SideBarAdmin>
+      <Protected ownerPage={true}>
+        <SideBarAdmin>
+          <AdminOrderList />
+        </SideBarAdmin>
+      </Protected>
     }
   />,
   <Route
     path="/admin/approval"
     element={
-      <SideBarAdmin>
-        <AdminOrderApproval />
-      </SideBarAdmin>
+      <Protected ownerPage={true}>
+        <SideBarAdmin>
+          <AdminOrderApproval />
+        </SideBarAdmin>
+      </Protected>
     }
   />,
   <Route
     path="/admin/report"
     element={
-      <SideBarAdmin>
-        <ReportAdmin />
-      </SideBarAdmin>
+      <Protected ownerPage={true}>
+        <SideBarAdmin>
+          <ReportAdmin />
+        </SideBarAdmin>
+      </Protected>
+    }
+  />,
+  <Route
+    path="/admin/stock"
+    element={
+      <Protected ownerPage={true}>
+        <SideBarAdmin>
+          <StockWarehouses />
+        </SideBarAdmin>
+      </Protected>
     }
   />,
   <Route

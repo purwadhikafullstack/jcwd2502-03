@@ -53,5 +53,27 @@ module.exports = {
         } catch (error) {
             next(error)
         }
+    },
+
+    minStockProduct : async (req, res, next) => {
+        try {
+            const hasil = await stockServices.kurangStock({...req.query,...req.body})
+            res.status(200).send({
+                isError: false,
+                message: "Success",
+                data: null,
+              });
+        } catch (error) {
+            next(error)
+        }
+    },
+
+    stockByWarehouse : async (req, res, next) => {
+        try {
+            const {id} = req.params
+            console.log(id);
+        } catch (error) {
+            next(error)
+        }
     }
 };
