@@ -65,7 +65,7 @@ const CardProduct = ({ data, addToCart }) => {
                 <Link className="" to={`/product/${item.id}`}>
                   <Image
                     alt="Card background"
-                    className=" rounded-xl max-h-[230px] object-cover bg-slate-400 w-full gambar"
+                    className=" rounded-xl h-[230px] object-cover bg-slate-400 w-full gambar"
                     src={`${process.env.REACT_APP_IMAGE_SERVER_URL_IMAGE}${item.products_images[0].image.substring(
                       6
                     )}`}

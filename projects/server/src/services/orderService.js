@@ -866,4 +866,28 @@ module.exports = {
       return error;
     }
   },
+  adminListDelivery: async (warehouses_id) => {
+    try {
+      const res = await db.orders_details.findAll({
+        where: { warehouses_id: warehouses_id, status: "Order Process" },
+      });
+      return res;
+    } catch (error) {
+      return error;
+    }
+  },
+  sendPackage: async (transaction_uid, users_id) => {
+    try {
+      const res = await db.orders_details.update(
+        {
+          status: "Package Sent",
+        },
+        {
+          where: { transaction_uid: transaction_uid, users_id: users_id },
+        }
+      );
+    } catch (error) {
+      return error;
+    }
+  },
 };

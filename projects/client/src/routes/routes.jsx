@@ -46,6 +46,7 @@ import StockWarehouses from "../components/AdminDashboard/StockWarehouses";
 // import ChangePasswordPage from "../pages/ChangePasswordPage"
 import HistoryAdmin from "../components/AdminDashboard/ReportAdmin";
 import HistoryAdmin2 from "../components/HistoryAdmin/HistoryAdmin2";
+import AdminDeliveryOrder from "../components/AdminDeliveryOrder/AdminDeliveryOrder";
 const userToken = Cookies.get("user_token");
 let socket;
 if (userToken) {
@@ -98,6 +99,50 @@ const SideBar = ({ children }) => {
 
   useEffect(() => {
     if (userToken) {
+      socket.on("Package Sent", (message) => {
+        console.log(message);
+        Swal.fire({
+          position: "top-end",
+          icon: "warning",
+          title: `Order ${message.transaction_uid} ${message.message}`,
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        const audio = new Audio(audioNotif);
+        audio.play();
+        refreshOrdersHistory();
+      });
+
+      return () => {
+        socket.disconnect();
+      };
+    }
+  }, []);
+
+  useEffect(() => {
+    if (userToken) {
+      socket.on("Package Arrived", (message) => {
+        console.log(message);
+        Swal.fire({
+          position: "top-end",
+          icon: "warning",
+          title: message.message,
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        const audio = new Audio(audioNotif);
+        audio.play();
+        refreshOrdersHistory();
+      });
+
+      return () => {
+        socket.disconnect();
+      };
+    }
+  }, []);
+
+  useEffect(() => {
+    if (userToken) {
       socket.on("accept", (message) => {
         console.log(message);
         Swal.fire({
@@ -121,7 +166,7 @@ const SideBar = ({ children }) => {
   return (
     <div className={`max-w-[1280px] m-auto `}>
       <TabBar />
-      <div className=" flex gap-[72px] h-full mb-[32px] relative">
+      <div className=" wrap-admin flex gap-[72px] h-full mb-[32px] relative">
         <SideBarDashboard
           tabValue={tabValue}
           setTabValue={setTabValue}
@@ -135,7 +180,6 @@ const SideBar = ({ children }) => {
               : "h-[718px]"
           } right w-full  rounded-[4px] border-[1px] shadow-xl `}
         >
-          {/* {children} */}
           {React.isValidElement(children) &&
             React.cloneElement(children, {
               isRefreshingOrderHistory,
@@ -152,7 +196,7 @@ const SideBarAdmin = ({ children }) => {
   const [tabValue, setTabValue] = useState(1);
   const location = useLocation();
   const currentPath = location.pathname;
-  console.log(currentPath);
+  console.log(tabValue, "TAB");
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const refreshOrders = async () => {
@@ -218,6 +262,7 @@ const SideBarAdmin = ({ children }) => {
   useEffect(() => {
     if (userToken) {
       socket.on("upload", (message) => {
+        console.log(message);
         try {
           Swal.fire({
             position: "top-end",
@@ -512,6 +557,16 @@ const routes = [
     }
   />,
   <Route
+    path="/admin/orders/details"
+    element={
+      <Protected ownerPage={true}>
+        <SideBarAdmin>
+          <OrderViewDetails />
+        </SideBarAdmin>
+      </Protected>
+    }
+  />,
+  <Route
     path="/admin/approval"
     element={
       <Protected ownerPage={true}>
@@ -521,6 +576,16 @@ const routes = [
       </Protected>
     }
   />,
+
+  <Route
+    path="/admin/delivery"
+    element={
+      <SideBarAdmin>
+        <AdminDeliveryOrder />
+      </SideBarAdmin>
+    }
+  />,
+
   <Route
     path="/admin/report"
     element={

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 // import "./protected.css";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../config/api";
-
+import Logo from "../components/Logo/Logo";
 export default function Protected({
   children,
   ownerPage,
@@ -62,5 +62,25 @@ export default function Protected({
     }, 1000);
   }, [user, ownerPage, customerPage]);
 
-  return <>{loading ? <>Loading...</> : children}</>;
+  return (
+    <>
+      {loading ? (
+        <>
+          {" "}
+          <div className="h-screen grid place-content-center">
+            <div className="">
+              <div className="grid place-content-center">
+                {/* <Logo /> */}
+              </div>
+              <div className="grid place-content-center">
+                <span className="loading loading-dots w-[50px] text-green-800"></span>
+              </div>
+            </div>
+          </div>
+        </>
+      ) : (
+        children
+      )}
+    </>
+  );
 }

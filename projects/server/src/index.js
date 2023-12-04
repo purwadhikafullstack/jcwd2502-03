@@ -1,6 +1,6 @@
 require("dotenv/config");
 const express = require("express");
-const bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
 const cors = require("cors");
 const { join } = require("path");
 const bearerToken = require("express-bearer-token");
@@ -32,12 +32,10 @@ app.use(
   // }
 );
 
-
-app.use(express.static('public'))
+app.use(express.static("public"));
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 
 app.use(express.static("public"));
 app.use(express.json());
@@ -66,7 +64,7 @@ io.on("connection", async (socket) => {
     if (!socketIdMap.has(decoded.id)) {
       socketIdMap.set(decoded.id, []);
     }
-    socketIdMap.get(decoded.id).push(socket.id)
+    socketIdMap.get(decoded.id).push(socket.id);
   }
   console.log(`A user connected ${socket.id}`);
 
@@ -137,7 +135,62 @@ const checkAndUpdateOrders = async () => {
   }
 };
 
+const checkPackageArrived = async () => {
+  try {
+    const oneMinutesAgo = new Date();
+    oneMinutesAgo.setMinutes(oneMinutesAgo.getMinutes() - 1);
+
+    const [affectedRows] = await db.orders_details.update(
+      { status: "Package Arrived" },
+      {
+        where: {
+          createdAt: {
+            [Op.lt]: oneMinutesAgo,
+          },
+          status: "Package Sent",
+        },
+      }
+    );
+
+    const oneSecondAgo = new Date();
+    oneSecondAgo.setSeconds(oneSecondAgo.getSeconds() - 1);
+
+    const dataWithinOneSecond = await db.orders_details.findAll({
+      where: {
+        updatedAt: {
+          [Op.gte]: oneSecondAgo,
+        },
+        status: "Package Arrived",
+      },
+      group: ["transaction_uid"],
+    });
+
+    console.log(dataWithinOneSecond);
+    if (dataWithinOneSecond) {
+      const user = dataWithinOneSecond.map((value) => {
+        console.log(value);
+        return socketIdMap.get(value.users_id);
+      });
+
+      console.log(user);
+
+      if (user) {
+        user.map((value) => {
+          return io.to(value).emit("Package Arrived", {
+            message: "Your package has been Arrived",
+          });
+        });
+      }
+    }
+
+    console.log(`Package Arrived ${affectedRows}`);
+  } catch (error) {
+    console.error("Error canceling orders:", error);
+  }
+};
+
 cron.schedule("* * * * *", checkAndUpdateOrders);
+cron.schedule("* * * * *", checkPackageArrived);
 
 const attachIoToRequest = (req, res, next) => {
   req.io = io;

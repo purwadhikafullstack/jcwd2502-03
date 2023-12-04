@@ -44,6 +44,8 @@ const {
   warehouses,
   completeOrder,
   productAllStock,
+  adminListDelivery,
+  sendPackage,
 } = require("./../services/orderService");
 
 const { Op } = require("sequelize");
@@ -487,7 +489,7 @@ const orderController = {
 
       const cancel = await cancelOrderByTransactionId(id, transaction_uid);
 
-      res.send({
+      res.status(200).send({
         isError: false,
         message: "The Order Has been Canceled",
       });
@@ -526,7 +528,7 @@ const orderController = {
         });
       }
 
-      res.send({
+      res.status(200).send({
         isError: false,
         message: "Submit Payment Success",
       });
@@ -780,7 +782,7 @@ const orderController = {
         });
       }
 
-      res.send({
+      res.status(200).send({
         isError: false,
         message: "Order Accept",
       });
@@ -866,6 +868,53 @@ const orderController = {
       res.send({
         isError: false,
         message: "Order Completed",
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  adminOrderDeliveryList: async (req, res, next) => {
+    try {
+      const { id } = req.tokens;
+
+      const userData = await getUserData(id);
+
+      const getListDelivery = await adminListDelivery(
+        userData.dataValues.warehouses_id
+      );
+
+      res.send({
+        isError: false,
+        data: getListDelivery,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  adminSendPackage: async (req, res, next) => {
+    try {
+      const { id } = req.tokens;
+      const { transaction_uid, users_id } = req.body;
+
+      const send = await sendPackage(transaction_uid, users_id);
+
+      const io = req.io;
+      const customerSocket = req.customerSocket;
+
+      const userId = customerSocket.get(users_id);
+
+      if (userId) {
+        userId.map((value) => {
+          return io.to(value).emit("Package Sent", {
+            message: "Your package has been sent",
+            transaction_uid: transaction_uid,
+          });
+        });
+      }
+
+      res.status(200).send({
+        isError: false,
+        message: "Package has been sent",
       });
     } catch (error) {
       next(error);
