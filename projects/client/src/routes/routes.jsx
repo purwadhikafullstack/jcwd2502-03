@@ -580,9 +580,11 @@ const routes = [
   <Route
     path="/admin/delivery"
     element={
-      <SideBarAdmin>
-        <AdminDeliveryOrder />
-      </SideBarAdmin>
+      <Protected ownerPage={true}>
+        <SideBarAdmin>
+          <AdminDeliveryOrder />
+        </SideBarAdmin>
+      </Protected>
     }
   />,
 
