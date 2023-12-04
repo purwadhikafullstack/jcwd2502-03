@@ -43,6 +43,7 @@ import MyAddressPage from "../pages/MyAddressPage/MyAddressPage";
 import UserListPage from "../pages/UserListPage/UserListPage";
 import HistoryAdmin from "../components/AdminDashboard/ReportAdmin";
 import HistoryAdmin2 from "../components/HistoryAdmin/HistoryAdmin2";
+import AdminDeliveryOrder from "../components/AdminDeliveryOrder/AdminDeliveryOrder";
 const userToken = Cookies.get("user_token");
 let socket;
 if (userToken) {
@@ -94,6 +95,50 @@ const SideBar = ({ children }) => {
 
   useEffect(() => {
     if (userToken) {
+      socket.on("Package Sent", (message) => {
+        console.log(message);
+        Swal.fire({
+          position: "top-end",
+          icon: "warning",
+          title: `Order ${message.transaction_uid} ${message.message}`,
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        const audio = new Audio(audioNotif);
+        audio.play();
+        refreshOrdersHistory();
+      });
+
+      return () => {
+        socket.disconnect();
+      };
+    }
+  }, []);
+
+  useEffect(() => {
+    if (userToken) {
+      socket.on("Package Arrived", (message) => {
+        console.log(message);
+        Swal.fire({
+          position: "top-end",
+          icon: "warning",
+          title: message.message,
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        const audio = new Audio(audioNotif);
+        audio.play();
+        refreshOrdersHistory();
+      });
+
+      return () => {
+        socket.disconnect();
+      };
+    }
+  }, []);
+
+  useEffect(() => {
+    if (userToken) {
       socket.on("accept", (message) => {
         console.log(message);
         Swal.fire({
@@ -117,7 +162,7 @@ const SideBar = ({ children }) => {
   return (
     <div className={`max-w-[1280px] m-auto `}>
       <TabBar />
-      <div className=" flex gap-[72px] h-full mb-[32px] relative">
+      <div className=" wrap-admin flex gap-[72px] h-full mb-[32px] relative">
         <SideBarDashboard
           tabValue={tabValue}
           setTabValue={setTabValue}
@@ -314,9 +359,14 @@ const routes = [
     }
   />,
   <Route path="/dashboard/wishlist" element={<SideBar>Wishlist</SideBar>} />,
-  <Route path="/dashboard/addresses" element={<SideBar>
-    <MyAddressPage/>
-  </SideBar>} />,
+  <Route
+    path="/dashboard/addresses"
+    element={
+      <SideBar>
+        <MyAddressPage />
+      </SideBar>
+    }
+  />,
   <Route path="/dashboard/settings" element={<SideBar>settings</SideBar>} />,
 
   // Admin Dashboard
@@ -377,6 +427,14 @@ const routes = [
     }
   />,
   <Route
+    path="/admin/delivery"
+    element={
+      <SideBarAdmin>
+        <AdminDeliveryOrder />
+      </SideBarAdmin>
+    }
+  />,
+  <Route
     path="/admin/report"
     element={
       <SideBarAdmin>
@@ -385,13 +443,13 @@ const routes = [
     }
   />,
   <Route
-  path="/admin/history"
-  element={
-    <SideBarAdmin>
-      <HistoryAdmin2 />
-    </SideBarAdmin>
-  }
-/>,
+    path="/admin/history"
+    element={
+      <SideBarAdmin>
+        <HistoryAdmin2 />
+      </SideBarAdmin>
+    }
+  />,
 ];
 
 export default routes;
