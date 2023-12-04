@@ -2,7 +2,8 @@ import React from "react";
 import CardOrderSummary from "../CardOrderSummary/CardOrderSummary";
 import Button from "../Button/Button";
 import PlaceOrderModal from "../../components/PlaceOrderModal/PlaceOrderModal";
-
+import { getCartAsync } from "./../../redux/Features/order";
+import { useDispatch, useSelector } from "react-redux";
 const OrderSummary = ({
   cartData,
   shippingPrice,
@@ -14,6 +15,7 @@ const OrderSummary = ({
   const subTotal = cartData.reduce((item, current) => {
     return Number(item) + Number(current.total);
   }, 0);
+  const dispatch = useDispatch();
 
   const tax = (subTotal + Number(shippingPrice)) * 0.05;
   const total = subTotal + Number(shippingPrice) + tax;
@@ -69,7 +71,10 @@ const OrderSummary = ({
         <Button
           btnName="PLACE ORDER"
           btnCSS="w-full h-full text-[16px] text-white rounded-[3px]"
-          onClick={() => handlePlaceOrder()}
+          onClick={() => {
+            dispatch(getCartAsync());
+            handlePlaceOrder();
+          }}
         />
         <PlaceOrderModal
           isOpen={placeOrderIsOpen}

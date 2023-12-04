@@ -16,4 +16,7 @@
  .left-admin {
     width: 100%;
  }
+ .col-total{
+    display: none;
+ }
 }

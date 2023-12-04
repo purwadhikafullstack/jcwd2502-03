@@ -188,7 +188,7 @@ export default function StockWarehouses() {
   return (
     <div className="flex flex-col">
       <div className="flex justify-between mx-3 my-3 underline">
-        <div className="grid gap-4">
+        <div className="grid">
         <span>Manage Stock</span>
           <select onChange={handleChange} name="warehouses_id" className="select select-bordered w-full max-w-xs">
             <option disabled selected>

@@ -9,7 +9,7 @@ const OptionWarehouse = (props, ) => {
     <>
       <select
         id="Warehouse"
-        className="border-[#E4E7E9] w-[190px] text-gray-500 rounded-[4px] h-[40px] text-[14px] cursor-pointer"
+        className="border-[#E4E7E9] w-[200px] text-gray-500 rounded-[4px] h-[40px] text-[14px] cursor-pointer"
         onChange={props.onChange}
       >
         <option selected value="">

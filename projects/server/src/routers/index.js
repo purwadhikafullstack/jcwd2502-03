@@ -7,6 +7,7 @@ const userRouter = require("./userRouter");
 const adminRouter = require("./adminRouter");
 const stockRouter = require("./stockRouter");
 const rajaOngkirRouter = require("./rajaOngkirRouter");
+const reportRouter = require("./reportRouter")
 
 module.exports = {
     authRouter,
@@ -17,5 +18,6 @@ module.exports = {
     userRouter,
     adminRouter,
     stockRouter,
-    rajaOngkirRouter
+    rajaOngkirRouter,
+    reportRouter
 };

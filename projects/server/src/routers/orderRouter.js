@@ -36,5 +36,7 @@ router.put("/reject",authorizeLoggedInUser ,adminMiddleware, orderController.rej
 router.put("/confirm",authorizeLoggedInUser ,adminMiddleware, orderController.confirmOrderAdmin);
 router.post("/admin-orders",authorizeLoggedInUser ,adminMiddleware, orderController.adminFilterOrders);
 router.get("/warehouses",authorizeLoggedInUser ,adminMiddleware, orderController.warehouseData);
+router.post("/delivery-list",authorizeLoggedInUser ,adminMiddleware, orderController.adminOrderDeliveryList);
+router.put("/send-package",authorizeLoggedInUser ,adminMiddleware, orderController.adminSendPackage);
 
 module.exports = router;
