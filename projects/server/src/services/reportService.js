@@ -54,13 +54,10 @@ class ReportService extends Service {
             }
 
             if (warehouses_id2 && role === "Owner") {
-
                 where.warehouses_id = Number(warehouses_id2);
             }
 
             if (role === "Warehouse Admin") {
-                console.log("tai");
-
                 where.warehouses_id = warehouses_id;
             }
 
