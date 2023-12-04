@@ -1,6 +1,6 @@
 import React from "react";
 import { GoStack } from "react-icons/go";
-import { FaUsers } from "react-icons/fa";
+import { FaUsers, FaExchangeAlt } from "react-icons/fa";
 import { SlEarphones } from "react-icons/sl";
 import { TbReport, TbHistory } from "react-icons/tb";
 import { LuWarehouse } from "react-icons/lu";
@@ -23,6 +23,7 @@ const SidebarAdmin = ({ tabValue, setTabValue, currentPath }) => {
     };
 
     const { role } = useSelector((state) => state.user);
+    
     return (
         <>
             <div className="left-admin w-[264px] h-full border-[1px]  shadow-2xl rounded-[4px] py-[16px]">
@@ -84,6 +85,22 @@ const SidebarAdmin = ({ tabValue, setTabValue, currentPath }) => {
                         <h1 className="text-[14px] ">Products</h1>
                     </div>
                 </Link>
+
+                {role === "Warehouse Admin" && (
+                    <Link to={"/admin/request"}>
+                        <div
+                            onClick={() => setTabValue(27)}
+                            className={`flex items-center px-[26px] gap-3 h-[40px] text-[#5F6C72] cursor-pointer ${
+                                currentPath === "/admin/request"
+                                    ? "bg-primaryOrange  text-white"
+                                    : ""
+                            }`}
+                        >
+                            <FaExchangeAlt className="text-[18px]" />
+                            <h1 className="text-[14px] ">Incoming Request</h1>
+                        </div>
+                    </Link>
+                )}
 
                 <Link to={"/admin/orders"}>
                     <div
@@ -162,21 +179,19 @@ const SidebarAdmin = ({ tabValue, setTabValue, currentPath }) => {
                         <h1 className="text-[14px] ">Manage Stock</h1>
                     </div>
                 </Link>
-                {role === "Owner" && (
-                    <Link to={"/admin/history"}>
-                        <div
-                            onClick={() => setTabValue(8)}
-                            className={`flex items-center px-[26px] gap-3 h-[40px] text-[#5F6C72] cursor-pointer ${
-                                tabValue === 8
-                                    ? "bg-primaryOrange  text-white"
-                                    : ""
-                            }`}
-                        >
-                            <TbHistory className="text-[18px]" />
-                            <h1 className="text-[14px] ">History</h1>
-                        </div>
-                    </Link>
-                )}
+                {/* {role === "Owner" && ( */}
+                <Link to={"/admin/history"}>
+                    <div
+                        onClick={() => setTabValue(8)}
+                        className={`flex items-center px-[26px] gap-3 h-[40px] text-[#5F6C72] cursor-pointer ${
+                            tabValue === 8 ? "bg-primaryOrange  text-white" : ""
+                        }`}
+                    >
+                        <TbHistory className="text-[18px]" />
+                        <h1 className="text-[14px] ">History</h1>
+                    </div>
+                </Link>
+                {/* )} */}
                 <div
                     onClick={() => setTabValue(9)}
                     className={`flex items-center px-[26px] gap-3 h-[40px] text-[#5F6C72] cursor-pointer ${
