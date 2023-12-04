@@ -102,8 +102,8 @@ const AdminOrderList = ({ setIsRefreshing, isRefreshing, refreshOrders }) => {
             <div className="h-[38px] px-[24px] flex  justify-end items-center">
               <button
                 onClick={() => {
+                  orderList();
                   refreshOrders();
-                  
                 }}
                 className="cursor-pointer  flex gap-2 justify-center items-center"
               >
