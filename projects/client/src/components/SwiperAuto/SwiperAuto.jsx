@@ -15,7 +15,7 @@ import { Autoplay, Pagination, Navigation } from "swiper/modules";
 const SwiperAuto = ({ gambar }) => {
   console.log(gambar);
   return (
-    <div className="w-[616px] max-h-[550px] mt-[32px]">
+    <div className="min-w-[616px] max-w-[616px] max-h-[550px] mt-[32px]">
       <Swiper
         navigation={true}
         modules={[Navigation]}

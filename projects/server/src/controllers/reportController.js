@@ -3,10 +3,11 @@ const ReportService = require("../services/reportService");
 const reportController = {
     getTransactionCount: async (req, res) => {
         try {
-            const { stateOfDate } = req.body;
+            const { stateOfDate, warehouseId } = req.body;
 
             const serviceResult = await ReportService.getTransactionCount(
-                stateOfDate
+                stateOfDate,
+                warehouseId
             );
 
             if (!serviceResult.success) throw serviceResult;
@@ -105,55 +106,12 @@ const reportController = {
         }
     },
 
-    getTodayRevenue: async (req, res) => {
+    getRevenue: async (req, res) => {
         try {
             const { stateOfDate } = req.body;
 
-            const serviceResult = await ReportService.getTodayRevenue(
+            const serviceResult = await ReportService.getRevenue(
                 stateOfDate
-            );
-
-            if (!serviceResult.success) throw serviceResult;
-
-            return res.status(serviceResult.statusCode || 200).json({
-                message: serviceResult.message,
-                result: serviceResult.data,
-            });
-        } catch (error) {
-            console.log(error);
-            return res.status(error.statusCode || 500).json({
-                message: error.message,
-            });
-        }
-    },
-
-    getProfit: async (req, res) => {
-        try {
-            const { stateOfDate } = req.body;
-
-            const serviceResult = await ReportService.getProfit(stateOfDate);
-
-            if (!serviceResult.success) throw serviceResult;
-
-            return res.status(serviceResult.statusCode || 200).json({
-                message: serviceResult.message,
-                result: serviceResult.data,
-            });
-        } catch (error) {
-            console.log(error);
-            return res.status(error.statusCode || 500).json({
-                message: error.message,
-            });
-        }
-    },
-
-    getProductQuantitySold: async (req, res) => {
-        try {
-            const { stateOfDate, productId } = req.body;
-
-            const serviceResult = await ReportService.getProductQuantitySold(
-                stateOfDate,
-                productId
             );
 
             if (!serviceResult.success) throw serviceResult;
@@ -192,6 +150,7 @@ const reportController = {
             });
         }
     },
+
     getRevenuePerProduct: async (req, res) => {
         try {
             const { stateOfDate, productId } = req.body;

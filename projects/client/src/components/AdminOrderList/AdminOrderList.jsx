@@ -102,6 +102,7 @@ const AdminOrderList = ({ setIsRefreshing, isRefreshing, refreshOrders }) => {
             <div className="h-[38px] px-[24px] flex  justify-end items-center">
               <button
                 onClick={() => {
+                  orderList();
                   refreshOrders();
                 }}
                 className="cursor-pointer  flex gap-2 justify-center items-center"
@@ -211,7 +212,7 @@ const AdminOrderList = ({ setIsRefreshing, isRefreshing, refreshOrders }) => {
               </div>
             ) : (
               <div className="flex justify-center items-center h-full">
-                <h1 className="text-[px]">
+                <h1 className="text-[px] text-center">
                   Oops! It seems there are no orders that match your search
                   criteria.
                 </h1>

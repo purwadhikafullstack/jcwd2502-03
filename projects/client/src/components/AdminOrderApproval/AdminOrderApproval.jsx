@@ -99,7 +99,7 @@ const AdminOrderApproval = ({
         {orderApprovalList.length !== 0 && isRefreshing === false ? (
           <table className="w-full">
             <tbody className=" w-full ">
-              {orderApprovalList.map((value, index) => {
+              {orderApprovalList && orderApprovalList.map((value, index) => {
                 return (
                   <tr
                     key={index}
@@ -177,7 +177,7 @@ const AdminOrderApproval = ({
           </div>
         ) : (
           <div className="flex justify-center items-center h-full">
-            <h1 className="text-[px]">
+            <h1 className="text-[px] text-center">
               Oops! It seems there are no orders that match your search
               criteria.
             </h1>

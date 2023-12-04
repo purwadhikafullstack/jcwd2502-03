@@ -7,15 +7,41 @@ router.get(
     // ownerMiddleware,
     reportController.getTransactionCount
 );
+
 router.get(
     `/transaction-count/success`,
     // ownerMiddleware,
     reportController.getSuccessTransactionCount
 );
+
 router.get(
     `/transaction-count/failed`,
     // ownerMiddleware,
     reportController.getFailedTransactionCount
+);
+
+router.get(
+    `/transaction-count/today`,
+    // ownerMiddleware,
+    reportController.getTodayTransaction
+);
+
+router.get(
+    `/sales`,
+    // ownerMiddleware,
+    reportController.getSales
+);
+
+router.get(
+    `/revenue`,
+    // ownerMiddleware,
+    reportController.getRevenue
+);
+
+router.get(
+    `/product-sold`,
+    // ownerMiddleware,
+    reportController.getProductSoldCount
 );
 
 module.exports = router;
