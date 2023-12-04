@@ -12,7 +12,7 @@ export default function Protected({
 }) {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState("");
-  // console.log(user);
+  console.log(user);
   const getUser = async () => {
     try {
       const data = await axiosInstance.get(
@@ -23,38 +23,44 @@ export default function Protected({
       console.log(error);
     }
   };
-// console.log(ownerPage);
+  // console.log(ownerPage);
   const nav = useNavigate();
 
   useEffect(() => {
-    getUser()
+    getUser();
+  }, []);
+
+  useEffect(() => {
+    // getUser()
     console.log(user);
-    if (user === "Owner" && customerPage)
+    console.log(customerPage);
+    if (user == "Owner" && customerPage === true)
+      // console.log("ll")
       return (
-        setTimeout(() => {
-          setLoading(false);
-        }, 1000),
+        // setTimeout(() => {
+        //   // setLoading(false);
+        // }, 1000),
         nav("/admin/dashboard")
       );
     if (user === "Customer" && ownerPage)
       return (
-        setTimeout(() => {
-          setLoading(false);
-        }, 1000),
+        // setTimeout(() => {
+        //   // setLoading(false);
+        // }, 1000),
         nav("/")
       );
     if (user === "Warehouse Admin" && customerPage)
       return (
-        setTimeout(() => {
-          setLoading(false);
-        }, 1000),
+        // setTimeout(() => {
+        //   setLoading(false);
+        // }, 1000),
         nav("admin/dashboard")
       );
 
     setTimeout(() => {
       setLoading(false);
     }, 1000);
-  }, [children]);
+  }, [user, ownerPage, customerPage]);
 
   return <>{loading ? <>Loading...</> : children}</>;
 }

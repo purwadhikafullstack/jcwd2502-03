@@ -56,47 +56,7 @@ const CardProduct = ({ data, addToCart }) => {
         {datas && datas.length > 0 ? (
           currentData.map((item, index) => {
             return (
-              // <div
-              //   key={index}
-              //   className="w-[160px]    sm:w-[200px] lg:w-[278px] min-w-[150px] rounded   border-2 cursor-pointer hover:shadow-lg "
-              // >
-              //   <div className="p-[16px]">
-              //     <div className="cardd">
-              //       <div className="relative ">
-              //         <AiOutlineHeart
-              //           onClick={(e) => {
-              //             alert("Wishlist Added");
-              //           }}
-              //           className="text-black hover:text-primaryOrange absolute z-10   top-0 right-0 h-[32px] w-[32px] cursor-pointer "
-              //           style={{ backgroundClip: "text" }}
-              //         />
 
-              //         <img src={product1} className="w-full" alt="" />
-              //       </div>
-              //     </div>
-              //     <div className="">
-              //       <Link className="" to={`/product/${item.id}`}>
-              //         <div className="h-[40px]  hover:underline  font-semibold overflow-hidden text-ellipsis text-sm">
-              //           {item.product_name}
-              //         </div>
-              //       </Link>
-              //       <div className="mt-[4px] text-[#2DA5F3] font-semibold">
-              //         {new Intl.NumberFormat("id-ID", {
-              //           style: "currency",
-              //           currency: "IDR",
-              //           // minimumFractionDigits: 2
-              //         }).format(item.product_price)}
-              //       </div>
-              //     </div>
-              //     {/* add to cart */}
-              //     {/* <div className="">
-              //       <Button
-              //         btnName={"Add To Cart"}
-              //         btnCSS={" w-full rounded-md mt-2"}
-              //       />
-              //     </div> */}
-              //   </div>
-              // </div>
               <Card
                 className="pb-4 w-[40%] sm:w-[23%] md:w-[23%] lg:w-[20%] xl:w-[17%]"
                 isPressable
