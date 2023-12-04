@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TabBar from "../../components/TabBar/TabBar";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../config/api";
@@ -21,6 +21,14 @@ const LoginRegisterPage = () => {
         email: "",
         password: "",
     });
+
+    const userCookies = Cookies.get("user_token");
+
+    useEffect(() => {
+        if (userCookies) {
+            navigate("/");
+        }
+    }, []);
 
     const handleChange = (e) => {
         const newState = { ...state };
@@ -47,13 +55,13 @@ const LoginRegisterPage = () => {
 
             setTimeout(() => {
                 if (res.data.result.user.role === "Owner") {
-                    navigate("/");
+                    navigate("/admin/dashboard");
                 } else if (res.data.result.user.role === "Warehouse Admin") {
-                    navigate("/");
+                    navigate("/admin/dashboard");
                 } else {
                     navigate("/");
                 }
-            }, 3000);
+            }, 500);
         } catch (error) {
             console.log(error);
             toast.error(error.response.data.message);
@@ -73,7 +81,11 @@ const LoginRegisterPage = () => {
             dispatch(login(res.data.result.user));
             setTimeout(() => {
                 navigate("/");
-            }, 3000);
+            }, 500);
+
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
         } catch (error) {
             console.log(error);
             toast.error(error.response.data.message);

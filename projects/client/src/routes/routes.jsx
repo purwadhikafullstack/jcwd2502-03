@@ -245,7 +245,8 @@ const SideBarAdmin = ({ children }) => {
         <div
           className={`${
             currentPath === "/admin/orders/details" ||
-            currentPath === "/admin/orders/details"
+            currentPath === "/admin/orders/details" ||
+            currentPath === "/admin/history"
               ? "h-auto"
               : "h-[718px]"
           } right w-full   rounded-[4px] border-[1px] shadow-xl `}

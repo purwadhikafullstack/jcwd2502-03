@@ -242,6 +242,7 @@ export default function UserListTable() {
                                         {(onClose) => (
                                             <>
                                                 <AdminEditUserModal
+                                                getProduct={getProduct}
                                                     onPress={onClose}
                                                 />
                                             </>
@@ -315,7 +316,7 @@ export default function UserListTable() {
                     </button>
                 </div>
             ) : (
-                <>lala</>
+                <></>
             )}
         </div>
     );
