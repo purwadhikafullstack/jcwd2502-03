@@ -2,11 +2,14 @@ import TabBar from "../../components/TabBar/TabBar";
 import axiosInstance from "../../config/api";
 import Cookies from "js-cookie";
 import toast, { Toaster } from "react-hot-toast";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { setIsVerified } from "../../redux/Features/auth";
 
 const UserVerificationPage = () => {
     const navigate = useNavigate();
+
+    const dispatch = useDispatch()
 
     const { id } = useSelector((state) => state.user);
 
@@ -28,6 +31,9 @@ const UserVerificationPage = () => {
             });
             toast.success("Verification Success!");
             Cookies.remove("user_token");
+            
+            dispatch(setIsVerified(true))
+
             setTimeout(() => {
                 navigate("/login");
             }, 3000);

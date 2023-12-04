@@ -22,6 +22,14 @@ const LoginRegisterPage = () => {
         password: "",
     });
 
+    const userCookies = Cookies.get("user_token");
+
+    useEffect(() => {
+        if (userCookies) {
+            navigate("/");
+        }
+    }, []);
+
     const handleChange = (e) => {
         const newState = { ...state };
         newState[e.target.name] = e.target.value;
@@ -49,13 +57,13 @@ const LoginRegisterPage = () => {
 
             setTimeout(() => {
                 if (res.data.result.user.role === "Owner") {
-                    navigate("/admin/dashboard");
+                    navigate("/admin/users");
                 } else if (res.data.result.user.role === "Warehouse Admin") {
-                    navigate("/admin/dashboard");
+                    navigate("/admin/products");
                 } else {
                     navigate("/");
                 }
-            }, 3000);
+            }, 500);
         } catch (error) {
             console.log(error);
             toast.error(error.response.data.message);
@@ -75,7 +83,11 @@ const LoginRegisterPage = () => {
             dispatch(login(res.data.result.user));
             setTimeout(() => {
                 navigate("/");
-            }, 3000);
+            }, 500);
+
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
         } catch (error) {
             console.log(error);
             toast.error(error.response.data.message);

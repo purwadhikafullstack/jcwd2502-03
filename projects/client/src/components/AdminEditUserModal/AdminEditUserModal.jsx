@@ -12,7 +12,7 @@ import {
     SelectItem,
 } from "@nextui-org/react";
 
-const AdminEditUserModal = ({ onPress }) => {
+const AdminEditUserModal = ({ onPress, getProduct }) => {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
     const [warehouse, setWarehouse] = useState([]);
 
@@ -66,14 +66,8 @@ const AdminEditUserModal = ({ onPress }) => {
                 warehouses_id: data.warehouses_id,
                 role: data.role,
             });
-
-            setTimeout(() => {
                 toast.success(res.data.message);
-            }, 300);
-            
-            setTimeout(() => {
-                window.location.reload();
-            }, 500);
+                getProduct()
         } catch (error) {
             console.log(error);
         }
