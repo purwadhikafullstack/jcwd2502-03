@@ -90,7 +90,7 @@ const ModalAddProduct = ({ onPress }) => {
   }, []);
   return (
     <>
-      <ModalHeader className="flex flex-col gap-1">Tambah Product</ModalHeader>
+      <ModalHeader className="flex flex-col gap-1">Total Stock</ModalHeader>
       <ModalBody>
         <form action="" className="grid gap-4">
           <input

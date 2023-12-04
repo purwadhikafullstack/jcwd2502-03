@@ -102,7 +102,7 @@ const [admin, setAdmin] = useState()
 
   return (
     
-    <div className={role === "Customer" ? `wrap-nav w-full bg-primaryBlue  fixed top-0 z-50 ` : `hidden`}>
+    <div className={role === "Customer"? `wrap-nav w-full bg-primaryBlue  fixed top-0 z-50 ` : `hidden`}>
       <div className=" my-7  h-full m-auto gap-2 sm:gap-10 flex items-center align-middle justify-between">
         <Link to={"/"}>
           <Logo />

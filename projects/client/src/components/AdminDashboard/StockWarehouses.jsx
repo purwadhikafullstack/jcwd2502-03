@@ -10,8 +10,18 @@ import {
   Chip,
   Tooltip,
 } from "@nextui-org/react";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  useDisclosure,
+} from "@nextui-org/react";
 import { FaRegEdit } from "react-icons/fa";
 import axiosInstance from "../../config/api";
+import ModalEditStock from "./ComponentAdmin/ModalEditStock";
 
 const statusColorMap = {
   active: "success",
@@ -28,7 +38,8 @@ const columns = [
 ];
 
 export default function StockWarehouses() {
-  const [warehouse, setWarehouses] = useState([])
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [warehouse, setWarehouses] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [data, setData] = useState([]);
@@ -76,15 +87,15 @@ export default function StockWarehouses() {
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
     getData();
-    getWarehouse()
+    getWarehouse();
     if (filter.warehouses_id === null) {
-      let newFilter = {...filter}
-      newFilter.warehouses_id =Number(warehouse[0].id)
-      setFilter(newFilter)
+      let newFilter = { ...filter };
+      newFilter.warehouses_id = Number(warehouse[0].id);
+      setFilter(newFilter);
     }
   }, []);
 
@@ -96,7 +107,7 @@ export default function StockWarehouses() {
       case "product_name":
         return (
           <User
-          size="md"
+            size="md"
             avatarProps={{
               radius: "md",
               src: `${
@@ -125,6 +136,16 @@ export default function StockWarehouses() {
           </h1>
         );
       case "actions":
+        const onEdit = async (id) => {
+          try {
+            const hasil = await axiosInstance.get(`/product/${id}`);
+            localStorage.setItem("product", JSON.stringify(hasil.data));
+            console.log(hasil.data);
+            onOpen();
+          } catch (error) {
+            console.log(error);
+          }
+        };
         return (
           <div className="relative flex items-center gap-2">
             {/* <Tooltip content="Details">
@@ -133,7 +154,11 @@ export default function StockWarehouses() {
               </span>
             </Tooltip> */}
             <Tooltip content="Edit user">
-              <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+              <span
+                // onPress={onOpen}
+                onClick={() => onEdit(user.id)}
+                className="text-lg text-default-400 cursor-pointer active:opacity-50"
+              >
                 <FaRegEdit />
               </span>
             </Tooltip>
@@ -152,24 +177,18 @@ export default function StockWarehouses() {
     <div className="flex flex-col">
       <div className="flex justify-between mx-3 my-3 underline">
         <span>Manage Stock</span>
-        {/* <div className="flex flex-col gap-2">
-          <Button onPress={onOpen} className="max-w-fit">
-            Tambah Products
-          </Button>
-          <Modal
-            isOpen={isOpen}
-            placement={modalPlacement}
-            onOpenChange={onOpenChange}
-          >
-            <ModalContent>
-              {(onClose) => (
-                <>
-                  <ModalAddProduct onPress={onClose} />
-                </>
-              )}
-            </ModalContent>
-          </Modal>
-        </div> */}
+        {/* <Button >Open Modal</Button> */}
+        <Modal
+          isOpen={isOpen}
+          onOpenChange={onOpenChange}
+          isDismissable={false}
+        >
+          <ModalContent>
+            {(onClose) => (
+              <ModalEditStock onPress={onClose} />
+            )}
+          </ModalContent>
+        </Modal>
       </div>
 
       <Table aria-label="Example table with custom cells">
