@@ -1,47 +1,13 @@
 const router = require("express").Router();
 const reportController = require("../controllers/reportController");
-const { ownerMiddleware } = require("../middlewares/ownerMiddleware");
+const authorizeLoggedInUser = require("../middlewares/authMiddleware");
+const { adminMiddleware } = require("../middlewares/customerMiddleware");
 
-router.get(
-    `/transaction-count`,
-    // ownerMiddleware,
-    reportController.getTransactionCount
-);
-
-router.get(
-    `/transaction-count/success`,
-    // ownerMiddleware,
-    reportController.getSuccessTransactionCount
-);
-
-router.get(
-    `/transaction-count/failed`,
-    // ownerMiddleware,
-    reportController.getFailedTransactionCount
-);
-
-router.get(
-    `/transaction-count/today`,
-    // ownerMiddleware,
-    reportController.getTodayTransaction
-);
-
-router.get(
-    `/sales`,
-    // ownerMiddleware,
-    reportController.getSales
-);
-
-router.get(
-    `/revenue`,
-    // ownerMiddleware,
-    reportController.getRevenue
-);
-
-router.get(
-    `/product-sold`,
-    // ownerMiddleware,
-    reportController.getProductSoldCount
+router.post(
+    `/transaction`,
+    authorizeLoggedInUser,
+    adminMiddleware,
+    reportController.getTransactionReport
 );
 
 module.exports = router;

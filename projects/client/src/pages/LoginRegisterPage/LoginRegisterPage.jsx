@@ -57,9 +57,9 @@ const LoginRegisterPage = () => {
 
             setTimeout(() => {
                 if (res.data.result.user.role === "Owner") {
-                    navigate("/admin/dashboard");
+                    navigate("/admin/users");
                 } else if (res.data.result.user.role === "Warehouse Admin") {
-                    navigate("/admin/dashboard");
+                    navigate("/admin/products");
                 } else {
                     navigate("/");
                 }
