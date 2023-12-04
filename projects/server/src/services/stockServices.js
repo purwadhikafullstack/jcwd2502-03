@@ -51,7 +51,7 @@ module.exports = {
           {
             model: db.products,
             attributes: [
-              // "id",
+              "id",
               // "product_weight",
               // "product_price",
               // "product_description",
@@ -67,10 +67,11 @@ module.exports = {
                 attributes: [],
               },
             ],
+            // where: where.product,
           },
           {
             model: db.warehouses,
-            attributes: [],
+            attributes: ["id"],
             include: [
               {
                 model: db.tb_ro_cities,
@@ -80,8 +81,7 @@ module.exports = {
             // where: where.warehouses,
           },
         ],
-        // where: where.product,
-        where: where.warehouses,
+        where: {...where.warehouses,...where.product}
       });
       const totalStock = {};
 
