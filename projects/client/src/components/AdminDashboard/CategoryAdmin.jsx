@@ -167,7 +167,6 @@
 
 // export default CategoryAdmin;
 
-
 import React, { useEffect, useState } from "react";
 import {
   Table,
@@ -209,45 +208,46 @@ export default function ProductsAdmin() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const getKategori = async () => {
-        try {
-          const data = await axiosInstance.get(`/category?category_status=Active`); // data kategori
-          const res = await axiosInstance.get(`/product?product_status=Active`); // data product , product punya kategori_id
-          console.log(res.data);
-          const categoryCounts = {};
-          for (const product of res.data) {
-            const categoryId = product.products_category.id && product.products_category.id; //2
-            console.log(categoryId);
-            if (categoryCounts[categoryId]) {
-              categoryCounts[categoryId]++;
-            } else {
-              categoryCounts[categoryId] = 1;
-            }
-          }
-          for (const product of res.data) {
-            const categoryId = product.products_category.id;
-            product.total_product = categoryCounts[categoryId];
-          }
-    console.log(categoryCounts);
-          const categoryMap = new Map();
-          data.data.forEach((category) => {
-            categoryMap.set(category.id, category);
-          });
-    
-          // Memindahkan nilai total product
-          res.data.forEach((product) => {
-            const categoryId = product.products_category.id;
-            const category = categoryMap.get(categoryId);
-            if (category) {
-              category.total_product = product.total_product;
-            }
-          });
-          console.log(data.data);
-          setCategories(data.data);
-        } catch (error) {
-          console.log(error);
+    try {
+      const data = await axiosInstance.get(`/category?category_status=Active`); // data kategori
+      const res = await axiosInstance.get(`/product?product_status=Active`); // data product , product punya kategori_id
+      console.log(res.data);
+      const categoryCounts = {};
+      for (const product of res.data) {
+        const categoryId =
+          product.products_category.id && product.products_category.id; //2
+        console.log(categoryId);
+        if (categoryCounts[categoryId]) {
+          categoryCounts[categoryId]++;
+        } else {
+          categoryCounts[categoryId] = 1;
         }
-      };
-console.log(categories);
+      }
+      for (const product of res.data) {
+        const categoryId = product.products_category.id;
+        product.total_product = categoryCounts[categoryId];
+      }
+      console.log(categoryCounts);
+      const categoryMap = new Map();
+      data.data.forEach((category) => {
+        categoryMap.set(category.id, category);
+      });
+
+      // Memindahkan nilai total product
+      res.data.forEach((product) => {
+        const categoryId = product.products_category.id;
+        const category = categoryMap.get(categoryId);
+        if (category) {
+          category.total_product = product.total_product;
+        }
+      });
+      console.log(data.data);
+      setCategories(data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  console.log(categories);
   useEffect(() => {
     getKategori();
   }, []);
@@ -302,7 +302,9 @@ console.log(categories);
           <User
             avatarProps={{
               radius: "lg",
-              src: `http://localhost:8000${user.category_image}`,
+              src: `${
+                process.env.REACT_APP_IMAGE_SERVER_URL_IMAGE
+              }${user.category_image.substring(6)}`,
             }}
             // description={user.products_category.category}
             name={cellValue}
@@ -322,24 +324,27 @@ console.log(categories);
       case "actions":
         const onEdit = async (id) => {
           try {
-            const hasil = await axiosInstance.get(`/product/${id}`)
-            localStorage.setItem("kategori", JSON.stringify(hasil.data))
+            const hasil = await axiosInstance.get(`/product/${id}`);
+            localStorage.setItem("kategori", JSON.stringify(hasil.data));
             // console.log("lala");
-            onOpen()
+            onOpen();
           } catch (error) {
             console.log(error);
           }
-        }
+        };
         return (
           <div className="relative flex items-center gap-2">
             <Tooltip content="Edit user">
-              <span onClick={()=>onEdit(user.id)} className="text-xl text-default-400 cursor-pointer active:opacity-50">
-                <FaRegEdit  />
+              <span
+                onClick={() => onEdit(user.id)}
+                className="text-xl text-default-400 cursor-pointer active:opacity-50"
+              >
+                <FaRegEdit />
               </span>
             </Tooltip>
             <Tooltip color="danger" content="Delete user">
               <span className="text-xl text-danger cursor-pointer active:opacity-50">
-                <MdDelete  />
+                <MdDelete />
                 {/* onClick={() => handleDelete(user.id)} */}
               </span>
             </Tooltip>
