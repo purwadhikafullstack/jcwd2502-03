@@ -44,7 +44,7 @@ export default function ProductsAdmin() {
     const getProduct = async () => {
         try {
             const res = await axiosInstance.get("/product");
-            // console.log(res.data);
+
             setProduct(res.data);
         } catch (error) {
             console.log(error.response.data.message);
@@ -57,7 +57,7 @@ export default function ProductsAdmin() {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = currentPage * itemsPerPage;
     const currentData = product?.slice(startIndex, endIndex);
-    // console.log(currentData);
+
 
     const nextPage = () => {
         if (endIndex < product.length) {
@@ -160,7 +160,7 @@ export default function ProductsAdmin() {
                             "product",
                             JSON.stringify(hasil.data)
                         );
-                        console.log(hasil.data);
+
                         onOpen();
                     } catch (error) {
                         console.log(error);

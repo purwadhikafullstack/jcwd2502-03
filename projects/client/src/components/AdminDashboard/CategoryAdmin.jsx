@@ -212,11 +212,11 @@ export default function ProductsAdmin() {
         try {
           const data = await axiosInstance.get(`/category?category_status=Active`); // data kategori
           const res = await axiosInstance.get(`/product?product_status=Active`); // data product , product punya kategori_id
-          console.log(res.data);
+
           const categoryCounts = {};
           for (const product of res.data) {
             const categoryId = product.products_category.id && product.products_category.id; //2
-            console.log(categoryId);
+
             if (categoryCounts[categoryId]) {
               categoryCounts[categoryId]++;
             } else {
@@ -227,7 +227,7 @@ export default function ProductsAdmin() {
             const categoryId = product.products_category.id;
             product.total_product = categoryCounts[categoryId];
           }
-    console.log(categoryCounts);
+
           const categoryMap = new Map();
           data.data.forEach((category) => {
             categoryMap.set(category.id, category);
@@ -241,13 +241,13 @@ export default function ProductsAdmin() {
               category.total_product = product.total_product;
             }
           });
-          console.log(data.data);
+
           setCategories(data.data);
         } catch (error) {
           console.log(error);
         }
       };
-console.log(categories);
+
   useEffect(() => {
     getKategori();
   }, []);
@@ -324,7 +324,7 @@ console.log(categories);
           try {
             const hasil = await axiosInstance.get(`/product/${id}`)
             localStorage.setItem("kategori", JSON.stringify(hasil.data))
-            // console.log("lala");
+
             onOpen()
           } catch (error) {
             console.log(error);
