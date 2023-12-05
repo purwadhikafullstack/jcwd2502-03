@@ -49,13 +49,13 @@ export default function StockWarehouses() {
     products_id: null,
     search: null,
   });
-  // console.log("lala");
+
   const getData = async () => {
     try {
       const res = await axiosInstance.get(
         `/stock?warehouses_id=${filter.warehouses_id}`
       );
-      // console.log(res.data);
+
       setData(res.data.data);
     } catch (error) {
       console.log(error);
@@ -64,7 +64,7 @@ export default function StockWarehouses() {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = currentPage * itemsPerPage;
   const currentData = data?.slice(startIndex, endIndex);
-  // console.log(currentData);
+
   if (currentData.length === 0) {
     <div>wait</div>;
   }
@@ -80,7 +80,7 @@ export default function StockWarehouses() {
     }
   };
 
-  // console.log(warehouse);
+
   const getWarehouse = async () => {
     try {
       const data = await axiosInstance.get(`/warehouse`);
@@ -100,7 +100,7 @@ export default function StockWarehouses() {
     }
   }, []);
 
-  // console.log(data);
+
   const renderCell = React.useCallback((user, columnKey) => {
     const cellValue = user[columnKey];
 
@@ -142,7 +142,7 @@ export default function StockWarehouses() {
             console.log(id);
             const hasil = await axiosInstance.get(`/stock?warehouses_id=${id}&products_id=${product_id}`);
             localStorage.setItem("stock", JSON.stringify(hasil.data));
-            // console.log(hasil.data);
+
             onOpen();
           } catch (error) {
             console.log(error);
