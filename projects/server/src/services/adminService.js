@@ -176,6 +176,47 @@ class AdminService extends Service {
             });
         }
     };
+
+    static getStockMutation = async (warehouses_id) => {
+        try {
+            const stockMutation = await db.stocks_mutations.findAll({
+                where: {
+                    request_warehouses_id: warehouses_id,
+                    // sender_warehouses_id: warehouses_id,
+                    status: "Pending"
+                },
+                include: [
+                    {
+                        model: db.products
+                    },
+                    {
+                        model: db.warehouses
+                    },
+                    {
+                        model: db.users
+                    }
+                ]
+            })
+
+            if(!stockMutation.length) return this.handleError({
+                statusCode: 400,
+                message: "No request found.",
+                isError: true
+            })
+
+            return this.handleSuccess({
+                statusCode: 201,
+                message: "Success get stock mutations history!",
+                data: stockMutation,
+            });
+        } catch (error) {
+            console.log(error);
+            return this.handleError({
+                statusCode: 500,
+                message: "Server Error",
+            });
+        }
+    };
 }
 
 module.exports = AdminService;

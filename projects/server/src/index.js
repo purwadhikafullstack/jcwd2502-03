@@ -211,6 +211,7 @@ const {
   authRouter,
   userRouter,
   adminRouter,
+  reportRouter
 } = require("./routers");
 
 const {
@@ -226,6 +227,7 @@ app.use("/api/order", attachIoToRequest, adminSocket, orderRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/admin", adminRouter);
+app.use("/api/report", reportRouter);
 // app.use("/profilepicture", express.static(`${__dirname}/public/profilePictures`));
 // app.use("/products", express.static(`${__dirname}/public/products`));
 app.use("/api/category", categoryRouter);
@@ -233,15 +235,15 @@ app.use("/api/warehouse", warehouseRouter);
 app.use("/api/stock", stockRouter);
 app.use("/api/rajaongkir", rajaOngkirRouter);
 
-app.get("/api", (req, res) => {
-  res.send(`Hello, this is my API`);
-});
+// app.get("/api", (req, res) => {
+//   res.send(`Hello, this is my API`);
+// });
 
-app.get("/api/greetings", (req, res, next) => {
-  res.status(200).json({
-    message: "Hello, Student !",
-  });
-});
+// app.get("/api/greetings", (req, res, next) => {
+//   res.status(200).json({
+//     message: "Hello, Student !",
+//   });
+// });
 
 // ===========================
 

@@ -47,6 +47,7 @@ import StockWarehouses from "../components/AdminDashboard/StockWarehouses";
 import HistoryAdmin from "../components/AdminDashboard/ReportAdmin";
 import HistoryAdmin2 from "../components/HistoryAdmin/HistoryAdmin2";
 import AdminDeliveryOrder from "../components/AdminDeliveryOrder/AdminDeliveryOrder";
+import RequestAdmin from "../components/AdminDashboard/RequestAdmin";
 const userToken = Cookies.get("user_token");
 let socket;
 if (userToken) {
@@ -295,7 +296,9 @@ const SideBarAdmin = ({ children }) => {
         <div
           className={`${
             currentPath === "/admin/orders/details" ||
-            currentPath === "/admin/orders/details"
+            currentPath === "/admin/orders/details" ||
+            currentPath === "/admin/history" ||
+            currentPath === "/admin/report"
               ? "h-auto"
               : "h-[718px]"
           } right w-full   rounded-[4px] border-[1px] shadow-xl `}
@@ -546,6 +549,16 @@ const routes = [
       </Protected>
     }
   />,
+  <Route
+  path="/admin/request"
+  element={
+    <Protected ownerPage={true}>
+      <SideBarAdmin>
+        <RequestAdmin />
+      </SideBarAdmin>
+    </Protected>
+  }
+/>,
   <Route
     path="/admin/orders"
     element={

@@ -37,27 +37,35 @@ const INITIAL_VISIBLE_COLUMNS = [
     "id",
     "status",
     "quantity",
-    "products_id",
-    "warehouses_id",
+    "product",
+    "warehouse",
     "reference",
     "createdAt",
+    "updatedAt",
 ];
 
 const columns = [
     { name: "ID", uid: "id", sortable: true },
     { name: "STATUS", uid: "status", sortable: true },
     { name: "QUANTITY", uid: "quantity", sortable: true },
-    { name: "PRODUCTS ID", uid: "products_id", sortable: true },
-    { name: "WAREHOUSE ID", uid: "warehouses_id", sortable: true },
+    { name: "PRODUCT", uid: "product", sortable: true },
+    { name: "WAREHOUSE", uid: "warehouse", sortable: true },
     { name: "REFERENCE", uid: "reference", sortable: true },
     { name: "DATE", uid: "createdAt", sortable: true },
+    { name: "TIME", uid: "updatedAt", sortable: true },
 ];
 
-export function formatDateTime(dateTimeString) {
+export function formatDate(dateTimeString) {
     const dateTime = new Date(dateTimeString);
     const formattedDate = `${dateTime.getFullYear()}-${(dateTime.getMonth() + 1)
         .toString()
         .padStart(2, "0")}-${dateTime.getDate().toString().padStart(2, "0")}`;
+
+    return `${formattedDate}`;
+}
+
+export function formatTime(dateTimeString) {
+    const dateTime = new Date(dateTimeString);
 
     const formattedTime = `${dateTime
         .getHours()
@@ -67,7 +75,7 @@ export function formatDateTime(dateTimeString) {
         .toString()
         .padStart(2, "0")}`;
 
-    return `${formattedDate} / ${formattedTime}`;
+    return `${formattedTime}`;
 }
 
 export default function HistoryAdmin2() {
@@ -76,7 +84,7 @@ export default function HistoryAdmin2() {
     const getHistories = async () => {
         try {
             const res = await axiosInstance.get(`/admin/histories`);
-            // console.log(res.data.result)
+            console.log(res.data.result)
             setUsers(res.data.result);
         } catch (error) {
             console.log(error);
@@ -160,18 +168,34 @@ export default function HistoryAdmin2() {
                 return (
                     <div className="flex flex-col">
                         <p className="text-bold text-small capitalize">
-                            {formatDateTime(cellValue)}
+                            {formatDate(cellValue)}
                         </p>
                     </div>
                 );
-            case "products_id":
+                case "updatedAt":
+                    return (
+                        <div className="flex flex-col">
+                            <p className="text-bold text-small capitalize">
+                                {formatTime(cellValue)}
+                            </p>
+                        </div>
+                    );
+            case "product":
                 return (
                     <div className="flex flex-col">
                         <p className="text-bold text-small capitalize">
-                            {cellValue}
+                            {cellValue.product_name}
                         </p>
                     </div>
                 );
+                case "warehouse":
+                    return (
+                        <div className="flex flex-col">
+                            <p className="text-bold text-small capitalize">
+                                {cellValue.name}
+                            </p>
+                        </div>
+                    );
             case "status":
                 return (
                     <Chip
@@ -383,7 +407,7 @@ export default function HistoryAdmin2() {
     );
 
     return (
-        <div className="p-3 pt-28">
+        <div className="p-3 pt-2">
             <div className="pl-5 pb-5">STOCKS HISTORIES</div>
             <Table
                 isCompact
@@ -419,7 +443,7 @@ export default function HistoryAdmin2() {
                         </TableColumn>
                     )}
                 </TableHeader>
-                <TableBody emptyContent={"No users found"} items={sortedItems}>
+                <TableBody emptyContent={"No history found"} items={sortedItems}>
                     {(item) => (
                         <TableRow key={item.id}>
                             {(columnKey) => (

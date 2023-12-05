@@ -1,6 +1,7 @@
 import toast from "react-hot-toast";
 import axiosInstance from "../../config/api";
 import Cookies from "js-cookie";
+import { useLocation } from "react-router-dom";
 
 const VerificationTab = () => {
     const emailButtonHandler = async () => {
@@ -18,14 +19,17 @@ const VerificationTab = () => {
                 toast.success(res.data.message);
             }, 1000);
         } catch (error) {
-            toast.error(error.response.data.message)
+            toast.error(error.response.data.message);
             console.log(error);
         }
     };
 
     return (
-        <div>
-            <div className="flex flex-col text-black w-full h-[60px] justify-center border-2 bg-green-500" style={{zIndex: 9999, position: "fixed"}}>
+        <div className="mt-[100px]">
+            <div
+                className="flex flex-col text-black w-full h-[60px] justify-center border-2 bg-green-500"
+                style={{ zIndex: 9999, position: "fixed" }}
+            >
                 <div className="flex justify-center text-red-700 font-bold">
                     Your account has not been verified!
                 </div>

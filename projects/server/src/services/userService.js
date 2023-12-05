@@ -40,11 +40,11 @@ class UserService extends Service {
         }
     };
 
-    static editUserAvatar = async (users_id, files) => {
+    static editUserAvatar = async (id, files) => {
         try {
             const findUser = await db.users.findOne({
                 where: {
-                    id: users_id,
+                    id: id
                 },
             });
 
@@ -61,13 +61,15 @@ class UserService extends Service {
                 };
             });
 
+            console.log(dataImage)
+
             // await deleteFiles({
             //     images: [{ path: findUser.dataValues.avatar }],
             // });
 
             const updateImage = await db.users.update(
                 { avatar: dataImage[0].image },
-                { where: { id: users_id } }
+                { where: { id: id } }
             );
 
             return this.handleSuccess({
