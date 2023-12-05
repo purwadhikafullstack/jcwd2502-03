@@ -252,45 +252,45 @@ export default function ProductsAdmin() {
     getKategori();
   }, []);
 
-  // const handleDelete = async (id) => {
-  //   try {
-  //     const swalWithBootstrapButtons = Swal.mixin({
-  //       customClass: {
-  //         confirmButton: "btn btn-success",
-  //         cancelButton: "btn btn-danger",
-  //       },
-  //       buttonsStyling: true,
-  //     });
+  const handleDelete = async (id) => {
+    try {
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success",
+          cancelButton: "btn btn-danger",
+        },
+        buttonsStyling: true,
+      });
 
-  //     const result = await swalWithBootstrapButtons.fire({
-  //       title: "Are you sure?",
-  //       text: "you want to delete?",
-  //       icon: "warning",
-  //       showCancelButton: true,
-  //       confirmButtonText: "Yes, delete it!",
-  //       cancelButtonText: "No, cancel!",
-  //       reverseButtons: true,
-  //     });
+      const result = await swalWithBootstrapButtons.fire({
+        title: "Are you sure?",
+        text: "you want to delete?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "No, cancel!",
+        reverseButtons: true,
+      });
 
-  //     if (result.isConfirmed) {
-  //       const response = await axiosInstance.delete(`/product/${id}`);
-  //       swalWithBootstrapButtons.fire({
-  //         title: "Deleted!",
-  //         text: response.data.message,
-  //         icon: "success",
-  //       });
-  //       getProduct()
-  //     } else if (result.dismiss === Swal.DismissReason.cancel) {
-  //       swalWithBootstrapButtons.fire({
-  //         title: "Cancelled",
-  //         text: "Delete has been cancelled",
-  //         icon: "error",
-  //       });
-  //     }
-  //   } catch (error) {
-  //     toast.error(error.response.data.message);
-  //   }
-  // };
+      if (result.isConfirmed) {
+        const response = await axiosInstance.delete(`/category/${id}`);
+        swalWithBootstrapButtons.fire({
+          title: "Deleted!",
+          text: response.data.message,
+          icon: "success",
+        });
+        getKategori()
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        swalWithBootstrapButtons.fire({
+          title: "Cancelled",
+          text: "Delete has been cancelled",
+          icon: "error",
+        });
+      }
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  };
 
   const renderCell = React.useCallback((user, columnKey) => {
     const cellValue = user[columnKey];
@@ -343,7 +343,7 @@ export default function ProductsAdmin() {
               </span>
             </Tooltip>
             <Tooltip color="danger" content="Delete user">
-              <span className="text-xl text-danger cursor-pointer active:opacity-50">
+              <span onClick={() => handleDelete(user.id)} className="text-xl text-danger cursor-pointer active:opacity-50">
                 <MdDelete />
                 {/* onClick={() => handleDelete(user.id)} */}
               </span>
