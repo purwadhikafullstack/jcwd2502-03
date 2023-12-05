@@ -805,7 +805,7 @@ const orderController = {
         req.query.warehouses_id
       );
 
-      console.log(filterOrders);
+
 
       res.send({
         isError: false,
