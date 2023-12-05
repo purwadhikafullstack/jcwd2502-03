@@ -5,12 +5,29 @@ const upload1 = require("../middlewares/upload1");
 
 router.patch("/user=:users_id", authorizeLoggedInUser, userController.editUser);
 
-router.put("/address", authorizeLoggedInUser, userController.changePrimaryAddress);
+router.put(
+    "/address",
+    authorizeLoggedInUser,
+    userController.changePrimaryAddress
+);
 
-router.delete("/delete-address/:address_id", authorizeLoggedInUser, userController.deleteAddress);
+router.delete(
+    "/delete-address/:address_id",
+    authorizeLoggedInUser,
+    userController.deleteAddress
+);
 
-router.patch("/image/:users_id", upload1, userController.editUserAvatar);
+router.post(
+    "/avatar",
+    authorizeLoggedInUser,
+    upload1,
+    userController.editUserAvatar
+);
 
-router.get("/address/user=:users_id", authorizeLoggedInUser, userController.getAddresses);
+router.get(
+    "/address/user=:users_id",
+    authorizeLoggedInUser,
+    userController.getAddresses
+);
 
 module.exports = router;

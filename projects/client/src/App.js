@@ -1,6 +1,6 @@
 import "./App.css";
 import routes from "./routes/routes";
-import { Routes } from "react-router-dom";
+import { Routes, useLocation } from "react-router-dom";
 import Nav from "./components/Navbar/Nav";
 import Footer from "./components/Footer/Footer";
 import { Provider, useSelector } from "react-redux";
@@ -18,24 +18,31 @@ import VerificationTab from "./components/VerificationTab/VerificationTab";
 const userToken = Cookies.get("user_token");
 let socket;
 if (userToken) {
-  socket = io("http://localhost:8000", {
-    query: { userToken },
-  });
+    socket = io("http://localhost:8000", {
+        query: { userToken },
+    });
 }
 function App() {
-  const { is_verified } = useSelector((state) => state.user);
+    const { is_verified } = useSelector((state) => state.user);
+    const location = useLocation();
 
-  return (
-    <>
-      {/* <Provider store={store}> */}
-      <Nav />
-      {/* {is_verified === false && <VerificationTab />} */}
-      <Routes>{routes.map((value) => value)}</Routes>
-      <Footer />
-      <Toaster position="top-center" />
-      {/* </Provider> */}
-    </>
-  );
+    const currentPath = location.pathname;
+
+
+
+    return (
+        <>
+            {/* <Provider store={store}> */}
+            <Nav />
+            {is_verified === false && currentPath !== "/verification" && (
+                <VerificationTab />
+            )}
+            <Routes>{routes.map((value) => value)}</Routes>
+            <Footer />
+            <Toaster position="top-center" />
+            {/* </Provider> */}
+        </>
+    );
 }
 
 export default App;

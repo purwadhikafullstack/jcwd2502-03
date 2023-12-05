@@ -47,6 +47,7 @@ import StockWarehouses from "../components/AdminDashboard/StockWarehouses";
 import HistoryAdmin from "../components/AdminDashboard/ReportAdmin";
 import HistoryAdmin2 from "../components/HistoryAdmin/HistoryAdmin2";
 import AdminDeliveryOrder from "../components/AdminDeliveryOrder/AdminDeliveryOrder";
+import RequestAdmin from "../components/AdminDashboard/RequestAdmin";
 const userToken = Cookies.get("user_token");
 let socket;
 if (userToken) {
@@ -78,7 +79,7 @@ const SideBar = ({ children }) => {
   useEffect(() => {
     if (userToken) {
       socket.on("reject", (message) => {
-        console.log(message);
+
         Swal.fire({
           position: "top-end",
           icon: "warning",
@@ -100,7 +101,7 @@ const SideBar = ({ children }) => {
   useEffect(() => {
     if (userToken) {
       socket.on("Package Sent", (message) => {
-        console.log(message);
+
         Swal.fire({
           position: "top-end",
           icon: "warning",
@@ -122,7 +123,7 @@ const SideBar = ({ children }) => {
   useEffect(() => {
     if (userToken) {
       socket.on("Package Arrived", (message) => {
-        console.log(message);
+
         Swal.fire({
           position: "top-end",
           icon: "warning",
@@ -144,7 +145,7 @@ const SideBar = ({ children }) => {
   useEffect(() => {
     if (userToken) {
       socket.on("accept", (message) => {
-        console.log(message);
+
         Swal.fire({
           position: "top-end",
           icon: "success",
@@ -262,7 +263,7 @@ const SideBarAdmin = ({ children }) => {
   useEffect(() => {
     if (userToken) {
       socket.on("upload", (message) => {
-        console.log(message);
+
         try {
           Swal.fire({
             position: "top-end",
@@ -295,7 +296,9 @@ const SideBarAdmin = ({ children }) => {
         <div
           className={`${
             currentPath === "/admin/orders/details" ||
-            currentPath === "/admin/orders/details"
+            currentPath === "/admin/orders/details" ||
+            currentPath === "/admin/history" ||
+            currentPath === "/admin/report"
               ? "h-auto"
               : "h-[718px]"
           } right w-full   rounded-[4px] border-[1px] shadow-xl `}
@@ -546,6 +549,16 @@ const routes = [
       </Protected>
     }
   />,
+  <Route
+  path="/admin/request"
+  element={
+    <Protected ownerPage={true}>
+      <SideBarAdmin>
+        <RequestAdmin />
+      </SideBarAdmin>
+    </Protected>
+  }
+/>,
   <Route
     path="/admin/orders"
     element={

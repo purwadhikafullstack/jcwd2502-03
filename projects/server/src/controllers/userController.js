@@ -28,11 +28,12 @@ const userController = {
 
     editUserAvatar: async (req, res) => {
         try {
-            const { users_id } = req.params;
+            const { id } = req.tokens;
 
             const serviceResult = await UserService.editUserAvatar(
-                users_id,
+                id,
                 req.files
+
             );
 
             if (!serviceResult.success) throw serviceResult;

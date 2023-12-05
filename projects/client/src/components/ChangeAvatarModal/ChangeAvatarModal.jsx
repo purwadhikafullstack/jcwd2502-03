@@ -19,21 +19,19 @@ export default function ChangeAvatarModal() {
 
     const [images, setImages] = useState([]);
 
-    const onSelectImages = (event) => {
+    const onSelectImages = (e) => {
         try {
-            const files = [...event.target.files];
-            files.forEach((value) => {
-                if (value.size > 10000000)
-                    throw {
-                        message: `${value.name} Size Harus Dibawah 1MB`,
-                    };
-                if (value.type.split("/")[0] !== "image") {
-                    throw {
-                        message: `${value.name} Harus Gambar`,
-                    };
-                }
-            });
-            setImages(files);
+            const selectedImage = e.target.files[0];
+
+            if (selectedImage.size > 2000000)
+                throw {
+                    message: `${selectedImage.name} size must be below 2 MB.`,
+                };
+
+            if (selectedImage.type.split("/")[0] !== "image") {
+            }
+
+            setImages(selectedImage);
         } catch (error) {
             console.log(error);
             alert(error.message);
@@ -42,7 +40,11 @@ export default function ChangeAvatarModal() {
 
     const changeAvatar = async (e) => {
         try {
-            const res = await axiosInstance;
+            const fd = new FormData();
+            fd.append("images", images);
+
+
+            const res = await axiosInstance.post(`/user/avatar`, fd);
 
             toast.success(res.data.message);
 
@@ -57,7 +59,7 @@ export default function ChangeAvatarModal() {
 
     return (
         <>
-            <Button onPress={onOpen} color="primary">
+            <Button onClick={() => onOpen()} color="primary">
                 Change your avatar
             </Button>
             <Modal
@@ -89,7 +91,11 @@ export default function ChangeAvatarModal() {
                                 />
                             </ModalBody>
                             <ModalFooter>
-                                <Button color="primary" onPress={onClose} onClick={changeAvatar}>
+                                <Button
+                                    color="primary"
+                                    onPress={onClose}
+                                    onClick={() => changeAvatar()}
+                                >
                                     Change your avatar
                                 </Button>
                             </ModalFooter>
