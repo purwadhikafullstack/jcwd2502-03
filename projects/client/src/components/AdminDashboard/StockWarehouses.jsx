@@ -9,6 +9,7 @@ import {
   User,
   Chip,
   Tooltip,
+  Select,
 } from "@nextui-org/react";
 import {
   Modal,
@@ -23,6 +24,7 @@ import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
 import { FaRegEdit } from "react-icons/fa";
 import axiosInstance from "../../config/api";
 import ModalEditStock from "./ComponentAdmin/ModalEditStock";
+import { RiNurseFill } from "react-icons/ri";
 
 const statusColorMap = {
   active: "success",
@@ -39,6 +41,7 @@ const columns = [
 ];
 
 export default function StockWarehouses() {
+  const [selectedOption, setSelectedOption] = useState(null);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [warehouse, setWarehouses] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -50,6 +53,13 @@ export default function StockWarehouses() {
     search: null,
   });
 
+  const handleChange = (e) => {
+    // console.log();
+    let newData = { ...filter };
+    newData[e.target.name] = e.target.value;
+    setFilter(newData);
+  };
+  console.log(filter);
   const getData = async () => {
     try {
       const res = await axiosInstance.get(
@@ -100,7 +110,7 @@ export default function StockWarehouses() {
     }
   }, []);
 
-
+  // console.log(data);
   const renderCell = React.useCallback((user, columnKey) => {
     const cellValue = user[columnKey];
 
@@ -139,8 +149,9 @@ export default function StockWarehouses() {
       case "actions":
         const onEdit = async (id, product_id) => {
           try {
-            console.log(id);
-            const hasil = await axiosInstance.get(`/stock?warehouses_id=${id}&products_id=${product_id}`);
+            const hasil = await axiosInstance.get(
+              `/stock?warehouses_id=${id}&products_id=${product_id}`
+            );
             localStorage.setItem("stock", JSON.stringify(hasil.data));
 
             onOpen();
@@ -178,7 +189,22 @@ export default function StockWarehouses() {
   return (
     <div className="flex flex-col">
       <div className="flex justify-between mx-3 my-3 underline">
+        <div className="grid">
         <span>Manage Stock</span>
+          <select onChange={handleChange} name="warehouses_id" className="select select-bordered w-full max-w-xs">
+            <option disabled selected>
+              {warehouse && warehouse[0]?.name}
+            </option>
+            {
+              warehouse && warehouse.map((item) => {
+                return (
+                  <option value={item.id}>{item.name}</option>
+                )
+              })
+            }
+          </select>          
+        </div>
+
         {/* <Button >Open Modal</Button> */}
         <Modal
           isOpen={isOpen}
@@ -186,9 +212,7 @@ export default function StockWarehouses() {
           isDismissable={false}
         >
           <ModalContent>
-            {(onClose) => (
-              <ModalEditStock onPress={onClose} />
-            )}
+            {(onClose) => <ModalEditStock onPress={onClose} />}
           </ModalContent>
         </Modal>
       </div>

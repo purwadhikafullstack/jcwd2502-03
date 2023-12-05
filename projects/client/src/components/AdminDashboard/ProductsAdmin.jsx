@@ -122,7 +122,7 @@ export default function ProductsAdmin() {
                         className=""
                         avatarProps={{
                             radius: "lg",
-                            src: `http://localhost:8000${user.products_images[0].image.substring(
+                            src: `${process.env.REACT_APP_IMAGE_SERVER_URL_IMAGE}${user.products_images[0].image.substring(
                                 6
                             )}`,
                         }}
