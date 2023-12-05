@@ -208,46 +208,45 @@ export default function ProductsAdmin() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const getKategori = async () => {
-    try {
-      const data = await axiosInstance.get(`/category?category_status=Active`); // data kategori
-      const res = await axiosInstance.get(`/product?product_status=Active`); // data product , product punya kategori_id
-      console.log(res.data);
-      const categoryCounts = {};
-      for (const product of res.data) {
-        const categoryId =
-          product.products_category.id && product.products_category.id; //2
-        console.log(categoryId);
-        if (categoryCounts[categoryId]) {
-          categoryCounts[categoryId]++;
-        } else {
-          categoryCounts[categoryId] = 1;
-        }
-      }
-      for (const product of res.data) {
-        const categoryId = product.products_category.id;
-        product.total_product = categoryCounts[categoryId];
-      }
-      console.log(categoryCounts);
-      const categoryMap = new Map();
-      data.data.forEach((category) => {
-        categoryMap.set(category.id, category);
-      });
+        try {
+          const data = await axiosInstance.get(`/category?category_status=Active`); // data kategori
+          const res = await axiosInstance.get(`/product?product_status=Active`); // data product , product punya kategori_id
 
-      // Memindahkan nilai total product
-      res.data.forEach((product) => {
-        const categoryId = product.products_category.id;
-        const category = categoryMap.get(categoryId);
-        if (category) {
-          category.total_product = product.total_product;
+          const categoryCounts = {};
+          for (const product of res.data) {
+            const categoryId = product.products_category.id && product.products_category.id; //2
+
+            if (categoryCounts[categoryId]) {
+              categoryCounts[categoryId]++;
+            } else {
+              categoryCounts[categoryId] = 1;
+            }
+          }
+          for (const product of res.data) {
+            const categoryId = product.products_category.id;
+            product.total_product = categoryCounts[categoryId];
+          }
+
+          const categoryMap = new Map();
+          data.data.forEach((category) => {
+            categoryMap.set(category.id, category);
+          });
+    
+          // Memindahkan nilai total product
+          res.data.forEach((product) => {
+            const categoryId = product.products_category.id;
+            const category = categoryMap.get(categoryId);
+            if (category) {
+              category.total_product = product.total_product;
+            }
+          });
+
+          setCategories(data.data);
+        } catch (error) {
+          console.log(error);
         }
-      });
-      console.log(data.data);
-      setCategories(data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  console.log(categories);
+      };
+
   useEffect(() => {
     getKategori();
   }, []);
@@ -324,10 +323,10 @@ export default function ProductsAdmin() {
       case "actions":
         const onEdit = async (id) => {
           try {
-            const hasil = await axiosInstance.get(`/product/${id}`);
-            localStorage.setItem("kategori", JSON.stringify(hasil.data));
-            // console.log("lala");
-            onOpen();
+            const hasil = await axiosInstance.get(`/product/${id}`)
+            localStorage.setItem("kategori", JSON.stringify(hasil.data))
+
+            onOpen()
           } catch (error) {
             console.log(error);
           }

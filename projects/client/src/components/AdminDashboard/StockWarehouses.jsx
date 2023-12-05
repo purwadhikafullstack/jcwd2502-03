@@ -65,7 +65,7 @@ export default function StockWarehouses() {
       const res = await axiosInstance.get(
         `/stock?warehouses_id=${filter.warehouses_id}`
       );
-      // console.log(res.data);
+
       setData(res.data.data);
     } catch (error) {
       console.log(error);
@@ -74,7 +74,7 @@ export default function StockWarehouses() {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = currentPage * itemsPerPage;
   const currentData = data?.slice(startIndex, endIndex);
-  // console.log(currentData);
+
   if (currentData.length === 0) {
     <div>wait</div>;
   }
@@ -90,7 +90,7 @@ export default function StockWarehouses() {
     }
   };
 
-  console.log(warehouse);
+
   const getWarehouse = async () => {
     try {
       const data = await axiosInstance.get(`/warehouse`);
@@ -108,7 +108,7 @@ export default function StockWarehouses() {
       newFilter.warehouses_id = Number(warehouse[0].id);
       setFilter(newFilter);
     }
-  }, [filter]);
+  }, []);
 
   // console.log(data);
   const renderCell = React.useCallback((user, columnKey) => {
@@ -153,6 +153,7 @@ export default function StockWarehouses() {
               `/stock?warehouses_id=${id}&products_id=${product_id}`
             );
             localStorage.setItem("stock", JSON.stringify(hasil.data));
+
             onOpen();
           } catch (error) {
             console.log(error);
